@@ -1,0 +1,66 @@
+# Fix for JSON Parsing Error in Signup Process
+
+## Original Issue
+The frontend console was showing the following error during the signup process:
+```
+signup:66 Sending data: Object
+signup:77 Response status: 200
+signup:89 Full error: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+```
+
+## Root Cause
+This error occurs when the browser tries to parse an HTML response as JSON. The specific error message indicates that instead of receiving a valid JSON response, the frontend was receiving an HTML document (starting with "<!DOCTYPE"). 
+
+The main causes were:
+1. The RegistrationController was returning an AppUser object directly, which Spring was not properly converting to JSON
+2. The "/req/signup" endpoint was not properly configured in the security settings, causing a redirect to an HTML page
+3. The AppUser class was missing setters, which are needed for proper JSON deserialization
+4. Passwords were not being encoded before storage, which is a security issue
+
+## Changes Made to Fix the Issue
+
+### 1. Modified RegistrationController.java
+- Added a PasswordEncoder to properly encode passwords before saving them to the database
+- Changed the return type from AppUser to ResponseEntity<AppUser>, which gives more control over the HTTP response
+- Added explicit encoding of the password using the passwordEncoder before saving the user
+
+```java
+@PostMapping(value="/req/signup",consumes = "application/json",produces = "application/json")
+public ResponseEntity<AppUser> createUser(@RequestBody AppUser appUser){
+    // Encode the password before saving
+    appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
+    AppUser savedUser = appUserRepository.save(appUser);
+    return ResponseEntity.ok(savedUser);
+}
+```
+
+### 2. Updated SecurityConfig.java
+- Added "/req/signup" to the list of permitted paths to ensure unauthenticated users can access the signup endpoint
+
+```java
+.authorizeHttpRequests(auth -> {
+    auth.requestMatchers("/", "/login", "/signup", "/req/signup", "/css/**", "/js/**", "/error").permitAll();
+    auth.anyRequest().authenticated();
+})
+```
+
+### 3. Enhanced AppUser.java
+- Added @Setter annotation to ensure proper JSON deserialization
+
+```java
+@Getter
+@Setter
+@Entity
+@Table(name = "users")
+public class AppUser {
+    // Class implementation
+}
+```
+
+## Why This Fixed the Issue
+1. Using ResponseEntity<AppUser> ensures that Spring properly formats the response as JSON with the correct content type headers
+2. Adding "/req/signup" to the permitted paths prevents Spring Security from redirecting to the login page
+3. Adding @Setter to AppUser allows Spring to properly deserialize the JSON request into an AppUser object
+4. Encoding passwords is a security best practice that ensures passwords are not stored in plain text
+
+The combination of these changes ensures that the frontend receives a properly formatted JSON response instead of an HTML document, resolving the "Unexpected token '<'" error.

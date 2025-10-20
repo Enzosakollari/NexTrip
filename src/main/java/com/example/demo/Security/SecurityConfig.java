@@ -40,7 +40,7 @@ public class SecurityConfig {
                 //This line not for production leads to threat and exploit of security
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/", "/login", "/signup", "/css/**", "/js/**", "/error").permitAll();
+                    auth.requestMatchers("/", "/login", "/signup", "/req/signup", "/css/**", "/js/**", "/error").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .formLogin(form -> {

@@ -2,8 +2,10 @@ package com.example.demo.User;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 @Entity
 @Table(name = "users") // Explicit table name to avoid reserved keyword issues
 public class AppUser {
