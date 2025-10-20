@@ -16,8 +16,13 @@ public class PageController {
         return "signup";
     }
 
-    @GetMapping("/")
+    @GetMapping("/index")
     public String home() {
+        return "index";
+    }
+
+    @GetMapping("/")
+    public String root() {
         return "login";
     }
 }

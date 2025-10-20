@@ -11,6 +11,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -31,6 +33,7 @@ public class SecurityConfig {
     public AuthenticationProvider authenticationProvider(){
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
          provider.setUserDetailsService(appUserService);
+         provider.setPasswordEncoder(passwordEncoder());
          return provider;
     }
 
@@ -40,13 +43,13 @@ public class SecurityConfig {
                 //This line not for production leads to threat and exploit of security
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/", "/login", "/signup", "/req/signup", "/css/**", "/js/**", "/error").permitAll();
+                    auth.requestMatchers("/", "/login", "/signup", "/req/signup", "/css/**", "/js/**", "/Images/**", "/error").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .formLogin(form -> {
                     form.loginPage("/login")
                             .loginProcessingUrl("/perform_login")
-                            .defaultSuccessUrl("/", true)
+                            .defaultSuccessUrl("/index", true)
                             .failureUrl("/login?error=true")
                             .permitAll();
                 })
@@ -57,5 +60,10 @@ public class SecurityConfig {
                 })
                 .csrf(csrf -> csrf.disable())
                 .build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

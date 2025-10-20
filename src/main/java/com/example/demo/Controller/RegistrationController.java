@@ -16,13 +16,13 @@ public class RegistrationController {
     @Autowired
     private AppUserRepository appUserRepository;
 
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    @Autowired
+    private  PasswordEncoder passwordEncoder;
 
     @PostMapping(value="/req/signup",consumes = "application/json",produces = "application/json")
-    public ResponseEntity<AppUser> createUser(@RequestBody AppUser appUser){
+    public AppUser createUser(@RequestBody AppUser appUser){
         // Encode the password before saving
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
-        AppUser savedUser = appUserRepository.save(appUser);
-        return ResponseEntity.ok(savedUser);
+        return appUserRepository.save(appUser);
     }
 }
