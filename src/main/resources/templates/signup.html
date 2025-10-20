@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .error { color: red; margin-top: 5px; }
+        .success { color: green; margin-top: 5px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="window">
+        <h2>Sign Up</h2>
+        <div id="message"></div>
+        <form id="signupForm">
+            <div class="input-group">
+                <input type="text" id="username" name="username" placeholder="Username" required>
+            </div>
+            <div class="input-group">
+                <input type="email" id="email" name="email" placeholder="Email" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="password" name="password" placeholder="Password" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
+            </div>
+            <button type="submit" class="btn">Sign Up</button>
+        </form>
+        <p class="switch">Already have an account? <a href="/login">Login</a></p>
+    </div>
+</div>
+
+<script>
+    const form = document.getElementById('signupForm');
+    const messageDiv = document.getElementById('message');
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const email = document.getElementById('email').value;
+
+        // Clear previous messages
+        messageDiv.innerHTML = '';
+        messageDiv.className = '';
+
+        // Password validation
+        if (password !== confirmPassword) {
+            showMessage('Passwords do not match!', 'error');
+            return;
+        }
+
+        // Create JSON object
+        const userData = {
+            username: username,
+            password: password,
+            email: email
+        };
+
+        console.log('Sending data:', userData);
+
+        // Send to backend
+        fetch('/req/signup', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData)
+        })
+            .then(response => {
+                console.log('Response status:', response.status);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Success:', data);
+                showMessage('Registration successful!', 'success');
+                form.reset();
+            })
+            .catch((error) => {
+                console.error('Full error:', error);
+                showMessage('Registration failed! Check console for details.', 'error');
+            });
+    });
+
+    function showMessage(text, type) {
+        messageDiv.textContent = text;
+        messageDiv.className = type;
+    }
+</script>
+</body>
+</html>
