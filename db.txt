@@ -1,0 +1,6 @@
+CREATE DATABASE nextrip;
+USE nextrip;
+select * from users;
+
+
+paste the sql lines in mysql workbench run them and then run the program make sure the port is the same as in application.properties

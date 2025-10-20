@@ -5,79 +5,137 @@
 }
 
 body {
-    font-family: 'Arial', sans-serif;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 20px;
 }
 
 .container {
     width: 100%;
-    max-width: 400px;
+    max-width: 450px;
     padding: 20px;
 }
 
 .window {
     background: white;
     padding: 2.5rem;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
     text-align: center;
+    border-top: 4px solid #ff6d00;
 }
 
 .window h2 {
-    margin-bottom: 1.5rem;
-    color: #333;
-    font-size: 1.8rem;
+    margin-bottom: 1.8rem;
+    color: #1a73e8;
+    font-size: 2rem;
+    font-weight: 700;
 }
 
 .input-group {
-    margin-bottom: 1rem;
+    margin-bottom: 1.2rem;
+    text-align: left;
 }
 
 .input-group input {
     width: 100%;
-    padding: 12px 15px;
+    padding: 14px 16px;
     border: 2px solid #e1e5e9;
     border-radius: 8px;
     font-size: 1rem;
-    transition: border-color 0.3s ease;
+    transition: all 0.3s ease;
+    background-color: #f8f9fa;
 }
 
 .input-group input:focus {
     outline: none;
-    border-color: #667eea;
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+    background-color: white;
 }
 
 .btn {
     width: 100%;
-    padding: 12px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 14px;
+    background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
     color: white;
     border: none;
     border-radius: 8px;
-    font-size: 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
     cursor: pointer;
-    transition: transform 0.2s ease;
+    transition: all 0.3s ease;
+    margin-top: 10px;
 }
 
 .btn:hover {
     transform: translateY(-2px);
+    box-shadow: 0 7px 14px rgba(26, 115, 232, 0.3);
 }
 
 .switch {
-    margin-top: 1.5rem;
-    color: #666;
+    margin-top: 1.8rem;
+    color: #6c757d;
+    font-size: 0.95rem;
 }
 
 .switch a {
-    color: #667eea;
+    color: #1a73e8;
     text-decoration: none;
-    font-weight: bold;
+    font-weight: 600;
+    transition: color 0.3s;
 }
 
 .switch a:hover {
+    color: #0d47a1;
     text-decoration: underline;
+}
+
+.error {
+    color: #dc3545;
+    margin-top: 5px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-align: left;
+    padding-left: 5px;
+}
+
+.success {
+    color: #28a745;
+    margin-top: 5px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+#message {
+    margin-bottom: 15px;
+    min-height: 20px;
+}
+
+/* Logo styling for brand consistency */
+.window::before {
+    content: "NEXTRIP";
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #1a73e8;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .window {
+        padding: 2rem 1.5rem;
+    }
+
+    .window h2 {
+        font-size: 1.7rem;
+    }
 }

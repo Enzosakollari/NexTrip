@@ -22,6 +22,13 @@ public class AppUser {
     @Column(unique = true, nullable = false)
     private String email;
 
+    private boolean isVerified;
+    private String verificationToken;
+
+
+    @Column(name="reset_token")
+    private String resetToken;
+
     // Add constructors, setters if using Lombok @Data instead of @Getter
     public AppUser() {}
 
