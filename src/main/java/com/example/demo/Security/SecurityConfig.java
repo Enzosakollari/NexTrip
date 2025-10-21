@@ -20,7 +20,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 //autowire or inject the user service
-    @Autowired
     private final AppUserService appUserService;
 
 
@@ -49,7 +48,7 @@ public class SecurityConfig {
                 //This line not for production leads to threat and exploit of security
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/", "/login", "/signup", "/req/signup", "/css/**", "/js/**", "/static/Images/**", "/error").permitAll();
+                    auth.requestMatchers("/", "/login", "/signup", "/req/**", "/css/**", "/js/**", "/static/Images/**", "/error").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .formLogin(form -> {
@@ -64,7 +63,6 @@ public class SecurityConfig {
                             .logoutSuccessUrl("/login?logout=true")
                             .permitAll();
                 })
-                .csrf(csrf -> csrf.disable())
                 .build();
     }
 
