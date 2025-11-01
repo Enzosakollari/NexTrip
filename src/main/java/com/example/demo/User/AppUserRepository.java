@@ -14,4 +14,5 @@ we can get methods like findById,findAll or save methods we just need to declare
 public interface AppUserRepository extends JpaRepository<AppUser,Long> {
     Optional<AppUser> findByUsername(String username);
     AppUser findByEmail(String email);
+
 }
