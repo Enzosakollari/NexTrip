@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>NextTrip – Search Flights</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1f2937, #000);
+      color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .shell {
+      width: 100%;
+      max-width: 1100px;
+      padding: 24px;
+    }
+
+    .card {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 24px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+      padding: 24px 28px;
+      backdrop-filter: blur(16px);
+    }
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #9ca3af;
+      margin-top: 4px;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(52, 211, 153, 0.35);
+      font-size: 12px;
+      color: #6ee7b7;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 900px) {
+      form {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      form {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
+    }
+
+    input, select {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 12px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      padding: 10px 12px;
+      color: #e5e7eb;
+      font-size: 14px;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.5);
+    }
+
+    .primary-btn {
+      margin-top: 22px;
+      background: linear-gradient(to right, #38bdf8, #6366f1);
+      border-radius: 999px;
+      border: none;
+      padding: 10px 18px;
+      color: white;
+      font-weight: 500;
+      font-size: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .primary-btn:hover {
+      filter: brightness(1.05);
+    }
+
+    .results {
+      margin-top: 8px;
+      border-top: 1px solid rgba(55, 65, 81, 0.8);
+      padding-top: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+
+    th, td {
+      font-size: 13px;
+      padding: 8px 10px;
+      text-align: left;
+    }
+
+    th {
+      color: #9ca3af;
+      font-weight: 500;
+    }
+
+    tr:nth-child(even) td {
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    .price {
+      font-weight: 600;
+      color: #a5b4fc;
+    }
+
+    .empty-state {
+      font-size: 14px;
+      color: #9ca3af;
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <div style="font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; font-size: 14px; color: #bfdbfe;">NextTrip</div>
+    <div style="display: flex; gap: 16px;">
+      <a href="/" style="color: #9ca3af; text-decoration: none; font-size: 14px;">Home</a>
+      <a href="/flights/search-view" style="color: #e5e7eb; text-decoration: none; font-size: 14px;">Search Flights</a>
+      <a href="/chat" style="color: #9ca3af; text-decoration: none; font-size: 14px;">Travel Assistant</a>
+      <a href="/login" style="color: #9ca3af; text-decoration: none; font-size: 14px;">Login</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="header-row">
+      <div>
+        <div class="title">Plan your next trip</div>
+        <div class="subtitle">Search live flight offers powered by Amadeus.</div>
+      </div>
+      <div class="badge">NextTrip · beta</div>
+    </div>
+
+    <form th:action="@{/flights/search-view/results}" method="get">
+      <div class="field">
+        <span class="label">From</span>
+        <input type="text" name="origin" placeholder="TIA" value="TIA" required />
+      </div>
+      <div class="field">
+        <span class="label">To</span>
+        <input type="text" name="destination" placeholder="BUD" value="BUD" required />
+      </div>
+      <div class="field">
+        <span class="label">Date</span>
+        <input type="date" name="date" required />
+      </div>
+      <div class="field">
+        <span class="label">Passengers</span>
+        <select name="adults">
+          <option value="1" selected>1 adult</option>
+          <option value="2">2 adults</option>
+          <option value="3">3 adults</option>
+        </select>
+      </div>
+      <div class="field">
+        <button class="primary-btn" type="submit">
+          Search flights
+        </button>
+      </div>
+    </form>
+
+    <div class="results">
+      <div th:if="${error != null}" style="color:#f87171;font-size:14px;" th:text="${error}"></div>
+
+      <div th:if="${offers != null}">
+        <table th:if="${!offers.isEmpty()}">
+          <thead>
+          <tr>
+            <th>Carrier</th>
+            <th>From → To</th>
+            <th>Departure</th>
+            <th>Arrival</th>
+            <th>Duration</th>
+            <th>Price</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="o : ${offers}">
+            <td th:text="${o.airline}"></td>
+            <td th:text="${o.originAirportCode + ' → ' + o.destinationAirportCode}"></td>
+            <td th:text="${o.departureTime}"></td>
+            <td th:text="${o.arrivalTime}"></td>
+            <td th:text="${o.arrivalTime != null && o.departureTime != null ? o.arrivalTime.toEpochSecond() - o.departureTime.toEpochSecond() + 's' : 'N/A'}"></td>
+            <td class="price" th:text="${o.price + ' ' + o.currency}"></td>
+          </tr>
+          </tbody>
+        </table>
+
+        <div class="empty-state" th:if="${offers.isEmpty()}">
+          No flights found for these dates. Try changing the route or date.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -93,12 +93,12 @@ public class EmailService {
             helper.addInline("logo", logo);
 
             mailSender.send(mimeMessage);
-            System.out.println("✅ Email sent successfully to " + email);
-            System.out.println("🔗 Verification URL: " + actionUrl); // Debug print
+            System.out.println(" Email sent successfully to " + email);
+            System.out.println(" Verification URL: " + actionUrl); // Debug print
 
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("❌ Failed to send email: " + e.getMessage());
+            System.err.println(" Failed to send email: " + e.getMessage());
         }
     }
 }

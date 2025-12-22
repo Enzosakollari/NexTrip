@@ -46,13 +46,16 @@ public class SecurityConfig {
                             "/req/**",
                             "/css/**",
                             "/js/**",
-                            "/images/**",           // Changed from /static/Images/**
-                            "/videos/**",           // Changed from /static/Videos/**
+                            "/images/**",
+                            "/videos/**",
                             "/error",
-                            "/favicon.ico"
+                            "/favicon.ico",
+                            "/api/flights/**"  // <--- IMPORTANT
                     ).permitAll();
+
                     auth.anyRequest().authenticated();
                 })
+
                 .formLogin(form -> {
                     form.loginPage("/login")
                             .loginProcessingUrl("/perform_login")

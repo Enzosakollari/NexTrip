@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -275,6 +275,10 @@
             <img src="/images/logo.png" alt="Logo">
         </div>
         <h2>Welcome Back</h2>
+
+        <div th:if="${message}" style="background-color: rgba(16, 185, 129, 0.2); color: #10b981; padding: 10px; border-radius: 8px; margin-bottom: 20px; text-align: center;" th:text="${message}"></div>
+        <div th:if="${error}" style="background-color: rgba(239, 68, 68, 0.2); color: #ef4444; padding: 10px; border-radius: 8px; margin-bottom: 20px; text-align: center;" th:text="${error}"></div>
+
         <form method="post" action="/perform_login">
             <div class="input-group">
                 <input type="text" name="username" placeholder="Username" required>

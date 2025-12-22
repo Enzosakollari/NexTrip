@@ -1,676 +1,365 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nextrip - Your Next Adventure Awaits</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>NextTrip – Home</title>
     <style>
-        /* Reset and Base Styles */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        :root {
-            --primary: #1a73e8;
-            --primary-dark: #0d47a1;
-            --secondary: #ff6d00;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --gray: #6c757d;
-        }
-
         body {
-            background-color: var(--light);
-            color: var(--dark);
-            line-height: 1.6;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            margin: 0;
+            background: radial-gradient(circle at top, #1d4ed8, #020617 60%);
+            color: #e5e7eb;
         }
 
         .container {
-            width: 90%;
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
-            padding: 0 15px;
+            padding: 32px 16px 64px;
         }
 
-        /* Header Styles */
-        header {
-            background-color: white;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-
-        .navbar {
+        .top-nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 0;
+            margin-bottom: 16px;
         }
 
         .logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.5rem;
             font-weight: 700;
-            color: var(--primary);
-        }
-
-        .logo-img {
-            height: 40px;
-            width: auto;
-            background-color: #f0f0f0;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary);
-            font-weight: bold;
-            padding: 5px;
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 25px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            font-size: 14px;
+            color: #bfdbfe;
         }
 
         .nav-links a {
+            margin-left: 16px;
+            font-size: 14px;
+            color: #9ca3af;
             text-decoration: none;
-            color: var(--dark);
-            font-weight: 500;
-            transition: color 0.3s;
         }
 
         .nav-links a:hover {
-            color: var(--primary);
+            color: #e5e7eb;
         }
 
-        .auth-buttons {
-            display: flex;
-            gap: 15px;
+        .card {
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: 24px;
+            padding: 22px 24px;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(16px);
         }
 
-        .btn {
-            padding: 8px 20px;
-            border-radius: 4px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-            border: none;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--primary);
-            color: var(--primary);
-        }
-
-        .btn-outline:hover {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary {
-            background: var(--primary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: var(--primary-dark);
-        }
-
-        /* Hero Section */
         .hero {
-            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-            url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            padding: 100px 0;
-            text-align: center;
+            padding: 18px 4px 6px;
         }
 
         .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
+            font-size: 34px;
+            margin: 0 0 8px;
+            line-height: 1.15;
         }
 
-        .hero p {
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin: 0 auto 30px;
+        .subtitle {
+            margin: 0 0 18px;
+            font-size: 14px;
+            color: #9ca3af;
+            max-width: 70ch;
         }
 
-        .search-box {
-            background: white;
-            border-radius: 8px;
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .search-input {
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1rem;
-        }
-
-        .search-btn {
-            background: var(--secondary);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .search-btn:hover {
-            background: #e65100;
-        }
-
-        /* Destinations Section */
-        .section {
-            padding: 80px 0;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
-        .section-title h2 {
-            font-size: 2.2rem;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        .section-title p {
-            color: var(--gray);
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .destinations {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-        }
-
-        .destination-card {
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
-        }
-
-        .destination-card:hover {
-            transform: translateY(-10px);
-        }
-
-        .card-img {
-            height: 200px;
-            width: 100%;
-            object-fit: cover;
-        }
-
-        .card-content {
-            padding: 20px;
-        }
-
-        .card-content h3 {
-            margin-bottom: 10px;
-            font-size: 1.3rem;
-        }
-
-        .card-content p {
-            color: var(--gray);
-            margin-bottom: 15px;
-        }
-
-        .price {
-            font-weight: 700;
-            color: var(--secondary);
-            font-size: 1.2rem;
-        }
-
-        /* Services Section */
-        .services {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-        }
-
-        .service-card {
-            text-align: center;
-            padding: 30px 20px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s;
-        }
-
-        .service-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .service-icon {
-            font-size: 2.5rem;
-            color: var(--primary);
-            margin-bottom: 20px;
-        }
-
-        /* Testimonials */
-        .testimonials {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-
-        .testimonial-card {
-            background: white;
-            border-radius: 8px;
-            padding: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .testimonial-text {
-            font-style: italic;
-            margin-bottom: 20px;
-            color: var(--gray);
-        }
-
-        .testimonial-author {
+        .badge-row {
             display: flex;
-            align-items: center;
-            gap: 15px;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
         }
 
-        .author-img {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
+        .badge {
+            padding: 4px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            color: #7dd3fc;
+            font-size: 12px;
+            background: rgba(2, 6, 23, 0.35);
         }
 
-        .author-info h4 {
-            margin-bottom: 5px;
+        .badge.green {
+            border-color: rgba(34, 197, 94, 0.35);
+            color: #86efac;
         }
 
-        .author-info p {
-            color: var(--gray);
-            font-size: 0.9rem;
-        }
-
-        /* Special Offers */
-        .offers {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            text-align: center;
-            padding: 80px 0;
-        }
-
-        .offers h2 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
-
-        .offers p {
-            font-size: 1.2rem;
-            max-width: 700px;
-            margin: 0 auto 40px;
-        }
-
-        .offer-btn {
-            background: var(--secondary);
-            color: white;
-            padding: 15px 40px;
-            border: none;
-            border-radius: 30px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .offer-btn:hover {
-            background: #e65100;
-            transform: scale(1.05);
-        }
-
-        /* Footer */
-        footer {
-            background: var(--dark);
-            color: white;
-            padding: 60px 0 20px;
-        }
-
-        .footer-content {
+        .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-            margin-bottom: 40px;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 16px;
+            margin-top: 14px;
         }
 
-        .footer-column h3 {
-            margin-bottom: 20px;
-            font-size: 1.2rem;
+        @media (max-width: 900px) {
+            .grid { grid-template-columns: 1fr; }
         }
 
-        .footer-links {
-            list-style: none;
+        .panel {
+            background: rgba(2, 6, 23, 0.55);
+            border: 1px solid rgba(31, 41, 55, 0.9);
+            border-radius: 18px;
+            padding: 16px;
         }
 
-        .footer-links li {
-            margin-bottom: 10px;
+        .panel-title {
+            font-size: 14px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #9ca3af;
+            margin: 0 0 10px;
         }
 
-        .footer-links a {
-            color: #adb5bd;
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        @media (max-width: 520px) {
+            .quick-actions { grid-template-columns: 1fr; }
+        }
+
+        .action {
+            border-radius: 16px;
+            border: 1px solid rgba(55, 65, 81, 0.9);
+            background: rgba(15, 23, 42, 0.7);
+            padding: 14px 14px;
             text-decoration: none;
-            transition: color 0.3s;
+            color: #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            transition: transform 0.15s ease, border-color 0.15s ease;
         }
 
-        .footer-links a:hover {
+        .action:hover {
+            transform: translateY(-2px);
+            border-color: rgba(56, 189, 248, 0.6);
+        }
+
+        .action .label {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .action .hint {
+            font-size: 13px;
+            color: #9ca3af;
+            line-height: 1.35;
+        }
+
+        .flight-form {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+            align-items: end;
+        }
+
+        @media (max-width: 900px) {
+            .flight-form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (max-width: 520px) {
+            .flight-form { grid-template-columns: 1fr; }
+        }
+
+        .field { display: flex; flex-direction: column; gap: 6px; }
+
+        .field span {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #9ca3af;
+        }
+
+        input, select {
+            background: rgba(15, 23, 42, 0.9);
+            border-radius: 12px;
+            border: 1px solid rgba(55, 65, 81, 0.9);
+            padding: 10px 12px;
+            color: #e5e7eb;
+            font-size: 14px;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.5);
+        }
+
+        .primary-btn {
+            background: linear-gradient(to right, #38bdf8, #6366f1);
+            border-radius: 999px;
+            border: none;
+            padding: 10px 18px;
             color: white;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .social-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-            display: flex;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            min-height: 42px;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            transition: background 0.3s;
+            gap: 8px;
+            width: 100%;
         }
 
-        .social-icon:hover {
-            background: var(--primary);
-        }
-
-        .copyright {
-            text-align: center;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            color: #adb5bd;
-            font-size: 0.9rem;
-        }
-
-        /* Mobile Menu */
-        .menu-toggle {
-            display: none;
-            font-size: 1.5rem;
+        .secondary-btn {
+            background: linear-gradient(to right, #0ea5e9, #22c55e);
+            border-radius: 999px;
+            border: none;
+            padding: 10px 18px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
             cursor: pointer;
+            min-height: 42px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
         }
 
-        /* Responsive Styles */
-        @media (max-width: 768px) {
-            .nav-links, .auth-buttons {
-                display: none;
-            }
-
-            .menu-toggle {
-                display: block;
-            }
-
-            .hero h1 {
-                font-size: 2.2rem;
-            }
-
-            .search-box {
-                grid-template-columns: 1fr;
-            }
+        .mini {
+            font-size: 13px;
+            color: #9ca3af;
+            margin-top: 10px;
+            line-height: 1.4;
         }
+
+        .footer {
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(55, 65, 81, 0.7);
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            color: #9ca3af;
+            font-size: 13px;
+        }
+
+        .footer a { color: #9ca3af; text-decoration: none; }
+        .footer a:hover { color: #e5e7eb; }
     </style>
 </head>
+
 <body>
-<!-- Header -->
-<header>
-    <div class="container">
-        <nav class="navbar">
-            <div class="logo">
-                <!-- Logo image -->
-                <div class="logo-img"><img src="/images/logo.png" alt="Nextrip Logo" style="height: 100%; width: auto;"></div>
-                <span>Nextrip</span>
-            </div>
-            <ul class="nav-links">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Destinations</a></li>
-                <li><a href="#">Deals</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Contact</a></li>
-            </ul>
-            <div class="auth-buttons">
-                <button class="btn btn-outline">Sign Up</button>
-                <button class="btn btn-primary">Login</button>
-            </div>
-            <div class="menu-toggle">☰</div>
-        </nav>
-    </div>
-</header>
-
-<!-- Hero Section -->
-<section class="hero">
-    <div class="container">
-        <h1>Your Next Adventure Awaits</h1>
-        <p>Discover amazing destinations around the world with exclusive deals and personalized travel experiences.</p>
-        <div class="search-box">
-            <input type="text" class="search-input" placeholder="From">
-            <input type="text" class="search-input" placeholder="To">
-            <input type="date" class="search-input">
-            <input type="date" class="search-input">
-            <button class="search-btn">Search Flights</button>
+<div class="container">
+    <div class="top-nav">
+        <div class="logo">NextTrip</div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/flights/search-view">Search Flights</a>
+            <a href="/chat">Travel Assistant</a>
+            <a href="/login">Login</a>
         </div>
     </div>
-</section>
 
-<!-- Popular Destinations -->
-<section class="section">
-    <div class="container">
-        <div class="section-title">
-            <h2>Popular Destinations</h2>
-            <p>Explore our most sought-after travel destinations</p>
-        </div>
-        <div class="destinations">
-            <div class="destination-card">
-                <img src="https://images.unsplash.com/photo-1539635278303-d4002c07eae3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Paris" class="card-img">
-                <div class="card-content">
-                    <h3>Paris, France</h3>
-                    <p>The city of lights awaits with its romantic ambiance and iconic landmarks.</p>
-                    <div class="price">From $499</div>
-                </div>
+    <div class="card">
+        <div class="hero">
+            <div class="badge-row">
+                <div class="badge">Smart flight ideas</div>
+                <div class="badge green">NextTrip · beta</div>
             </div>
-            <div class="destination-card">
-                <img src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Tokyo" class="card-img">
-                <div class="card-content">
-                    <h3>Tokyo, Japan</h3>
-                    <p>Experience the perfect blend of traditional culture and futuristic technology.</p>
-                    <div class="price">From $799</div>
-                </div>
-            </div>
-            <div class="destination-card">
-                <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="New York" class="card-img">
-                <div class="card-content">
-                    <h3>New York, USA</h3>
-                    <p>The city that never sleeps offers endless entertainment and cultural experiences.</p>
-                    <div class="price">From $599</div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
-<!-- Services -->
-<section class="section" style="background-color: #f8f9fa;">
-    <div class="container">
-        <div class="section-title">
-            <h2>Why Choose Nextrip</h2>
-            <p>We provide exceptional services to make your journey memorable</p>
+            <h1>Your next trip, planned in minutes</h1>
+            <p class="subtitle">
+                Search live flight offers and chat with the travel assistant for destination ideas, dates, and budgets.
+            </p>
         </div>
-        <div class="services">
-            <div class="service-card">
-                <div class="service-icon">✈️</div>
-                <h3>Best Prices</h3>
-                <p>We guarantee the best prices for all your travel needs with no hidden fees.</p>
-            </div>
-            <div class="service-card">
-                <div class="service-icon">🌍</div>
-                <h3>Global Coverage</h3>
-                <p>Access to over 500 destinations worldwide with multiple airline options.</p>
-            </div>
-            <div class="service-card">
-                <div class="service-icon">🛡️</div>
-                <h3>Travel Protection</h3>
-                <p>Comprehensive travel insurance to protect your journey and investment.</p>
-            </div>
-            <div class="service-card">
-                <div class="service-icon">📱</div>
-                <h3>Easy Booking</h3>
-                <p>Simple and intuitive booking process with 24/7 customer support.</p>
-            </div>
-        </div>
-    </div>
-</section>
 
-<!-- Special Offers -->
-<section class="offers">
-    <div class="container">
-        <h2>Special Summer Deals</h2>
-        <p>Book your summer getaway now and save up to 40% on selected destinations</p>
-        <button class="offer-btn">View All Offers</button>
-    </div>
-</section>
+        <div class="grid">
+            <div class="panel">
+                <div class="panel-title">Quick flight search</div>
 
-<!-- Testimonials -->
-<section class="section">
-    <div class="container">
-        <div class="section-title">
-            <h2>What Our Travelers Say</h2>
-            <p>Hear from our satisfied customers about their experiences</p>
-        </div>
-        <div class="testimonials">
-            <div class="testimonial-card">
-                <div class="testimonial-text">
-                    "Nextrip made my dream vacation to Bali a reality. The booking process was seamless, and their customer service was exceptional!"
-                </div>
-                <div class="testimonial-author">
-                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah Johnson" class="author-img">
-                    <div class="author-info">
-                        <h4>Sarah Johnson</h4>
-                        <p>Traveled to Bali</p>
+                <!-- If you want it to hit your existing Spring route, keep this action.
+                     Otherwise you can change it to /flights/search-view and let the user fill there. -->
+                <form class="flight-form" action="/flights/search-view/results" method="get">
+                    <div class="field">
+                        <span>From</span>
+                        <input type="text" name="origin" placeholder="TIA" value="TIA" required />
                     </div>
+
+                    <div class="field">
+                        <span>To</span>
+                        <input type="text" name="destination" placeholder="BUD" value="BUD" required />
+                    </div>
+
+                    <div class="field">
+                        <span>Date</span>
+                        <input type="date" name="date" required />
+                    </div>
+
+                    <div class="field">
+                        <span>Passengers</span>
+                        <select name="adults">
+                            <option value="1" selected>1 adult</option>
+                            <option value="2">2 adults</option>
+                            <option value="3">3 adults</option>
+                        </select>
+                    </div>
+
+                    <div class="field" style="grid-column: 1 / -1;">
+                        <button class="primary-btn" type="submit">Search flights</button>
+                    </div>
+                </form>
+
+                <div class="mini">
+                    Tip: use airport IATA codes (TIA, FCO, VIE, ATH). For flexible ideas, open the assistant.
                 </div>
             </div>
-            <div class="testimonial-card">
-                <div class="testimonial-text">
-                    "I've used many travel agencies, but Nextrip stands out with their attention to detail and personalized recommendations."
-                </div>
-                <div class="testimonial-author">
-                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Michael Chen" class="author-img">
-                    <div class="author-info">
-                        <h4>Michael Chen</h4>
-                        <p>Traveled to Japan</p>
-                    </div>
+
+            <div class="panel">
+                <div class="panel-title">Popular actions</div>
+
+                <div class="quick-actions">
+                    <a class="action" href="/chat">
+                        <div class="label">Travel Assistant</div>
+                        <div class="hint">Ask for weekend trips, warm destinations, budgets, or routes.</div>
+                        <div style="margin-top: 6px;">
+                            <button type="button" class="secondary-btn" onclick="window.location.href='/chat'">Open chat</button>
+                        </div>
+                    </a>
+
+                    <a class="action" href="/flights/search-view">
+                        <div class="label">Search Flights</div>
+                        <div class="hint">Use the full search page for results and details.</div>
+                        <div style="margin-top: 6px;">
+                            <button type="button" class="primary-btn" onclick="window.location.href='/flights/search-view'">Open search</button>
+                        </div>
+                    </a>
+
+                    <a class="action" href="/login">
+                        <div class="label">Login</div>
+                        <div class="hint">Sign in to save searches and future features.</div>
+                    </a>
+
+                    <a class="action" href="#about">
+                        <div class="label">About NextTrip</div>
+                        <div class="hint">A simple demo combining flight offers + an assistant UI.</div>
+                    </a>
                 </div>
             </div>
-            <div class="testimonial-card">
-                <div class="testimonial-text">
-                    "The flight deals I found through Nextrip saved me over 40% compared to other sites. Will definitely book with them again!"
-                </div>
-                <div class="testimonial-author">
-                    <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Emma Rodriguez" class="author-img">
-                    <div class="author-info">
-                        <h4>Emma Rodriguez</h4>
-                        <p>Traveled to Greece</p>
-                    </div>
-                </div>
+        </div>
+
+        <div id="about" class="footer">
+            <div>© NextTrip</div>
+            <div>
+                <a href="/privacy">Privacy</a> ·
+                <a href="/terms">Terms</a> ·
+                <a href="/contact">Contact</a>
             </div>
         </div>
     </div>
-</section>
-
-<!-- Footer -->
-<footer>
-    <div class="container">
-        <div class="footer-content">
-            <div class="footer-column">
-                <div class="logo" style="color: white; margin-bottom: 20px;">
-                    <div class="logo-img" style="background: rgba(255,255,255,0.2);"><img src="/images/logo.png" alt="Nextrip Logo" style="height: 100%; width: auto;"></div>
-                    <span>Nextrip</span>
-                </div>
-                <p>Your trusted partner for unforgettable travel experiences around the globe.</p>
-                <div class="social-links">
-                    <a href="#" class="social-icon">f</a>
-                    <a href="#" class="social-icon">t</a>
-                    <a href="#" class="social-icon">in</a>
-                    <a href="#" class="social-icon">ig</a>
-                </div>
-            </div>
-            <div class="footer-column">
-                <h3>Quick Links</h3>
-                <ul class="footer-links">
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">Destinations</a></li>
-                    <li><a href="#">Special Offers</a></li>
-                    <li><a href="#">Travel Guides</a></li>
-                    <li><a href="#">Blog</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h3>Support</h3>
-                <ul class="footer-links">
-                    <li><a href="#">Contact Us</a></li>
-                    <li><a href="#">FAQs</a></li>
-                    <li><a href="#">Booking Conditions</a></li>
-                    <li><a href="#">Privacy Policy</a></li>
-                    <li><a href="#">Terms of Service</a></li>
-                </ul>
-            </div>
-            <div class="footer-column">
-                <h3>Contact Info</h3>
-                <ul class="footer-links">
-                    <li>📞 +1 (555) 123-4567</li>
-                    <li>✉️ info@nextrip.com</li>
-                    <li>📍 123 Travel Street, Suite 100<br>New York, NY 10001</li>
-                </ul>
-            </div>
-        </div>
-        <div class="copyright">
-            <p>&copy; 2023 Nextrip. All rights reserved.</p>
-        </div>
-    </div>
-</footer>
-
-<script>
-    // Mobile menu toggle
-    document.querySelector('.menu-toggle').addEventListener('click', function() {
-        const navLinks = document.querySelector('.nav-links');
-        const authButtons = document.querySelector('.auth-buttons');
-
-        navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
-        authButtons.style.display = authButtons.style.display === 'flex' ? 'none' : 'flex';
-    });
-</script>
+</div>
 </body>
 </html>
