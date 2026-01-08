@@ -1,191 +1,315 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>NextTrip – Travel Assistant</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI Chat • NextTrip</title>
+
+    <link rel="stylesheet" href="/css/app.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <style>
-        body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            margin: 0;
-            background: radial-gradient(circle at top, #1d4ed8, #020617 60%);
-            color: #e5e7eb;
+        /* Make the chat side larger (matches your screenshot layout) */
+        .chat-layout {
+            display: grid;
+            grid-template-columns: 1.2fr 1.8fr;
+            gap: 28px;
+            align-items: start;
         }
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 32px 16px 64px;
+        @media (max-width: 1024px) {
+            .chat-layout { grid-template-columns: 1fr; }
         }
-        .top-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-        .logo {
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            font-size: 14px;
-            color: #bfdbfe;
-        }
-        .nav-links a {
-            margin-left: 16px;
-            font-size: 14px;
-            color: #9ca3af;
-            text-decoration: none;
-        }
-        .nav-links a:hover {
-            color: #e5e7eb;
-        }
-        .card {
-            background: rgba(15, 23, 42, 0.9);
-            border-radius: 18px;
-            padding: 22px 24px;
-            border: 1px solid rgba(148, 163, 184, 0.3);
-            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.9);
+
+        .chat-panel {
+            min-height: 520px;
             display: flex;
             flex-direction: column;
-            height: calc(100vh - 140px);
         }
-        h1 {
-            font-size: 24px;
-            margin-bottom: 6px;
-        }
-        .subtitle {
-            font-size: 14px;
-            color: #9ca3af;
-            margin-bottom: 16px;
-        }
-        .chat-window {
+
+        .messages {
             flex: 1;
             overflow-y: auto;
-            padding-right: 4px;
-            margin-bottom: 16px;
+            padding-right: 8px;
+            margin-top: 12px;
         }
-        .message {
-            max-width: 70%;
-            padding: 10px 12px;
+
+        .msg-row { display: flex; margin: 10px 0; }
+        .msg-row.user { justify-content: flex-end; }
+        .msg-row.ai { justify-content: flex-start; }
+
+        .bubble {
+            max-width: 78%;
+            padding: 12px;
             border-radius: 14px;
-            margin-bottom: 10px;
-            font-size: 14px;
-            line-height: 1.4;
+            line-height: 1.35;
+            border: 1px solid rgba(0,0,0,0.06);
         }
-        .user {
-            margin-left: auto;
-            background: #1d4ed8;
+        .bubble.user {
+            border-top-right-radius: 6px;
+            background: rgba(74, 144, 226, 0.15);
         }
-        .bot {
-            margin-right: auto;
-            background: #020617;
-            border: 1px solid #1f2937;
+        .bubble.ai {
+            border-top-left-radius: 6px;
+            background: rgba(0, 0, 0, 0.03);
         }
-        .input-row {
+
+        .meta-line {
+            margin-top: 6px;
+            font-size: 12px;
+            opacity: 0.7;
+        }
+
+        .composer {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            margin-top: auto;
+            padding-top: 12px;
+            border-top: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .composer .input { height: 48px; }
+
+        .prompt-row {
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 12px;
         }
-        .input-row textarea {
-            flex: 1;
-            resize: none;
-            padding: 10px 12px;
-            border-radius: 12px;
-            border: 1px solid #374151;
-            background-color: #020617;
-            color: #e5e7eb;
-            min-height: 48px;
+
+        /* typing indicator */
+        .typing {
+            display: inline-flex;
+            gap: 4px;
+            align-items: center;
         }
-        .input-row button {
-            padding: 0 18px;
+        .typing span {
+            width: 6px; height: 6px;
             border-radius: 999px;
-            border: none;
-            background: linear-gradient(to right, #0ea5e9, #22c55e);
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-            min-width: 90px;
+            background: rgba(0,0,0,0.35);
+            animation: blink 1.2s infinite ease-in-out;
         }
-        .input-row button:disabled {
-            opacity: 0.5;
-            cursor: default;
+        .typing span:nth-child(2) { animation-delay: .15s; }
+        .typing span:nth-child(3) { animation-delay: .3s; }
+        @keyframes blink {
+            0%, 100% { transform: translateY(0); opacity: .4; }
+            50% { transform: translateY(-2px); opacity: 1; }
         }
     </style>
 </head>
+
 <body>
-<div class="container">
-    <div class="top-nav">
-        <div class="logo">NextTrip</div>
-        <div class="nav-links">
-            <a href="/">Home</a>
-            <a href="/flights/search-view">Search flights</a>
+<header class="topbar">
+    <div class="container topbar__inner">
+        <a href="/index" class="brand">
+            <span class="brand__mark">NT</span>
+            <span class="brand__name">NextTrip</span>
+        </a>
+
+        <nav class="nav">
+            <a href="/index" class="nav__link">Explore</a>
+            <a href="/flights/search-view" class="nav__link">Flight Search</a>
+            <a href="/travel-packs" class="nav__link">Travel Packs</a>
+            <a href="/chat" class="nav__link nav__link--active">AI Chat</a>
+            <a href="/contact" class="nav__link">Contact</a>
+        </nav>
+
+        <div class="topbar__actions">
+            <a class="btn btn--ghost" href="/login">Login</a>
+            <a class="btn btn--primary" href="/travel-packs">Search Trips</a>
         </div>
     </div>
+</header>
 
-    <div class="card">
-        <div>
-            <h1>Travel assistant</h1>
-            <p class="subtitle">
-                Ask anything about destinations, dates, budgets, or flight ideas.
-            </p>
-        </div>
+<main class="page">
+    <section class="section">
+        <div class="container chat-layout">
+            <!-- LEFT SIDE -->
+            <div>
+                <span class="pill">AI Assistant</span>
+                <h2>Your Personal Travel Assistant</h2>
+                <p class="muted">Ask anything about destinations, budgets, or trip ideas.</p>
 
-        <div class="chat-window" id="chat-window">
-            <div class="message bot">
-                Hi! I am your NextTrip assistant. Tell me what kind of trip you’re dreaming about 🛫
+                <ul class="muted" style="margin-left:16px;">
+                    <li>Plan a 5-day trip to Barcelona under €700</li>
+                    <li>Best places to visit in Albania in spring</li>
+                    <li>Make me a 3-day Rome itinerary with food spots</li>
+                </ul>
+
+                <div class="card card__pad" style="margin-top:14px;">
+                    <div class="muted" style="margin-bottom:10px;">Quick prompts</div>
+                    <div class="prompt-row">
+                        <button class="chip chip--active" type="button" data-prompt="Plan a 5-day trip to Barcelona under €700.">Barcelona €700</button>
+                        <button class="chip" type="button" data-prompt="Best places to visit in Albania in spring.">Albania spring</button>
+                        <button class="chip" type="button" data-prompt="Make me a 3-day Rome itinerary with food spots.">Rome foodie</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT SIDE (BIGGER CHAT BOX) -->
+            <div class="card card__pad chat-panel">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+                    <div class="card__title">Chat</div>
+                    <button class="btn btn--ghost" type="button" id="clearChat">Clear</button>
+                </div>
+
+                <div class="messages" id="messages">
+                    <!-- If you still want to show server-rendered messages from /chat POST -->
+                    <div th:if="${assistantReply != null}">
+                        <div class="msg-row user">
+                            <div class="bubble user">
+                                <span th:text="${userMessage}">User message</span>
+                                <div class="meta-line">You</div>
+                            </div>
+                        </div>
+                        <div class="msg-row ai">
+                            <div class="bubble ai">
+                                <span th:text="${assistantReply}">Assistant reply</span>
+                                <div class="meta-line">AI</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Default starter message -->
+                    <div th:if="${assistantReply == null}">
+                        <div class="msg-row ai">
+                            <div class="bubble ai">
+                                Tell me your dates, budget, and departure city — I’ll plan your trip.
+                                <div class="meta-line">AI</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="composer">
+                    <input class="input" id="chatInput" placeholder="Ask me anything about travel...">
+                    <button class="btn btn--primary" id="chatSend" type="button">Send</button>
+                </div>
+
+                <div class="muted" style="margin-top:10px; font-size:13px;">
+                    Enter to send • Powered by your backend TravelChatService
+                </div>
             </div>
         </div>
+    </section>
+</main>
 
-        <div class="input-row">
-            <textarea id="message-input"
-                      placeholder="Example: Weekend trip from Tirana in March, low budget, maybe somewhere warm?"></textarea>
-            <button id="send-btn" onclick="sendMessage()">Send</button>
+<footer class="footer">
+    <div class="container footer__inner">
+        <div>
+            <strong>NextTrip</strong>
+            <p class="muted">Travel beyond the map.</p>
         </div>
+        <div class="muted">© 2025 NextTrip</div>
     </div>
-</div>
+</footer>
 
 <script>
-    const chatWindow = document.getElementById("chat-window");
-    const input = document.getElementById("message-input");
-    const sendBtn = document.getElementById("send-btn");
+    document.addEventListener("DOMContentLoaded", () => {
+        const input = document.getElementById("chatInput");
+        const sendBtn = document.getElementById("chatSend");
+        const messages = document.getElementById("messages");
+        const clearBtn = document.getElementById("clearChat");
 
-    function appendMessage(text, type) {
-        const div = document.createElement("div");
-        div.className = "message " + type;
-        div.textContent = text;
-        chatWindow.appendChild(div);
-        chatWindow.scrollTop = chatWindow.scrollHeight;
-    }
-
-    async function sendMessage() {
-        const text = input.value.trim();
-        if (!text) return;
-
-        appendMessage(text, "user");
-        input.value = "";
-        input.focus();
-        sendBtn.disabled = true;
-
-        try {
-            const res = await fetch("/chat/message", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "text/plain"
-                },
-                body: text
+        document.querySelectorAll("[data-prompt]").forEach(btn => {
+            btn.addEventListener("click", () => {
+                input.value = btn.getAttribute("data-prompt") || "";
+                input.focus();
             });
-            const reply = await res.text();
-            appendMessage(reply, "bot");
-        } catch (e) {
-            appendMessage("Sorry, something went wrong talking to the assistant.", "bot");
-        } finally {
-            sendBtn.disabled = false;
-        }
-    }
+        });
 
-    input.addEventListener("keydown", function (e) {
-        if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage();
+        const addMessage = (role, text) => {
+            const row = document.createElement("div");
+            row.className = "msg-row " + role;
+
+            const bubble = document.createElement("div");
+            bubble.className = "bubble " + role;
+            bubble.innerHTML = `${escapeHtml(text)}<div class="meta-line">${role === "user" ? "You" : "AI"}</div>`;
+
+            row.appendChild(bubble);
+            messages.appendChild(row);
+            messages.scrollTop = messages.scrollHeight;
+        };
+
+        const showTyping = () => {
+            const row = document.createElement("div");
+            row.className = "msg-row ai";
+            row.id = "typingRow";
+
+            const bubble = document.createElement("div");
+            bubble.className = "bubble ai";
+            bubble.innerHTML = `<span class="typing"><span></span><span></span><span></span></span><div class="meta-line">AI</div>`;
+
+            row.appendChild(bubble);
+            messages.appendChild(row);
+            messages.scrollTop = messages.scrollHeight;
+        };
+
+        const hideTyping = () => {
+            const el = document.getElementById("typingRow");
+            if (el) el.remove();
+        };
+
+        const send = async () => {
+            const text = (input.value || "").trim();
+            if (!text) return;
+
+            addMessage("user", text);
+            input.value = "";
+            input.focus();
+
+            showTyping();
+
+            try {
+                // IMPORTANT: your endpoint expects a raw String body,
+                // but sending JSON is cleaner. We can still send plain text.
+                const res = await fetch("/chat/message", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "text/plain; charset=UTF-8"
+                    },
+                    body: text
+                });
+
+                if (!res.ok) throw new Error("Request failed: " + res.status);
+
+                const replyText = await res.text();
+                hideTyping();
+                addMessage("ai", replyText);
+            } catch (e) {
+                hideTyping();
+                addMessage("ai", "Error: couldn't reach the assistant. Check backend logs.");
+                console.error(e);
+            }
+        };
+
+        sendBtn.addEventListener("click", send);
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") send();
+        });
+
+        clearBtn.addEventListener("click", () => {
+            messages.innerHTML = `
+                <div class="msg-row ai">
+                    <div class="bubble ai">
+                        New chat started. What are your dates + budget?
+                        <div class="meta-line">AI</div>
+                    </div>
+                </div>`;
+            input.focus();
+        });
+
+        function escapeHtml(str) {
+            return str
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
         }
     });
 </script>
+
+<script src="/js/app.js"></script>
 </body>
 </html>
