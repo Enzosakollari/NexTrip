@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Dashboard</title>
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+
+<div th:replace="~{fragments/business-navbar :: businessNav('dashboard')}"></div>
+
+<main class="page">
+    <section class="section">
+        <div class="container">
+
+            <div class="hero__grid" style="grid-template-columns: 1fr 1fr;">
+                <div class="card card__pad">
+                    <div class="section__title">Company profile</div>
+                    <p class="muted section__sub">Your business account details.</p>
+
+                    <div class="list" style="gap:10px;">
+                        <div class="result" style="justify-content:flex-start; gap:14px;">
+                            <div class="badge">🏢</div>
+                            <div>
+                                <div style="font-weight:800;" th:text="${business.companyName}">Company Name</div>
+                                <div class="muted" th:text="${business.contactEmail}">email@company.com</div>
+                            </div>
+                        </div>
+
+                        <div class="result">
+                            <div class="kv">
+                                <span style="font-weight:800;">Email</span>
+                                <span class="muted" th:text="${business.verified ? 'Verified' : 'Not verified'}">Verified</span>
+                            </div>
+
+                            <div class="kv">
+                                <span style="font-weight:800;">Approval</span>
+                                <span class="muted" th:text="${business.approved ? 'Approved' : 'Pending'}">Pending</span>
+                            </div>
+                        </div>
+
+                        <div class="muted" th:if="${!business.approved}">
+                            You can view your packs, but publishing/creating might be blocked until approval.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card__pad">
+                    <div class="section__title">Quick actions</div>
+                    <p class="muted section__sub">Manage travel packs.</p>
+
+                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                        <a class="btn btn--primary" th:href="@{/business/packs/new}">
+                            + Add travel pack
+                        </a>
+
+                        <a class="btn" th:href="@{/business/packs}">
+                            Open packs page
+                        </a>
+                    </div>
+
+                    <div class="card__hint muted">
+                        Tip: Use “Edit” and “Delete” buttons inside your pack list.
+                    </div>
+                </div>
+            </div>
+
+            <div style="height:18px;"></div>
+
+            <div class="section__head section__head--row">
+                <div>
+                    <h2>My travel packs</h2>
+                    <p class="muted">All packages you have published.</p>
+                </div>
+
+                <a class="btn btn--primary" th:href="@{/business/packs/new}">
+                    Add pack
+                </a>
+            </div>
+
+            <div class="list" th:if="${packs != null and !packs.isEmpty()}">
+                <div class="result" th:each="p : ${packs}">
+                    <div class="result__left">
+                        <div class="badge">📦</div>
+                        <div>
+                            <div style="font-weight:900;" th:text="${p.title}">Pack title</div>
+                            <div class="muted" style="font-size:13px;">
+                                <span th:text="${p.destination}">Destination</span>
+                                •
+                                <span th:text="${p.durationDays}">0</span> days
+                                •
+                                <span th:text="${p.price}">0</span>
+                                <span th:text="${p.currency}">EUR</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row-actions">
+                        <a class="btn btn--small"
+                           th:href="@{/business/packs/{packId}/edit(packId=${p.id})}">
+                            Edit
+                        </a>
+
+                        <button class="btn btn--small btn--danger"
+                                type="button"
+                                th:attr="data-delete-url=@{/business/packs/{packId}/delete(packId=${p.id})}"
+                                onclick="openDeleteModal(this)">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card card__pad" th:if="${packs == null or packs.isEmpty()}">
+                <div class="section__title">No packs yet</div>
+                <p class="muted">Create your first travel pack to start selling.</p>
+                <a class="btn btn--primary" th:href="@{/business/packs/new}">
+                    + Add travel pack
+                </a>
+            </div>
+
+        </div>
+    </section>
+</main>
+
+<!-- Delete modal -->
+<div class="modal" id="deleteModal" aria-hidden="true">
+    <div class="modal__backdrop" onclick="closeDeleteModal()"></div>
+    <div class="modal__card">
+        <div class="modal__title">Delete pack?</div>
+        <div class="muted">This action can’t be undone.</div>
+
+        <form id="deleteForm" method="post" style="margin-top:14px; display:flex; gap:10px; justify-content:flex-end;">
+            <button type="button" class="btn btn--ghost" onclick="closeDeleteModal()">Cancel</button>
+            <button type="submit" class="btn btn--primary btn--danger">Delete</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openDeleteModal(btn) {
+        const url = btn.getAttribute("data-delete-url");
+        const form = document.getElementById("deleteForm");
+        form.setAttribute("action", url);
+
+        const modal = document.getElementById("deleteModal");
+        modal.classList.add("is-open");
+        modal.setAttribute("aria-hidden", "false");
+    }
+
+    function closeDeleteModal() {
+        const modal = document.getElementById("deleteModal");
+        modal.classList.remove("is-open");
+        modal.setAttribute("aria-hidden", "true");
+    }
+</script>
+
+</body>
+</html>

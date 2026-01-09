@@ -19,7 +19,6 @@ public class FlightController {
     private final FlightService flightService;
     private final FlightRepository flightRepository;
 
-    // 1) Search flights via Amadeus
     @GetMapping("/search")
     public List<Flight> search(
             @RequestParam String origin,          // IATA, e.g. "TIA"
@@ -37,7 +36,6 @@ public class FlightController {
         );
     }
 
-    // 2) Get cached offers from DB (if you don’t want to hit Amadeus every time)
     @GetMapping("/cached")
     public List<Flight> cached(
             @RequestParam String origin,

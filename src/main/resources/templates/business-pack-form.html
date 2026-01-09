@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${mode == 'edit' ? 'Edit Pack' : 'Create Pack'}">Pack</title>
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+
+<div th:replace="~{fragments/business-navbar :: businessNav('packs')}"></div>
+
+<main class="page">
+    <section class="section">
+        <div class="container">
+
+            <div class="section__head">
+                <h1 th:text="${mode == 'edit' ? 'Edit Travel Pack' : 'Create Travel Pack'}">Create Travel Pack</h1>
+                <p class="muted" th:text="${mode == 'edit' ? 'Update your package details.' : 'Add a new package for your customers.'}">
+                    Add a new package for your customers.
+                </p>
+            </div>
+
+            <div class="card card__pad">
+                <form th:action="${mode == 'edit'} ? @{/business/packs/{packId}(packId=${pack.id})} : @{/business/packs}"
+                      method="post"
+                      style="display:grid; gap:12px; max-width: 720px;">
+
+                    <div style="display:grid; gap:6px;">
+                        <label class="muted">Title</label>
+                        <input class="input" name="title" placeholder="e.g. Rome Weekend Escape"
+                               th:value="${pack.title}">
+                    </div>
+
+                    <div style="display:grid; gap:6px;">
+                        <label class="muted">Destination</label>
+                        <input class="input" name="destination" placeholder="e.g. Rome, Italy"
+                               th:value="${pack.destination}">
+                    </div>
+
+                    <div style="display:grid; gap:6px;">
+                        <label class="muted">Duration (days)</label>
+                        <input class="input" name="durationDays" type="number" min="1"
+                               th:value="${pack.durationDays}">
+                    </div>
+
+                    <div style="display:grid; gap:6px;">
+                        <label class="muted">Description</label>
+                        <textarea class="input" name="description" rows="6"
+                                  th:text="${pack.description}"></textarea>
+                    </div>
+
+                    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                        <div style="flex:1; min-width: 220px; display:grid; gap:6px;">
+                            <label class="muted">Price</label>
+                            <input class="input" name="price" type="number" step="0.01" min="0"
+                                   th:value="${pack.price}">
+                        </div>
+
+                        <div style="width: 180px; display:grid; gap:6px;">
+                            <label class="muted">Currency</label>
+                            <input class="input" name="currency" placeholder="EUR"
+                                   th:value="${pack.currency != null ? pack.currency : 'EUR'}">
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:10px; margin-top:8px; align-items:center;">
+                        <button class="btn btn--primary" type="submit"
+                                th:text="${mode == 'edit' ? 'Save Changes' : 'Create Package'}">
+                            Create Package
+                        </button>
+
+                        <a class="btn btn--ghost" th:href="@{/business/packs}">Cancel</a>
+
+                        <button th:if="${mode == 'edit'}"
+                                class="btn btn--danger"
+                                type="button"
+                                th:attr="data-delete-url=@{/business/packs/{packId}/delete(packId=${pack.id})}"
+                                style="margin-left:auto;"
+                                onclick="openDeleteModal(this)">
+                            Delete
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </section>
+</main>
+
+<!-- Delete modal -->
+<div class="modal" id="deleteModal" aria-hidden="true">
+    <div class="modal__backdrop" onclick="closeDeleteModal()"></div>
+    <div class="modal__card">
+        <div class="modal__title">Delete pack?</div>
+        <div class="muted">This action can’t be undone.</div>
+
+        <form id="deleteForm" method="post" style="margin-top:14px; display:flex; gap:10px; justify-content:flex-end;">
+            <button type="button" class="btn btn--ghost" onclick="closeDeleteModal()">Cancel</button>
+            <button type="submit" class="btn btn--primary btn--danger">Delete</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openDeleteModal(btn) {
+        const url = btn.getAttribute("data-delete-url");
+        document.getElementById("deleteForm").setAttribute("action", url);
+        const modal = document.getElementById("deleteModal");
+        modal.classList.add("is-open");
+        modal.setAttribute("aria-hidden", "false");
+    }
+    function closeDeleteModal() {
+        const modal = document.getElementById("deleteModal");
+        modal.classList.remove("is-open");
+        modal.setAttribute("aria-hidden", "true");
+    }
+</script>
+
+</body>
+</html>

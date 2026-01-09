@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<header class="topbar" th:fragment="adminNav(active)">
+    <div class="container topbar__inner">
+        <a href="/admin" class="brand">
+            <span class="brand__mark">NT</span>
+            <span class="brand__name">Admin</span>
+        </a>
+
+        <nav class="nav">
+            <a class="nav__link"
+               th:classappend="${active == 'dashboard'} ? ' nav__link--active' : ''"
+               th:href="@{/admin}">Dashboard</a>
+
+            <a class="nav__link"
+               th:classappend="${active == 'users'} ? ' nav__link--active' : ''"
+               th:href="@{/admin/users}">Users</a>
+
+            <a class="nav__link"
+               th:classappend="${active == 'businesses'} ? ' nav__link--active' : ''"
+               th:href="@{/admin/businesses}">Businesses</a>
+
+            <a class="nav__link"
+               th:classappend="${active == 'packs'} ? ' nav__link--active' : ''"
+               th:href="@{/admin/packs}">Travel Packs</a>
+
+
+        </nav>
+
+        <div class="topbar__actions">
+            <form th:action="@{/admin/logout}" method="post">
+                <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <button class="btn btn--ghost" type="submit">Logout</button>
+            </form>
+        </div>
+    </div>
+</header>
+
+</body>
+</html>

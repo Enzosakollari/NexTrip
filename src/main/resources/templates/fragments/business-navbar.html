@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<header class="topbar" th:fragment="businessNav(active)">
+    <div class="nav container">
+        <a class="brand" th:href="@{/business/dashboard}">
+            <span class="brand__logo">NT</span>
+            <span class="brand__text">NextTrip</span>
+        </a>
+
+        <nav class="nav__links">
+            <a class="nav__link"
+               th:classappend="${active == 'dashboard'} ? ' is-active' : ''"
+               th:href="@{/business/dashboard}">
+                Dashboard
+            </a>
+
+            <a class="nav__link"
+               th:classappend="${active == 'packs'} ? ' is-active' : ''"
+               th:href="@{/business/packs}">
+                My Packs
+            </a>
+
+            <a class="nav__link"
+               th:classappend="${active == 'ai'} ? ' is-active' : ''"
+               th:href="@{/business/ai}">
+                AI Chat
+            </a>
+            <a class="nav__link"
+               th:classappend="${active == 'bookings'} ? ' nav__link--active' : ''"
+               th:href="@{/business/bookings}">
+                Bookings
+            </a>
+
+        </nav>
+
+        <div class="nav__right">
+            <a class="btn btn--primary" th:href="@{/business/packs/new}">Create Pack</a>
+        </div>
+    </div>
+</header>
+
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Bookings</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+
+<div class="container">
+
+    <h1>My Bookings</h1>
+
+    <div th:if="${#lists.isEmpty(bookings)}" class="muted">
+        You have no bookings yet.
+    </div>
+
+    <div th:each="b : ${bookings}" class="card">
+        <h3 th:text="${b.travelPackage.title}"></h3>
+
+        <p>Status:
+            <strong th:text="${b.status}"></strong>
+        </p>
+
+        <p>
+            People:
+            <span th:text="${b.travelersCount}"></span>
+        </p>
+
+        <p class="muted" th:text="${#temporals.format(b.createdAt, 'dd MMM yyyy')}"></p>
+    </div>
+
+</div>
+
+</body>
+</html>

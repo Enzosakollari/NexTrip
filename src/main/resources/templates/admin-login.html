@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Login • NextTrip</title>
+    <link rel="stylesheet" href="/css/app.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="container topbar__inner">
+        <a href="/" class="brand">
+            <span class="brand__mark">NT</span>
+            <span class="brand__name">NextTrip</span>
+        </a>
+
+        <div class="topbar__actions">
+            <a class="btn btn--ghost" href="/">Home</a>
+        </div>
+    </div>
+</header>
+
+<main class="page">
+    <section class="section">
+        <div class="container" style="max-width:520px;">
+            <div class="card card__pad">
+                <h2 style="margin:0 0 10px;">Admin Login</h2>
+                <p class="muted" style="margin:0 0 16px;">Sign in to manage users, businesses, packs and bookings.</p>
+
+                <div th:if="${param.error}" class="card card__pad" style="margin-bottom:12px; border-color: rgba(239,68,68,.25);">
+                    <div style="color:#ef4444; font-weight:700;">Invalid username or password</div>
+                </div>
+
+                <div th:if="${param.logout}" class="card card__pad" style="margin-bottom:12px; border-color: rgba(16,185,129,.25);">
+                    <div style="color:#10b981; font-weight:700;">Logged out</div>
+                </div>
+
+                <form method="post" th:action="@{/admin/perform_login}" class="form">
+                    <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                    <div class="field">
+                        <div class="label">Username</div>
+                        <input class="input" name="username" placeholder="admin" required>
+                    </div>
+
+                    <div class="field">
+                        <div class="label">Password</div>
+                        <input class="input" type="password" name="password" placeholder="••••••••" required>
+                    </div>
+
+                    <div class="form__actions">
+                        <button class="btn btn--primary" type="submit">Login</button>
+                    </div>
+                </form>
+
+                <p class="muted" style="margin-top:14px;">
+                    Default seeded login: admin / admin123
+                </p>
+            </div>
+        </div>
+    </section>
+</main>
+
+</body>
+</html>

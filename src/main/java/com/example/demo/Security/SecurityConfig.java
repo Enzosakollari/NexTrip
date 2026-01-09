@@ -2,18 +2,18 @@ package com.example.demo.Security;
 
 import com.example.demo.User.AppUserService;
 import com.example.demo.Service.BusinessUserService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.authentication.*;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.crypto.bcrypt.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -27,35 +27,34 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // --- Providers ---
-    @Bean
-    public AuthenticationProvider appAuthenticationProvider() {
+    // IMPORTANT: not @Bean -> avoids extra global beans confusion
+    private AuthenticationProvider appProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(appUserService);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
 
-    @Bean
-    public AuthenticationProvider businessAuthenticationProvider() {
+    // IMPORTANT: not @Bean -> avoids extra global beans confusion
+    private AuthenticationProvider businessProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(businessUserService);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
 
-    // --- SECURITY CHAIN 1: BUSINESS ---
     @Bean
     @Order(1)
     public SecurityFilterChain businessChain(HttpSecurity http) throws Exception {
         return http
                 .securityMatcher("/business/**", "/req/business/**")
                 .csrf(csrf -> csrf.disable())
-                .authenticationProvider(businessAuthenticationProvider())
+                .authenticationProvider(businessProvider())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/business/login",
                                 "/business/signup",
+                                "/business/perform_login",
                                 "/req/business/**",
                                 "/css/**", "/js/**", "/images/**", "/videos/**",
                                 "/error"
@@ -77,16 +76,18 @@ public class SecurityConfig {
                 .build();
     }
 
-    // --- SECURITY CHAIN 2: NORMAL USERS ---
     @Bean
     @Order(2)
     public SecurityFilterChain appChain(HttpSecurity http) throws Exception {
         return http
+                .securityMatcher("/**") // keep explicit
                 .csrf(csrf -> csrf.disable())
-                .authenticationProvider(appAuthenticationProvider())
+                .authenticationProvider(appProvider())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/", "/login", "/signup", "/req/**",
+                                "/", "/index",
+                                "/login", "/signup", "/perform_login", "/req/**",
+                                "/booking-success",
                                 "/css/**", "/js/**", "/images/**", "/videos/**",
                                 "/api/flights/**",
                                 "/error"

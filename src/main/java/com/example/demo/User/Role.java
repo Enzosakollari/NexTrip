@@ -1,6 +1,7 @@
 package com.example.demo.User;
 
 public enum Role {
-    BUISSNESS,
-    TRAVELER
+    BUSINESS,
+    TRAVELER,
+    ADMIN
 }

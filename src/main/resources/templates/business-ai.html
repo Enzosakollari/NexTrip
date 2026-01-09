@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Business AI Chat</title>
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+
+<!-- BUSINESS NAVBAR -->
+<header class="topbar">
+    <div th:replace="~{fragments/business-navbar :: businessNav('ai')}"></div>
+</header>
+
+<main class="page">
+    <section class="section">
+        <div class="container" style="max-width: 900px;">
+
+            <h1>AI Assistant</h1>
+            <p class="muted">Ask AI for travel pack ideas, descriptions, pricing, or marketing text.</p>
+
+            <!-- CHAT FORM -->
+            <form th:action="@{/business/ai}" method="post"
+                  style="display:flex; gap:10px; margin-top:16px;">
+
+                <input class="input"
+                       name="message"
+                       placeholder="Ask something..."
+                       required
+                       style="flex:1;">
+
+                <button class="btn btn--primary" type="submit">Send</button>
+            </form>
+
+            <!-- AI RESPONSE -->
+            <div th:if="${reply != null}"
+                 class="card card__pad"
+                 style="margin-top:16px;">
+                <div class="muted">AI Response</div>
+                <div th:text="${reply}"></div>
+            </div>
+
+        </div>
+    </section>
+</main>
+
+</body>
+</html>

@@ -16,13 +16,11 @@ public class FlightViewController {
 
     private final FlightService flightService;
 
-    // Simple “landing-like” page for flights
     @GetMapping("/flights/search-view")
     public String showSearchPage() {
         return "flights-search";
     }
 
-    // This handles the form submit and shows results on the same page
     @GetMapping("/flights/search-view/results")
     public String searchFlights(
             @RequestParam String origin,

@@ -40,7 +40,7 @@ public class BusinessAiController {
         BusinessUser business = businessService.currentBusiness(principal);
         if (business == null) return "redirect:/business/login";
 
-        String reply = travelChatService.askAssistant(message); // ← SAME service
+        String reply = travelChatService.askAssistant(message);
 
         model.addAttribute("business", business);
         model.addAttribute("message", message);

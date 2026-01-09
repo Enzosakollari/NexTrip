@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Travel Package</title>
+
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+        }
+
+        .booking-container {
+            max-width: 520px;
+            margin: 60px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,.1);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            margin-top: 25px;
+            width: 100%;
+            padding: 12px;
+            background: #4f46e5;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #4338ca;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="booking-container">
+    <h2>Book this trip</h2>
+
+    <!-- IMPORTANT:
+         NO booking ID here
+         ONLY packId -->
+    <form th:action="@{/bookings}" method="post">
+
+        <input type="hidden" name="packId" th:value="${packId}"/>
+
+        <label>Full name</label>
+        <input type="text" name="fullName" required>
+
+        <label>Email</label>
+        <input type="email" name="email" required>
+
+        <label>Phone</label>
+        <input type="text" name="phone" required>
+
+        <label>Number of travelers</label>
+        <input type="number" name="travelersCount" min="1" value="1" required>
+
+        <button type="submit">Confirm Booking</button>
+    </form>
+</div>
+
+</body>
+</html>

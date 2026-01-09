@@ -31,11 +31,10 @@ public class FlightService {
     @Value("${amadeus.api.base-url}")
     private String baseUrl;
 
-    // Main method your controller calls
     public List<Flight> searchOffers(
             String originIata,
             String destinationIata,
-            String departureDateIso, // "YYYY-MM-DD"
+            String departureDateIso,
             int adults,
             String currency
     ) {
@@ -90,14 +89,12 @@ public class FlightService {
 
         f.setOfferId(item.path("id").asText(""));
 
-        // price
         JsonNode priceNode = item.path("price");
         BigDecimal total = new BigDecimal(priceNode.path("total").asText("0"));
         String currency = priceNode.path("currency").asText("EUR");
         f.setPrice(total);
         f.setCurrency(currency);
 
-        // first itinerary / first segment
         JsonNode itineraries = item.path("itineraries");
         if (itineraries.isArray() && itineraries.size() > 0) {
             JsonNode firstItinerary = itineraries.get(0);
@@ -132,25 +129,21 @@ public class FlightService {
             }
         }
 
-        // countries can be filled later via a Locations API if you want
         f.setOriginCountry(null);
         f.setDestinationCountry(null);
 
         return f;
     }
 
-    // Handle both "2025-12-20T04:00:00Z" and "2025-12-20T04:00:00"
     private OffsetDateTime parseAmadeusDateTime(String value) {
         if (value == null || value.isBlank()) {
             return null;
         }
 
         try {
-            // Has timezone info (Z or +01:00 etc.)
             if (value.length() > 19) {
                 return OffsetDateTime.parse(value, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
             } else {
-                // No offset, assume local date-time, convert to UTC
                 LocalDateTime ldt =
                         LocalDateTime.parse(value, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
                 return ldt.atOffset(ZoneOffset.UTC);
@@ -160,7 +153,6 @@ public class FlightService {
         }
     }
 
-    // Optional: pre-fetch some routes every 2 hours (you can delete this if you don't want it yet)
     @Scheduled(cron = "0 0 */2 * * *")
     public void refreshPopularRoutes() {
         List<String[]> routes = List.of(
@@ -173,7 +165,7 @@ public class FlightService {
         int adults = 1;
 
         java.time.LocalDate target = java.time.LocalDate.now().plusWeeks(1);
-        String departureDateIso = target.toString(); // "YYYY-MM-DD"
+        String departureDateIso = target.toString();
 
         for (String[] r : routes) {
             searchOffers(r[0], r[1], departureDateIso, adults, currency);

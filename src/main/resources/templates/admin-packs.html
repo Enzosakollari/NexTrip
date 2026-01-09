@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin • Travel Packs</title>
+    <link rel="stylesheet" href="/css/app.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/admin-nav :: adminNav(${active})}"></div>
+
+<main class="page">
+    <section class="section">
+        <div class="container">
+
+            <div class="card card__pad">
+                <h2 style="margin:0 0 6px;">Travel Packs</h2>
+                <p class="muted" style="margin:0;">All travel packs in the system</p>
+            </div>
+
+            <div th:if="${#lists.isEmpty(packs)}" class="card card__pad" style="margin-top:14px;">
+                <div class="muted">No packs found.</div>
+            </div>
+
+            <div class="list" style="margin-top:14px;">
+                <div th:each="p : ${packs}" class="result">
+                    <div class="result__left">
+                        <div class="badge">P</div>
+                        <div>
+                            <div style="font-weight:800;" th:text="${p.title}">title</div>
+                            <div class="muted">
+                                <span th:text="${p.destination}">destination</span>
+                                • <span th:text="${p.currency + ' ' + p.price}">€</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row-actions">
+                        <form method="post" th:action="@{/admin/packs/{id}/delete(id=${p.id})}">
+                            <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                            <button class="btn btn--danger" type="submit">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</main>
+
+</body>
+</html>

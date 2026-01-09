@@ -29,7 +29,6 @@ public class BusinessRegistrationController {
                 existing.setVerificationToken(verificationToken);
                 businessUserRepository.save(existing);
 
-                // IMPORTANT: use a BUSINESS verify endpoint
                 emailService.sendBusinessVerificationEmail(existing.getEmail(), verificationToken);
 
                 return new ResponseEntity<>("Created", HttpStatus.OK);

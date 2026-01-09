@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin • Users</title>
+    <link rel="stylesheet" href="/css/app.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/admin-nav :: adminNav(${active})}"></div>
+
+<main class="page">
+    <section class="section">
+        <div class="container">
+
+            <div class="card card__pad">
+                <h2 style="margin:0 0 6px;">Users</h2>
+                <p class="muted" style="margin:0;">All registered users</p>
+            </div>
+
+            <div th:if="${#lists.isEmpty(users)}" class="card card__pad" style="margin-top:14px;">
+                <div class="muted">No users found.</div>
+            </div>
+
+            <div class="list" style="margin-top:14px;">
+                <div th:each="u : ${users}" class="result">
+                    <div class="result__left">
+                        <div class="badge">U</div>
+                        <div>
+                            <div style="font-weight:800;" th:text="${u.username}">username</div>
+                            <div class="muted" th:text="${u.email}">email</div>
+                        </div>
+                    </div>
+
+                    <div class="row-actions">
+                        <form method="post" th:action="@{/admin/users/{id}/delete(id=${u.id})}">
+                            <input type="hidden" th:if="${_csrf != null}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                            <button class="btn btn--danger" type="submit">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+</main>
+
+</body>
+</html>

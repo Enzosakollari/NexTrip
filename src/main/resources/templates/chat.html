@@ -9,7 +9,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* Make the chat side larger (matches your screenshot layout) */
         .chat-layout {
             display: grid;
             grid-template-columns: 1.2fr 1.8fr;
@@ -261,8 +260,7 @@
             showTyping();
 
             try {
-                // IMPORTANT: your endpoint expects a raw String body,
-                // but sending JSON is cleaner. We can still send plain text.
+
                 const res = await fetch("/chat/message", {
                     method: "POST",
                     headers: {

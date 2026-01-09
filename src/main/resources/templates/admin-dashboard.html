@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin Dashboard • NextTrip</title>
+    <link rel="stylesheet" href="/css/app.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="~{fragments/admin-nav :: adminNav(${active})}"></div>
+
+<main class="page">
+    <section class="section">
+        <div class="container">
+            <div class="card card__pad">
+                <h2 style="margin:0 0 6px;">Admin Dashboard</h2>
+                <p class="muted" style="margin:0;">Overview of platform data</p>
+            </div>
+
+            <div class="packs" style="margin-top:14px;">
+                <a class="card card__pad pack" href="/admin/users">
+                    <div class="card__title">Users</div>
+                    <div class="price"><span th:text="${usersCount}">0</span></div>
+                    <div class="muted" style="margin-top:8px;">View & remove users</div>
+                </a>
+
+                <a class="card card__pad pack" href="/admin/businesses">
+                    <div class="card__title">Businesses</div>
+                    <div class="price"><span th:text="${businessesCount}">0</span></div>
+                    <div class="muted" style="margin-top:8px;">View & remove businesses</div>
+                </a>
+
+                <a class="card card__pad pack" href="/admin/packs">
+                    <div class="card__title">Travel Packs</div>
+                    <div class="price"><span th:text="${packsCount}">0</span></div>
+                    <div class="muted" style="margin-top:8px;">View & remove packs</div>
+                </a>
+            </div>
+
+            <div class="card card__pad" style="margin-top:14px;">
+                <div class="card__title">Bookings</div>
+                <div class="kv">
+                    <div>Total bookings:</div>
+                    <div style="font-weight:900;" th:text="${bookingsCount}">0</div>
+                </div>
+
+            </div>
+
+        </div>
+    </section>
+</main>
+
+</body>
+</html>

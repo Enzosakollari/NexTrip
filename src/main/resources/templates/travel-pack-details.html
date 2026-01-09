@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${pack.title + ' • NextTrip'}">Pack</title>
+  <link rel="stylesheet" href="/css/app.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="container topbar__inner">
+    <a href="/index" class="brand">
+      <span class="brand__mark">NT</span>
+      <span class="brand__name">NextTrip</span>
+    </a>
+
+    <nav class="nav">
+      <a href="/index" class="nav__link">Explore</a>
+      <a href="/travel-packs" class="nav__link nav__link--active">Travel Packs</a>
+      <a href="/chat" class="nav__link">AI Chat</a>
+    </nav>
+
+    <div class="topbar__actions">
+      <a class="btn btn--ghost" href="/login">Login</a>
+      <a class="btn btn--primary" href="/travel-packs">Back</a>
+    </div>
+  </div>
+</header>
+
+<main class="page">
+  <section class="section">
+    <div class="container">
+      <div class="card card__pad">
+        <h2 th:text="${pack.title}">Title</h2>
+        <p class="muted" th:text="${pack.destination + ' • ' + pack.durationDays + ' days'}">meta</p>
+        <p th:text="${pack.description}">desc</p>
+
+        <div style="display:flex; gap:10px; align-items:center; margin-top:12px;">
+          <div class="price" th:text="${pack.currency + ' ' + pack.price}">€</div>
+          <a class="btn" href="/chat">Ask AI</a>
+        </div>
+      </div>
+
+      <div class="card card__pad" style="margin-top:14px;">
+        <h3>Book this pack</h3>
+        <p class="muted">MVP booking form (we’ll connect it to DB next).</p>
+
+        <form method="get"
+              th:action="@{/packs/{id}/book(id=${pack.id})}"
+              class="searchbar">
+
+          <input class="input" type="date" name="startDate" required>
+
+          <input class="input"
+                 type="number"
+                 name="adults"
+                 min="1"
+                 value="1"
+                 style="max-width:140px;">
+
+          <button class="btn btn--primary" type="submit">
+            Book now
+          </button>
+        </form>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="/js/app.js"></script>
+</body>
+</html>
+

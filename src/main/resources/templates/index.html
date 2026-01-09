@@ -5,21 +5,23 @@
 <body>
 <header class="topbar">
     <div class="container topbar__inner">
-        <a href="/index" class="brand">
+        <a th:href="@{/index}" class="brand">
             <span class="brand__mark">NT</span>
             <span class="brand__name">NextTrip</span>
         </a>
 
         <nav class="nav">
-            <a href="/index" class="nav__link">Explore</a>
-            <a href="/flights-search" class="nav__link">Flight Search</a>
-            <a href="/travel-packs" class="nav__link">Travel Packs</a>
-            <a href="/chat" class="nav__link">AI Chat</a>
+            <a th:href="@{/index}" class="nav__link">Explore</a>
+            <a th:href="@{/flights/search-view}" class="nav__link">Flight Search</a>
+            <a th:href="@{/travel-packs}" class="nav__link">Travel Packs</a>
+            <a th:href="@{/chat}" class="nav__link">AI Chat</a>
+            <!-- optional if you add the endpoint + template -->
+            <!-- <a th:href="@{/contact}" class="nav__link">Contact</a> -->
         </nav>
 
         <div class="topbar__actions">
-            <a class="btn btn--ghost" href="/chat">Ask AI</a>
-            <a class="btn btn--primary" href="/travel-packs">Explore packs</a>
+            <a class="btn btn--ghost" th:href="@{/chat}">Ask AI</a>
+            <a class="btn btn--primary" th:href="@{/travel-packs}">Explore packs</a>
         </div>
     </div>
 </header>
@@ -41,8 +43,8 @@
                 </p>
 
                 <div class="hero__actions">
-                    <a href="/flights/search-view" class="btn btn--primary">Search Flights</a>
-                    <a href="/travel-packs" class="btn">View Packs</a>
+                    <a th:href="@{/flights/search-view}" class="btn btn--primary">Search Flights</a>
+                    <a th:href="@{/travel-packs}" class="btn">View Packs</a>
                 </div>
 
                 <div class="hero__stats">
@@ -64,7 +66,7 @@
             <!-- Search card -->
             <div class="card card__pad hero__card">
                 <div class="card__title">Quick search</div>
-                <form class="searchbar" action="/flights/search-view/results" method="get">
+                <form class="searchbar" th:action="@{/flights/search-view/results}" method="get">
                     <input class="input" name="origin" placeholder="From (TIA)" value="TIA">
                     <input class="input" name="destination" placeholder="To (BUD)" value="BUD">
                     <input class="input" name="date" type="date">
@@ -112,11 +114,11 @@
                     <h2>Featured Travel Packs</h2>
                     <p class="muted">Curated trips with hotel, activities, and flexible options.</p>
                 </div>
-                <a class="btn" href="/travel-packs">See all packs</a>
+                <a class="btn" th:href="@{/travel-packs}">See all packs</a>
             </div>
 
             <div class="packs">
-                <a class="pack card" href="/travel-packs/1">
+                <a class="pack card" th:href="@{/travel-packs}">
                     <div class="pack__media pack__media--barcelona">
                         <span class="tag tag--best">Best seller</span>
                         <div class="pack__place">Barcelona</div>
@@ -131,7 +133,7 @@
                     </div>
                 </a>
 
-                <a class="pack card" href="/travel-packs/2">
+                <a class="pack card" th:href="@{/travel-packs}">
                     <div class="pack__media pack__media--paris">
                         <span class="tag">City break</span>
                         <div class="pack__place">Paris</div>
@@ -146,7 +148,7 @@
                     </div>
                 </a>
 
-                <a class="pack card" href="/travel-packs/3">
+                <a class="pack card" th:href="@{/travel-packs}">
                     <div class="pack__media pack__media--alps">
                         <span class="tag tag--adventure">Adventure</span>
                         <div class="pack__place">Interlaken</div>
@@ -201,8 +203,8 @@
                     <p class="muted">Explore curated packs or search flights instantly.</p>
                 </div>
                 <div class="cta__actions">
-                    <a class="btn btn--primary" href="/travel-packs">Explore packs</a>
-                    <a class="btn" href="/chat">Ask the AI</a>
+                    <a class="btn btn--primary" th:href="@{/travel-packs}">Explore packs</a>
+                    <a class="btn" th:href="@{/chat}">Ask the AI</a>
                 </div>
             </div>
         </div>
