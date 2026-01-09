@@ -27,4 +27,15 @@ public class PageController {
     public String root() {
         return "login";
     }
+    @GetMapping("/business/login")
+    public String businessLogin() {
+        return "business-login";
+    }
+
+    @GetMapping("/business/signup")
+    public String businessSignup() {
+        return "business-signup";
+    }
+
+
 }

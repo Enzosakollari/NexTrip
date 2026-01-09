@@ -101,4 +101,11 @@ public class EmailService {
             System.err.println(" Failed to send email: " + e.getMessage());
         }
     }
+    public void sendBusinessVerificationEmail(String email, String verificationToken) {
+        String subject = "Business Email Verification";
+        String path = "/req/business/verify";
+        String message = "Click the button below to verify your business email address.";
+        sendEmail(email, verificationToken, subject, path, message);
+    }
+
 }

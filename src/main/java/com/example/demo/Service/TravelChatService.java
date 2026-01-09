@@ -1,7 +1,5 @@
 package com.example.demo.Service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -13,9 +11,6 @@ import java.util.Map;
 
 @Service
 public class TravelChatService {
-
-    private static final Logger log =
-            LoggerFactory.getLogger(TravelChatService.class);
 
     @Value("${huggingface.api.key}")
     private String huggingFaceApiKey;
@@ -31,6 +26,7 @@ public class TravelChatService {
     public String askAssistant(String userMessage) {
         String url = baseUrl + "/chat/completions";
 
+        // OpenAI-compatible "messages" format (Router)
         List<Map<String, Object>> messages = List.of(
                 Map.of(
                         "role", "system",
@@ -55,10 +51,6 @@ public class TravelChatService {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setBearerAuth(huggingFaceApiKey);
 
-        log.info("Calling HF Router → model={} tokenLoaded={}",
-                model,
-                huggingFaceApiKey != null && !huggingFaceApiKey.isBlank());
-
         try {
             ResponseEntity<Map> response = restTemplate.exchange(
                     url,
@@ -67,21 +59,12 @@ public class TravelChatService {
                     Map.class
             );
 
-            if (response.getStatusCode().is2xxSuccessful()) {
-                log.info("HF Router accepted ✅ status={}", response.getStatusCodeValue());
-            } else {
-                log.warn("HF Router non-2xx ⚠️ status={} body={}",
-                        response.getStatusCodeValue(),
-                        response.getBody());
-            }
-
-            if (response.getBody() == null) {
-                return "Sorry, no response from AI service.";
+            if (!response.getStatusCode().is2xxSuccessful() || response.getBody() == null) {
+                return "Sorry, I couldn't generate a travel suggestion right now.";
             }
 
             Map body = response.getBody();
             Object choicesObj = body.get("choices");
-
             if (choicesObj instanceof List<?> choices && !choices.isEmpty()) {
                 Object first = choices.get(0);
                 if (first instanceof Map<?, ?> firstChoice) {
@@ -93,16 +76,15 @@ public class TravelChatService {
                 }
             }
 
-            return "Sorry, I couldn't generate a travel suggestion.";
+            return "Sorry, I couldn't generate a travel suggestion right now.";
 
         } catch (HttpStatusCodeException e) {
-            log.error("HF Router rejected ❌ status={} body={}",
-                    e.getStatusCode().value(),
-                    e.getResponseBodyAsString());
-            return "AI service rejected the request (" + e.getStatusCode() + ").";
+            // show HF body in logs to debug (model/provider issues, auth, etc.)
+            System.err.println("HF Router error: " + e.getStatusCode() + " body=" + e.getResponseBodyAsString());
+            return "Sorry, I had a problem talking to the AI service (" + e.getStatusCode() + ").";
         } catch (Exception e) {
-            log.error("HF Router call failed ❌", e);
-            return "AI service error.";
+            e.printStackTrace();
+            return "Sorry, I had a problem talking to the AI service (" + e.getClass().getSimpleName() + ").";
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.demo.Business;
 
-import com.example.demo.User.BuissnessAppUser;
+import com.example.demo.User.BusinessUserRepository;
+import com.example.demo.User.BusinessUser;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -14,7 +15,7 @@ public class TravelPackage {
 
     private String title;
     private String destination;
-    private int durationDays;
+    private int  durationDays;
 
     @Column(length = 2000)
     private String description;
@@ -24,9 +25,8 @@ public class TravelPackage {
 
     @ManyToOne
     @JoinColumn(name = "business_user_id")
-    private BuissnessAppUser businessUser;
+    private BusinessUser businessUser;
 
-    // getters & setters
     public Long getId() {
         return id;
     }
@@ -83,11 +83,11 @@ public class TravelPackage {
         this.currency = currency;
     }
 
-    public BuissnessAppUser getBusinessUser() {
+    public BusinessUser getBusinessUser() {
         return businessUser;
     }
 
-    public void setBusinessUser(BuissnessAppUser businessUser) {
+    public void setBusinessUser(BusinessUser businessUser) {
         this.businessUser = businessUser;
     }
 }
