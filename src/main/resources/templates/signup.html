@@ -414,17 +414,16 @@
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
-                    const contentType = response.headers.get('content-type');
-                    if (contentType && contentType.includes('application/json')) {
-                        return response.json();
-                    } else {
-                        return response.text();
-                    }
+                    return response.text();
                 })
                 .then(data => {
                     console.log('Success:', data);
-                    showMessage('Registration successful! Please check your email for verification.', 'success');
-                    form.reset();
+                    if (data === 'Created') {
+                        showMessage('Registration successful! Please check your email for verification.', 'success');
+                        form.reset();
+                    } else {
+                        showMessage(data || 'Registration failed!', 'error');
+                    }
                 })
                 .catch((error) => {
                     console.error('Full error:', error);
