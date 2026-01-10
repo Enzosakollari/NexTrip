@@ -2,44 +2,175 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <body>
 
-<header class="topbar" th:fragment="businessNav(active)">
-    <div class="nav container">
-        <a class="brand" th:href="@{/business/dashboard}">
-            <span class="brand__logo">NT</span>
-            <span class="brand__text">NextTrip</span>
+<header class="business-topbar" th:fragment="businessNav(active)">
+    <div class="business-topbar__inner">
+        <a class="business-brand" th:href="@{/business/dashboard}">
+            <span class="business-brand__logo">NT</span>
+            <span class="business-brand__text">NextTrip</span>
         </a>
 
-        <nav class="nav__links">
-            <a class="nav__link"
+        <nav class="business-nav__links">
+            <a class="business-nav__link"
                th:classappend="${active == 'dashboard'} ? ' is-active' : ''"
                th:href="@{/business/dashboard}">
                 Dashboard
             </a>
 
-            <a class="nav__link"
+            <a class="business-nav__link"
                th:classappend="${active == 'packs'} ? ' is-active' : ''"
                th:href="@{/business/packs}">
                 My Packs
             </a>
 
-            <a class="nav__link"
+            <a class="business-nav__link"
                th:classappend="${active == 'ai'} ? ' is-active' : ''"
                th:href="@{/business/ai}">
                 AI Chat
             </a>
-            <a class="nav__link"
-               th:classappend="${active == 'bookings'} ? ' nav__link--active' : ''"
+            
+            <a class="business-nav__link"
+               th:classappend="${active == 'bookings'} ? ' is-active' : ''"
                th:href="@{/business/bookings}">
                 Bookings
             </a>
-
         </nav>
 
-        <div class="nav__right">
-            <a class="btn btn--primary" th:href="@{/business/packs/new}">Create Pack</a>
+        <div class="business-nav__right">
+            <a class="business-btn business-btn--primary" th:href="@{/business/packs/new}">
+                <span>+</span>
+                <span>Create Pack</span>
+            </a>
         </div>
     </div>
 </header>
+
+<style th:fragment="businessNavbarStyles">
+    .business-topbar {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(30px) saturate(180%);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .business-topbar__inner {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .business-brand {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        text-decoration: none;
+        color: #0f172a;
+        font-weight: 800;
+        font-size: 1.5rem;
+        transition: transform 0.2s ease;
+    }
+
+    .business-brand:hover {
+        transform: scale(1.05);
+    }
+
+    .business-brand__logo {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #6366f1, #ec4899);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 900;
+        font-size: 1.25rem;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    }
+
+    .business-nav__links {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .business-nav__link {
+        padding: 0.625rem 1.25rem;
+        text-decoration: none;
+        color: #64748b;
+        font-weight: 600;
+        font-size: 0.95rem;
+        border-radius: 10px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
+
+    .business-nav__link:hover {
+        color: #6366f1;
+        background: rgba(99, 102, 241, 0.08);
+    }
+
+    .business-nav__link.is-active {
+        color: #6366f1;
+        background: rgba(99, 102, 241, 0.12);
+        font-weight: 700;
+    }
+
+    .business-nav__link.is-active::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60%;
+        height: 3px;
+        background: linear-gradient(90deg, #6366f1, #ec4899);
+        border-radius: 2px;
+    }
+
+    .business-nav__right {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .business-btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .business-btn--primary {
+        background: linear-gradient(135deg, #6366f1, #4f46e5);
+        color: white;
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    }
+
+    .business-btn--primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+    }
+
+    @media (max-width: 968px) {
+        .business-nav__links {
+            display: none;
+        }
+    }
+</style>
 
 </body>
 </html>

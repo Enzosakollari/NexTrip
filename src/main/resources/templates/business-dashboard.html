@@ -3,106 +3,529 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business Dashboard</title>
+    <title>Business Dashboard - NextTrip</title>
     <link rel="stylesheet" href="/css/app.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <div th:replace="~{fragments/business-navbar :: businessNavbarStyles}"></div>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --accent: #ec4899;
+            --dark: #0f172a;
+            --light: #f8fafc;
+            --white: #ffffff;
+            --gray: #64748b;
+            --gray-light: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--dark);
+            background: var(--light);
+            line-height: 1.6;
+        }
+
+        .page {
+            padding: 2rem 0;
+            min-height: calc(100vh - 80px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+        }
+
+        .section__head {
+            margin-bottom: 2rem;
+        }
+
+        .section__head h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section__head p {
+            color: var(--gray);
+            font-size: 1.125rem;
+        }
+
+        .section__head--row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 1px solid var(--gray-light);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .card__title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .card__subtitle {
+            color: var(--gray);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .company-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem;
+            background: var(--light);
+            border-radius: 16px;
+            margin-bottom: 1rem;
+        }
+
+        .company-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .company-details h3 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 0.25rem;
+            color: var(--dark);
+        }
+
+        .company-details p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .status-item {
+            padding: 1rem;
+            background: var(--light);
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-item strong {
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .status-badge {
+            padding: 0.375rem 0.875rem;
+            border-radius: 100px;
+            font-size: 0.875rem;
+            font-weight: 700;
+        }
+
+        .status-badge--verified {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .status-badge--pending {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .status-badge--approved {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .warning-message {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(245, 158, 11, 0.1);
+            border-left: 4px solid var(--warning);
+            border-radius: 8px;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            padding: 0.875rem 1.75rem;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .btn--primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn--primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn--secondary {
+            background: white;
+            color: var(--dark);
+            border: 2px solid var(--gray-light);
+        }
+
+        .btn--secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn--small {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+
+        .btn--danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn--danger:hover {
+            background: #dc2626;
+        }
+
+        .card__hint {
+            margin-top: 1rem;
+            padding: 0.875rem;
+            background: rgba(99, 102, 241, 0.05);
+            border-radius: 10px;
+            color: var(--gray);
+            font-size: 0.875rem;
+        }
+
+        .packs-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .pack-item {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 2px solid var(--gray-light);
+            transition: all 0.3s ease;
+        }
+
+        .pack-item:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.1);
+        }
+
+        .pack-item__left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .pack-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .pack-info h3 {
+            font-size: 1.125rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .pack-info p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .pack-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .empty-state {
+            background: white;
+            border-radius: 24px;
+            padding: 4rem 2rem;
+            text-align: center;
+            border: 2px dashed var(--gray-light);
+        }
+
+        .empty-state__icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .empty-state p {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.is-open {
+            display: flex;
+        }
+
+        .modal__backdrop {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal__card {
+            position: relative;
+            background: white;
+            border-radius: 24px;
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            z-index: 1;
+        }
+
+        .modal__title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .modal__actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+        }
+
+        .btn--ghost {
+            background: transparent;
+            color: var(--gray);
+            border: 2px solid var(--gray-light);
+        }
+
+        .btn--ghost:hover {
+            border-color: var(--gray);
+            color: var(--dark);
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pack-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .pack-actions {
+                width: 100%;
+            }
+
+            .pack-actions .btn {
+                flex: 1;
+            }
+        }
+    </style>
 </head>
 <body>
 
 <div th:replace="~{fragments/business-navbar :: businessNav('dashboard')}"></div>
 
 <main class="page">
-    <section class="section">
-        <div class="container">
+    <div class="container">
+        <div class="dashboard-grid">
+            <!-- Company Profile Card -->
+            <div class="dashboard-card">
+                <div class="card__title">Company Profile</div>
+                <p class="card__subtitle">Your business account details</p>
 
-            <div class="hero__grid" style="grid-template-columns: 1fr 1fr;">
-                <div class="card card__pad">
-                    <div class="section__title">Company profile</div>
-                    <p class="muted section__sub">Your business account details.</p>
-
-                    <div class="list" style="gap:10px;">
-                        <div class="result" style="justify-content:flex-start; gap:14px;">
-                            <div class="badge">🏢</div>
-                            <div>
-                                <div style="font-weight:800;" th:text="${business.companyName}">Company Name</div>
-                                <div class="muted" th:text="${business.contactEmail}">email@company.com</div>
-                            </div>
-                        </div>
-
-                        <div class="result">
-                            <div class="kv">
-                                <span style="font-weight:800;">Email</span>
-                                <span class="muted" th:text="${business.verified ? 'Verified' : 'Not verified'}">Verified</span>
-                            </div>
-
-                            <div class="kv">
-                                <span style="font-weight:800;">Approval</span>
-                                <span class="muted" th:text="${business.approved ? 'Approved' : 'Pending'}">Pending</span>
-                            </div>
-                        </div>
-
-                        <div class="muted" th:if="${!business.approved}">
-                            You can view your packs, but publishing/creating might be blocked until approval.
-                        </div>
+                <div class="company-info">
+                    <div class="company-icon">🏢</div>
+                    <div class="company-details">
+                        <h3 th:text="${business.companyName}">Company Name</h3>
+                        <p th:text="${business.contactEmail}">email@company.com</p>
                     </div>
                 </div>
 
-                <div class="card card__pad">
-                    <div class="section__title">Quick actions</div>
-                    <p class="muted section__sub">Manage travel packs.</p>
-
-                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                        <a class="btn btn--primary" th:href="@{/business/packs/new}">
-                            + Add travel pack
-                        </a>
-
-                        <a class="btn" th:href="@{/business/packs}">
-                            Open packs page
-                        </a>
+                <div class="status-grid">
+                    <div class="status-item">
+                        <strong>Email</strong>
+                        <span class="status-badge" 
+                              th:classappend="${business.verified} ? 'status-badge--verified' : 'status-badge--pending'"
+                              th:text="${business.verified ? 'Verified' : 'Not verified'}">Verified</span>
                     </div>
-
-                    <div class="card__hint muted">
-                        Tip: Use “Edit” and “Delete” buttons inside your pack list.
+                    <div class="status-item">
+                        <strong>Approval</strong>
+                        <span class="status-badge" 
+                              th:classappend="${business.approved} ? 'status-badge--approved' : 'status-badge--pending'"
+                              th:text="${business.approved ? 'Approved' : 'Pending'}">Pending</span>
                     </div>
+                </div>
+
+                <div class="warning-message" th:if="${!business.approved}">
+                    You can view your packs, but publishing/creating might be blocked until approval.
                 </div>
             </div>
 
-            <div style="height:18px;"></div>
+            <!-- Quick Actions Card -->
+            <div class="dashboard-card">
+                <div class="card__title">Quick Actions</div>
+                <p class="card__subtitle">Manage travel packs</p>
 
-            <div class="section__head section__head--row">
-                <div>
-                    <h2>My travel packs</h2>
-                    <p class="muted">All packages you have published.</p>
+                <div class="action-buttons">
+                    <a class="btn btn--primary" th:href="@{/business/packs/new}">
+                        <span>+</span>
+                        <span>Add Travel Pack</span>
+                    </a>
+                    <a class="btn btn--secondary" th:href="@{/business/packs}">
+                        Open Packs Page
+                    </a>
                 </div>
 
+                <div class="card__hint">
+                    💡 Tip: Use "Edit" and "Delete" buttons inside your pack list.
+                </div>
+            </div>
+        </div>
+
+        <!-- My Travel Packs Section -->
+        <div class="section">
+            <div class="section__head section__head--row">
+                <div>
+                    <h2>My Travel Packs</h2>
+                    <p>All packages you have published</p>
+                </div>
                 <a class="btn btn--primary" th:href="@{/business/packs/new}">
-                    Add pack
+                    <span>+</span>
+                    <span>Add Pack</span>
                 </a>
             </div>
 
-            <div class="list" th:if="${packs != null and !packs.isEmpty()}">
-                <div class="result" th:each="p : ${packs}">
-                    <div class="result__left">
-                        <div class="badge">📦</div>
-                        <div>
-                            <div style="font-weight:900;" th:text="${p.title}">Pack title</div>
-                            <div class="muted" style="font-size:13px;">
+            <div class="packs-list" th:if="${packs != null and !packs.isEmpty()}">
+                <div class="pack-item" th:each="p : ${packs}">
+                    <div class="pack-item__left">
+                        <div class="pack-icon">📦</div>
+                        <div class="pack-info">
+                            <h3 th:text="${p.title}">Pack title</h3>
+                            <p>
                                 <span th:text="${p.destination}">Destination</span>
-                                •
+                                <span> • </span>
                                 <span th:text="${p.durationDays}">0</span> days
-                                •
+                                <span> • </span>
                                 <span th:text="${p.price}">0</span>
                                 <span th:text="${p.currency}">EUR</span>
-                            </div>
+                            </p>
                         </div>
                     </div>
-
-                    <div class="row-actions">
-                        <a class="btn btn--small"
+                    <div class="pack-actions">
+                        <a class="btn btn--secondary btn--small"
                            th:href="@{/business/packs/{packId}/edit(packId=${p.id})}">
                             Edit
                         </a>
-
-                        <button class="btn btn--small btn--danger"
+                        <button class="btn btn--danger btn--small"
                                 type="button"
                                 th:attr="data-delete-url=@{/business/packs/{packId}/delete(packId=${p.id})}"
                                 onclick="openDeleteModal(this)">
@@ -112,27 +535,29 @@
                 </div>
             </div>
 
-            <div class="card card__pad" th:if="${packs == null or packs.isEmpty()}">
-                <div class="section__title">No packs yet</div>
-                <p class="muted">Create your first travel pack to start selling.</p>
+            <div class="empty-state" th:if="${packs == null or packs.isEmpty()}">
+                <div class="empty-state__icon">📦</div>
+                <h3>No packs yet</h3>
+                <p>Create your first travel pack to start selling.</p>
                 <a class="btn btn--primary" th:href="@{/business/packs/new}">
-                    + Add travel pack
+                    <span>+</span>
+                    <span>Add Travel Pack</span>
                 </a>
             </div>
-
         </div>
-    </section>
+    </div>
 </main>
 
+<!-- Delete Modal -->
 <div class="modal" id="deleteModal" aria-hidden="true">
     <div class="modal__backdrop" onclick="closeDeleteModal()"></div>
     <div class="modal__card">
-        <div class="modal__title">Delete pack?</div>
-        <div class="muted">This action can’t be undone.</div>
+        <div class="modal__title">Delete Pack?</div>
+        <p class="card__subtitle">This action can't be undone.</p>
 
-        <form id="deleteForm" method="post" style="margin-top:14px; display:flex; gap:10px; justify-content:flex-end;">
+        <form id="deleteForm" method="post" class="modal__actions">
             <button type="button" class="btn btn--ghost" onclick="closeDeleteModal()">Cancel</button>
-            <button type="submit" class="btn btn--primary btn--danger">Delete</button>
+            <button type="submit" class="btn btn--danger">Delete</button>
         </form>
     </div>
 </div>
