@@ -16,7 +16,9 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +32,72 @@ public class FlightService {
 
     @Value("${amadeus.api.base-url}")
     private String baseUrl;
+
+    /**
+     * Search for airports by city name or keyword
+     */
+    public List<Map<String, String>> searchAirports(String keyword) {
+        try {
+            // URL encode the keyword to handle special characters
+            String encodedKeyword = java.net.URLEncoder.encode(keyword, java.nio.charset.StandardCharsets.UTF_8);
+            String url = baseUrl + "/v1/reference-data/locations"
+                    + "?subType=AIRPORT"
+                    + "&keyword=" + encodedKeyword;
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setBearerAuth(amadeusClient.getValidAccessToken());
+            headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+
+            HttpEntity<Void> entity = new HttpEntity<>(headers);
+
+            ResponseEntity<String> response = restTemplate.exchange(
+                    url, HttpMethod.GET, entity, String.class);
+
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                return new ArrayList<>();
+            }
+
+            JsonNode root = mapper.readTree(response.getBody());
+            JsonNode data = root.path("data");
+
+            List<Map<String, String>> airports = new ArrayList<>();
+            int maxResults = 10; // Limit results to 10
+
+            if (data != null && data.isArray()) {
+                int count = 0;
+                for (JsonNode item : data) {
+                    if (count >= maxResults) break;
+                    
+                    String iataCode = item.path("iataCode").asText("");
+                    // Only include airports with valid IATA codes
+                    if (iataCode.isEmpty() || iataCode.length() != 3) {
+                        continue;
+                    }
+                    
+                    Map<String, String> airport = new HashMap<>();
+                    airport.put("iataCode", iataCode);
+                    airport.put("name", item.path("name").asText(""));
+                    
+                    JsonNode address = item.path("address");
+                    String cityName = address.path("cityName").asText("");
+                    String countryName = address.path("countryName").asText("");
+                    
+                    airport.put("cityName", cityName);
+                    airport.put("countryName", countryName);
+                    airport.put("displayName", cityName + " (" + iataCode + "), " + countryName);
+                    
+                    airports.add(airport);
+                    count++;
+                }
+            }
+
+            return airports;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
 
     public List<Flight> searchOffers(
             String originIata,

@@ -37,5 +37,9 @@ public class PageController {
         return "business-signup";
     }
 
+    @GetMapping("/timetable")
+    public String timetable() {
+        return "timetable-search";
+    }
 
 }

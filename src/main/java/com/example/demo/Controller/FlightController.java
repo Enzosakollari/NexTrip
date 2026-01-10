@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/flights")
@@ -54,5 +55,10 @@ public class FlightController {
                     .findByOriginAirportCodeAndDestinationAirportCodeAndDepartureTimeBetween(
                             origin, destination, start, end);
         }
+    }
+
+    @GetMapping("/airports")
+    public List<Map<String, String>> searchAirports(@RequestParam String keyword) {
+        return flightService.searchAirports(keyword);
     }
 }

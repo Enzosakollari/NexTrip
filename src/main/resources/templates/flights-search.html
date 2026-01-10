@@ -7,6 +7,379 @@
 
   <link rel="stylesheet" href="/css/app.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .flight-search-hero {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 60px 20px;
+      margin-bottom: 40px;
+      border-radius: 0 0 24px 24px;
+      color: white;
+      text-align: center;
+    }
+    
+    .flight-search-hero h1 {
+      font-size: 42px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: white;
+    }
+    
+    .flight-search-hero p {
+      font-size: 18px;
+      opacity: 0.95;
+      color: white;
+    }
+    
+    .search-card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+      margin-top: -60px;
+      position: relative;
+      z-index: 10;
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .search-form-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 20px;
+      align-items: end;
+      margin-bottom: 24px;
+    }
+    
+    .swap-button {
+      background: #f3f4f6;
+      border: none;
+      border-radius: 12px;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 8px;
+    }
+    
+    .swap-button:hover {
+      background: #e5e7eb;
+      transform: rotate(180deg);
+    }
+    
+    .swap-button svg {
+      width: 20px;
+      height: 20px;
+      stroke: #4b5563;
+    }
+    
+    .input-group {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .input-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #6b7280;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .input-wrapper {
+      position: relative;
+    }
+    
+    .input-wrapper input {
+      width: 100%;
+      padding: 16px 20px;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background: #f9fafb;
+    }
+    
+    .input-wrapper input:focus {
+      outline: none;
+      border-color: #667eea;
+      background: white;
+      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+    }
+    
+    .autocomplete-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 2px solid #e5e7eb;
+      border-radius: 12px;
+      margin-top: 4px;
+      max-height: 300px;
+      overflow-y: auto;
+      z-index: 1000;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      display: none;
+    }
+    
+    .autocomplete-dropdown.show {
+      display: block;
+    }
+    
+    .autocomplete-item {
+      padding: 16px 20px;
+      cursor: pointer;
+      border-bottom: 1px solid #f3f4f6;
+      transition: background 0.2s ease;
+    }
+    
+    .autocomplete-item:last-child {
+      border-bottom: none;
+    }
+    
+    .autocomplete-item:hover {
+      background: #f9fafb;
+    }
+    
+    .autocomplete-item strong {
+      display: block;
+      color: #111827;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+    
+    .autocomplete-item .subtitle {
+      font-size: 13px;
+      color: #6b7280;
+    }
+    
+    .search-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .search-button {
+      width: 100%;
+      padding: 18px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .search-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+    }
+    
+    .search-button:active {
+      transform: translateY(0);
+    }
+    
+    .results-section {
+      margin-top: 40px;
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    
+    .results-count {
+      font-size: 18px;
+      font-weight: 600;
+      color: #111827;
+    }
+    
+    .flight-card {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      border: 1px solid #e5e7eb;
+      transition: all 0.3s ease;
+    }
+    
+    .flight-card:hover {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      transform: translateY(-2px);
+    }
+    
+    .flight-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #f3f4f6;
+    }
+    
+    .flight-route {
+      flex: 1;
+    }
+    
+    .flight-times {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 8px;
+    }
+    
+    .time-large {
+      font-size: 24px;
+      font-weight: 700;
+      color: #111827;
+    }
+    
+    .airport-code {
+      font-size: 14px;
+      color: #6b7280;
+      font-weight: 500;
+    }
+    
+    .flight-arrow {
+      font-size: 20px;
+      color: #9ca3af;
+      margin: 0 8px;
+    }
+    
+    .flight-duration {
+      font-size: 14px;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+    
+    .flight-airline {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .airline-badge {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    
+    .flight-number {
+      font-size: 14px;
+      color: #6b7280;
+    }
+    
+    .flight-price {
+      text-align: right;
+    }
+    
+    .price-amount {
+      font-size: 28px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 4px;
+    }
+    
+    .price-currency {
+      font-size: 14px;
+      color: #6b7280;
+    }
+    
+    .select-button {
+      margin-top: 16px;
+      padding: 12px 24px;
+      background: #f3f4f6;
+      border: none;
+      border-radius: 8px;
+      color: #111827;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+    }
+    
+    .select-button:hover {
+      background: #e5e7eb;
+    }
+    
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #6b7280;
+    }
+    
+    .empty-state-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+      opacity: 0.5;
+    }
+    
+    .empty-state h3 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 8px;
+    }
+    
+    .error-message {
+      background: #fee;
+      border: 2px solid #fcc;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+      color: #c33;
+      text-align: center;
+    }
+    
+    .error-message strong {
+      display: block;
+      font-size: 18px;
+      margin-bottom: 8px;
+      color: #a00;
+    }
+    
+    @media (max-width: 768px) {
+      .search-form-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .swap-button {
+        order: 2;
+        margin: 0 auto;
+      }
+      
+      .search-options {
+        grid-template-columns: 1fr;
+      }
+      
+      .flight-header {
+        flex-direction: column;
+        gap: 16px;
+      }
+      
+      .flight-price {
+        text-align: left;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -20,9 +393,9 @@
     <nav class="nav">
       <a href="/index" class="nav__link">Explore</a>
       <a href="/flights-search" class="nav__link nav__link--active">Flight Search</a>
+      <a href="/timetable" class="nav__link">Timetable</a>
       <a href="/travel-packs" class="nav__link">Travel Packs</a>
       <a href="/chat" class="nav__link">AI Chat</a>
-      <a href="/contact" class="nav__link">Contact</a>
     </nav>
 
     <div class="topbar__actions">
@@ -32,84 +405,116 @@
   </div>
 </header>
 
+<div class="flight-search-hero">
+  <h1>Find Your Perfect Flight</h1>
+  <p>Search and compare flights from thousands of airlines worldwide</p>
+</div>
+
 <main class="page">
-  <section class="section">
-    <div class="container">
-
-      <div class="section__head">
-        <h2>Flight Search</h2>
-        <p class="muted">Search flight offers powered by Amadeus.</p>
-      </div>
-
-      <div class="card card__pad">
-        <form class="searchbar" action="/flights/search-view/results" method="get">
-          <input class="input" name="origin" placeholder="From (IATA, e.g. TIA)" th:value="${origin}">
-          <input class="input" name="destination" placeholder="To (IATA, e.g. FCO)" th:value="${destination}">
-          <input class="input" name="date" type="date" th:value="${date}">
-          <input class="input" name="adults" type="number" min="1"
-                 th:value="${adults != null ? adults : 1}" style="max-width:120px">
-          <input class="input" name="currency" placeholder="Currency (EUR)"
-                 th:value="${currency != null ? currency : 'EUR'}" style="max-width:140px">
-          <button class="btn btn--primary" type="submit">Search</button>
-        </form>
-
-        <div class="muted" style="margin-top:10px;">
-          Tip: Use airport codes like TIA, FCO, BUD.
+  <div class="container">
+    <div class="search-card">
+      <form id="flight-search-form" class="search-form-grid">
+        <div class="input-group">
+          <label class="input-label">From</label>
+          <div class="input-wrapper">
+            <input type="text" id="origin-input" name="origin" placeholder="City or airport" autocomplete="off" th:value="${origin}">
+            <div id="origin-dropdown" class="autocomplete-dropdown"></div>
+          </div>
+        </div>
+        
+        <button type="button" class="swap-button" id="swap-button" aria-label="Swap origin and destination">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+          </svg>
+        </button>
+        
+        <div class="input-group">
+          <label class="input-label">To</label>
+          <div class="input-wrapper">
+            <input type="text" id="destination-input" name="destination" placeholder="City or airport" autocomplete="off" th:value="${destination}">
+            <div id="destination-dropdown" class="autocomplete-dropdown"></div>
+          </div>
+        </div>
+      </form>
+      
+      <div class="search-options">
+        <div class="input-group">
+          <label class="input-label">Departure Date</label>
+          <input type="date" id="date-input" name="date" class="input-wrapper input" th:value="${date}">
+        </div>
+        
+        <div class="input-group">
+          <label class="input-label">Passengers</label>
+          <input type="number" id="adults-input" name="adults" min="1" value="1" class="input-wrapper input" th:value="${adults != null ? adults : 1}">
+        </div>
+        
+        <div class="input-group">
+          <label class="input-label">Currency</label>
+          <input type="text" id="currency-input" name="currency" placeholder="EUR" value="EUR" class="input-wrapper input" th:value="${currency != null ? currency : 'EUR'}">
+        </div>
+        
+        <div class="input-group">
+          <button type="submit" form="flight-search-form" class="search-button">Search Flights</button>
         </div>
       </div>
+    </div>
 
-      <div class="list" style="margin-top:16px;">
+    <div class="results-section">
+      <div th:if="${error != null}" class="error-message">
+        <strong>⚠️ Error</strong>
+        <p th:text="${error}">An error occurred</p>
+      </div>
+      
+      <div th:if="${offers == null || #lists.isEmpty(offers)}" class="empty-state" th:unless="${error != null}">
+        <div class="empty-state-icon">✈️</div>
+        <h3>Ready to search?</h3>
+        <p>Enter your departure and destination cities above to find the best flight deals.</p>
+      </div>
 
-        <div th:if="${offers == null || #lists.isEmpty(offers)}" class="muted">
-          No results yet. Fill the form and click Search.
-        </div>
-
-        <div th:if="${offers != null && !#lists.isEmpty(offers)}">
-          <div class="result" th:each="o : ${offers}">
-
-            <!-- LEFT -->
-            <div class="result__left">
-              <div class="badge"
-                   th:text="${o.airline != null ? o.airline : 'FL'}">
-                FL
-              </div>
-
-              <div>
-                <strong th:text="${o.airline != null ? o.airline : 'Airline'}">
-                  Airline
-                </strong>
-
-                <div class="muted"
-                     th:text="${o.flightNumber != null ? o.flightNumber : '—'}">
-                  —
-                </div>
-              </div>
-            </div>
-
-            <div class="kv"
-                 th:text="${#temporals.format(o.departureTime,'HH:mm')
-                 + ' ' + o.originAirportCode
-                 + ' → '
-                 + #temporals.format(o.arrivalTime,'HH:mm')
-                 + ' ' + o.destinationAirportCode}">
-              06:30 TIA → 08:45 FCO
-            </div>
-
-            <div class="price">
-              <div class="amt"
-                   th:text="${o.price != null ? o.currency + ' ' + o.price : '—'}">
-                EUR —
-              </div>
-              <button class="btn btn--primary" type="button">Select</button>
-            </div>
-
+      <div th:if="${offers != null && !#lists.isEmpty(offers)}">
+        <div class="results-header">
+          <div class="results-count">
+            Found <span th:text="${#lists.size(offers)}">0</span> flight<span th:if="${#lists.size(offers) != 1}">s</span>
           </div>
         </div>
 
+        <div th:each="o : ${offers}" class="flight-card">
+          <div class="flight-header">
+            <div class="flight-route">
+              <div class="flight-times">
+                <div>
+                  <div class="time-large" th:text="${#temporals.format(o.departureTime,'HH:mm')}">06:30</div>
+                  <div class="airport-code" th:text="${o.originAirportCode}">TIA</div>
+                </div>
+                <div class="flight-arrow">→</div>
+                <div>
+                  <div class="time-large" th:text="${#temporals.format(o.arrivalTime,'HH:mm')}">08:45</div>
+                  <div class="airport-code" th:text="${o.destinationAirportCode}">FCO</div>
+                </div>
+              </div>
+              <div class="flight-duration" th:if="${o.departureTime != null && o.arrivalTime != null}">
+                Duration: <span th:text="${#temporals.format(o.departureTime,'HH:mm') + ' - ' + #temporals.format(o.arrivalTime,'HH:mm')}"></span>
+              </div>
+            </div>
+            
+            <div class="flight-airline">
+              <div>
+                <div class="airline-badge" th:text="${o.airline != null ? o.airline : 'FL'}">FL</div>
+                <div class="flight-number" th:text="${o.flightNumber != null ? o.flightNumber : '—'}">—</div>
+              </div>
+            </div>
+            
+            <div class="flight-price">
+              <div class="price-amount" th:text="${o.price != null ? o.currency + ' ' + o.price : '—'}">EUR —</div>
+              <div class="price-currency">per person</div>
+            </div>
+          </div>
+          
+          <button class="select-button">Select Flight</button>
+        </div>
       </div>
-
     </div>
-  </section>
+  </div>
 </main>
 
 <footer class="footer">
@@ -121,6 +526,128 @@
     <div class="muted">© 2025 NextTrip</div>
   </div>
 </footer>
+
+<script>
+  // Set default date to tomorrow
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const dateInput = document.getElementById('date-input');
+  if (!dateInput.value) {
+    dateInput.value = tomorrow.toISOString().split('T')[0];
+  }
+
+  // Autocomplete functionality
+  let autocompleteTimeout;
+  const originInput = document.getElementById('origin-input');
+  const destinationInput = document.getElementById('destination-input');
+  const originDropdown = document.getElementById('origin-dropdown');
+  const destinationDropdown = document.getElementById('destination-dropdown');
+  
+  // Store selected airport data
+  let selectedOrigin = null;
+  let selectedDestination = null;
+
+  function setupAutocomplete(input, dropdown, isOrigin) {
+    input.addEventListener('input', (e) => {
+      const term = e.target.value.trim();
+      
+      clearTimeout(autocompleteTimeout);
+      
+      if (term.length < 2) {
+        dropdown.classList.remove('show');
+        if (isOrigin) selectedOrigin = null;
+        else selectedDestination = null;
+        return;
+      }
+      
+      autocompleteTimeout = setTimeout(async () => {
+        try {
+          const response = await fetch(`/api/flights/airports?keyword=${encodeURIComponent(term)}`);
+          const airports = await response.json();
+          
+          dropdown.innerHTML = '';
+          
+          if (airports.length === 0) {
+            dropdown.innerHTML = '<div class="autocomplete-item">No airports found</div>';
+          } else {
+            airports.forEach(airport => {
+              const div = document.createElement('div');
+              div.className = 'autocomplete-item';
+              div.innerHTML = `
+                <strong>${airport.displayName || airport.name || ''}</strong>
+                <span class="subtitle">${airport.cityName || ''}${airport.countryName ? ', ' + airport.countryName : ''}</span>
+              `;
+              div.addEventListener('click', () => {
+                input.value = airport.displayName || airport.name || '';
+                dropdown.classList.remove('show');
+                if (isOrigin) {
+                  selectedOrigin = airport;
+                } else {
+                  selectedDestination = airport;
+                }
+              });
+              dropdown.appendChild(div);
+            });
+          }
+          
+          dropdown.classList.add('show');
+        } catch (error) {
+          console.error('Autocomplete error:', error);
+        }
+      }, 300);
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.remove('show');
+      }
+    });
+  }
+
+  setupAutocomplete(originInput, originDropdown, true);
+  setupAutocomplete(destinationInput, destinationDropdown, false);
+
+  // Swap button
+  document.getElementById('swap-button').addEventListener('click', () => {
+    const originValue = originInput.value;
+    const destinationValue = destinationInput.value;
+    originInput.value = destinationValue;
+    destinationInput.value = originValue;
+    
+    // Swap selected airport data too
+    const temp = selectedOrigin;
+    selectedOrigin = selectedDestination;
+    selectedDestination = temp;
+  });
+
+  // Form submission
+  document.getElementById('flight-search-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const form = e.target;
+    const formData = new URLSearchParams();
+    
+    // Use selected airport display name (which contains IATA code in parentheses)
+    // or fall back to input value
+    const originValue = selectedOrigin ? (selectedOrigin.displayName || selectedOrigin.name) : originInput.value;
+    const destinationValue = selectedDestination ? (selectedDestination.displayName || selectedDestination.name) : destinationInput.value;
+    
+    // Ensure date is set (default to tomorrow if empty)
+    let dateValue = document.getElementById('date-input').value;
+    if (!dateValue) {
+      dateValue = tomorrow.toISOString().split('T')[0];
+    }
+    
+    formData.append('origin', originValue);
+    formData.append('destination', destinationValue);
+    formData.append('date', dateValue);
+    formData.append('adults', document.getElementById('adults-input').value);
+    formData.append('currency', document.getElementById('currency-input').value);
+    
+    window.location.href = `/flights/search-view/results?${formData.toString()}`;
+  });
+</script>
 
 <script src="/js/app.js"></script>
 </body>

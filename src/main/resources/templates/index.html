@@ -1,209 +1,1300 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="~{fragments/layout :: head('NextTrip')}"></head>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NextTrip - Travel Beyond the Map</title>
+    <link rel="stylesheet" href="/css/app.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --accent: #ec4899;
+            --accent-light: #f472b6;
+            --dark: #0f172a;
+            --dark-light: #1e293b;
+            --light: #f8fafc;
+            --white: #ffffff;
+            --gray: #64748b;
+            --gray-light: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--dark);
+            background: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Premium Animated Background */
+        .premium-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+                linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #667eea 100%);
+            background-size: 400% 400%;
+            animation: premiumGradient 20s ease infinite;
+        }
+
+        @keyframes premiumGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .premium-bg::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 70% 80%, rgba(255, 255, 255, 0.08) 0%, transparent 40%);
+            animation: float 25s ease-in-out infinite;
+        }
+
+        .premium-bg::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0);
+            background-size: 50px 50px;
+            opacity: 0.3;
+            animation: sparkle 3s linear infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(2deg); }
+            66% { transform: translate(-20px, 20px) rotate(-2deg); }
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Topbar */
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(30px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        }
+
+        .topbar__inner {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1.25rem 3rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-weight: 900;
+            font-size: 1.75rem;
+            color: var(--dark);
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .brand:hover {
+            transform: scale(1.05);
+        }
+
+        .brand__mark {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 900;
+            font-size: 1.25rem;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+        }
+
+        .nav {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+        }
+
+        .nav__link {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav__link:hover {
+            color: var(--primary);
+        }
+
+        .nav__link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            border-radius: 2px;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav__link:hover::after {
+            width: 100%;
+        }
+
+        .topbar__actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.875rem 2rem;
+            border-radius: 14px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn--ghost {
+            background: rgba(99, 102, 241, 0.08);
+            color: var(--primary);
+            border: 2px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .btn--ghost:hover {
+            background: rgba(99, 102, 241, 0.15);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.25);
+        }
+
+        .btn--primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn--primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.5);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 95vh;
+            display: flex;
+            align-items: center;
+            padding: 6rem 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero__content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 5rem;
+            align-items: center;
+            z-index: 1;
+            position: relative;
+        }
+
+        .hero__left {
+            animation: heroFadeIn 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes heroFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero__badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            border-radius: 100px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            animation: badgePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .hero__title {
+            font-family: 'Playfair Display', serif;
+            font-size: 5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            color: white;
+            margin-bottom: 2rem;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            letter-spacing: -0.02em;
+        }
+
+        .hero__title .accent {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 50%, #4facfe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% 200%;
+            animation: gradientText 3s ease infinite;
+        }
+
+        @keyframes gradientText {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .hero__subtitle {
+            font-size: 1.375rem;
+            color: rgba(255, 255, 255, 0.95);
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+            font-weight: 400;
+        }
+
+        .hero__actions {
+            display: flex;
+            gap: 1.25rem;
+            margin-bottom: 4rem;
+        }
+
+        .hero__stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3rem;
+            padding: 2.5rem 2rem;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.15));
+            backdrop-filter: blur(40px) saturate(200%);
+            border-radius: 28px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 
+                0 12px 40px rgba(0, 0, 0, 0.15),
+                0 0 0 1px rgba(255, 255, 255, 0.2) inset,
+                0 2px 10px rgba(255, 255, 255, 0.3) inset;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero__stats::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(99, 102, 241, 0.1) 50%, transparent 70%);
+            animation: statsGlow 8s ease-in-out infinite;
+        }
+
+        .hero__stats::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(236, 72, 153, 0.05));
+            pointer-events: none;
+        }
+
+        @keyframes statsGlow {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(180deg); }
+        }
+
+        .stat {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: -1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2px;
+            height: 60%;
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.4), transparent);
+        }
+
+        .stat__num {
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat__label {
+            font-size: 0.875rem;
+            color: var(--dark);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            opacity: 0.8;
+        }
+
+        /* Premium Search Card */
+        .hero__card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(30px) saturate(180%);
+            border-radius: 28px;
+            padding: 3rem;
+            box-shadow: 
+                0 25px 80px rgba(0, 0, 0, 0.25),
+                0 0 0 1px rgba(255, 255, 255, 0.5);
+            animation: cardFloat 1s ease 0.3s both;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero__card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            animation: cardGlow 4s ease-in-out infinite;
+        }
+
+        @keyframes cardFloat {
+            from {
+                opacity: 0;
+                transform: translateX(40px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        @keyframes cardGlow {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(180deg); }
+        }
+
+        .card__title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            color: var(--dark);
+            position: relative;
+            z-index: 1;
+        }
+
+        .searchbar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .input {
+            padding: 1.125rem 1.5rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 16px;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+            font-family: inherit;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .input::placeholder {
+            color: var(--gray);
+        }
+
+        .card__hint {
+            margin-top: 1.25rem;
+            font-size: 0.875rem;
+            text-align: center;
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        /* Sections */
+        .section {
+            padding: 6rem 3rem;
+            position: relative;
+        }
+
+        .section--alt {
+            background: white;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section__head {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section__head h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin-bottom: 1.25rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.02em;
+        }
+
+        .section__head p {
+            font-size: 1.25rem;
+            color: var(--gray);
+            font-weight: 400;
+        }
+
+        .section__head--row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            text-align: left;
+        }
+
+        .section__head--row h2,
+        .section__head--row p {
+            text-align: left;
+        }
+
+        /* Steps */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .step {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 28px;
+            padding: 3.5rem 3rem;
+            text-align: center;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid rgba(99, 102, 241, 0.1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        }
+
+        .step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .step::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .step:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 30px 60px rgba(99, 102, 241, 0.25);
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .step:hover::before {
+            transform: scaleX(1);
+        }
+
+        .step:hover::after {
+            opacity: 1;
+        }
+
+        .step__icon {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+
+        .step:hover .step__icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .step__title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .step p {
+            color: var(--gray);
+            line-height: 1.7;
+        }
+
+        /* Packs */
+        .packs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .pack {
+            background: white;
+            border-radius: 28px;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid var(--gray-light);
+            display: block;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .pack::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), rgba(236, 72, 153, 0.08));
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .pack:hover {
+            transform: translateY(-20px) scale(1.03);
+            box-shadow: 0 40px 80px rgba(99, 102, 241, 0.25);
+            border-color: var(--primary);
+        }
+
+        .pack:hover::after {
+            opacity: 1;
+        }
+
+        .pack__body {
+            position: relative;
+            z-index: 1;
+        }
+
+        .pack__media {
+            height: 340px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            padding: 2rem;
+            overflow: hidden;
+        }
+
+        .pack__media::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.4) 40%, rgba(0,0,0,0.1) 70%, transparent 100%);
+            z-index: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .pack:hover .pack__media::before {
+            opacity: 0.9;
+        }
+
+        .pack__media img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .pack:hover .pack__media img {
+            transform: scale(1.15);
+        }
+
+        .pack__media--barcelona {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .pack__media--paris {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .pack__media--alps {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .pack__place {
+            font-size: 2rem;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+            position: relative;
+            z-index: 2;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .tag {
+            position: absolute;
+            top: 1.5rem;
+            left: 1.5rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            z-index: 3;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .pack:hover .tag {
+            transform: scale(1.05);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .tag--best {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+        }
+
+        .tag--adventure {
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            color: white;
+        }
+
+        .pack__body {
+            padding: 2.5rem;
+        }
+
+        .pack__title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--dark);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .pack__meta {
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        .pack__foot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .price {
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--primary);
+        }
+
+        .price span {
+            font-size: 1rem;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .btn--small {
+            padding: 0.75rem 1.75rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn--small:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        /* Testimonials */
+        .testimonials {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .testimonial {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-radius: 28px;
+            padding: 3.5rem 3rem;
+            border: 2px solid rgba(99, 102, 241, 0.1);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        }
+
+        .testimonial::before {
+            content: '"';
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            font-size: 8rem;
+            font-family: 'Playfair Display', serif;
+            color: rgba(99, 102, 241, 0.1);
+            line-height: 1;
+        }
+
+        .testimonial:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 25px 50px rgba(99, 102, 241, 0.2);
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .stars {
+            color: #fbbf24;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: 2px;
+        }
+
+        .testimonial p {
+            font-size: 1.125rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+            color: var(--dark);
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        .testimonial .author {
+            color: var(--gray);
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        /* CTA */
+        .cta {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 50%, var(--accent) 100%);
+            background-size: 200% 200%;
+            animation: ctaGradient 8s ease infinite;
+            border-radius: 32px;
+            padding: 5rem;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes ctaGradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .cta::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: ctaGlow 6s ease-in-out infinite;
+        }
+
+        @keyframes ctaGlow {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(180deg); }
+        }
+
+        .cta h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 1.25rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta p {
+            font-size: 1.25rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta__actions {
+            display: flex;
+            gap: 1.25rem;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta .btn {
+            background: white;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .cta .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 4rem 3rem 2rem;
+            text-align: center;
+        }
+
+        footer .brand {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        footer p {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2rem;
+            font-size: 1.125rem;
+        }
+
+        footer .copyright {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.875rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .hero__content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .hero__card {
+                max-width: 600px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 968px) {
+            .hero__title {
+                font-size: 3.5rem;
+            }
+
+            .nav {
+                display: none;
+            }
+
+            .section__head--row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .hero {
+                min-height: auto;
+                padding: 3rem 1.5rem;
+            }
+
+            .hero__title {
+                font-size: 2.5rem;
+            }
+
+            .section {
+                padding: 4rem 1.5rem;
+            }
+
+            .section__head h2 {
+                font-size: 2.5rem;
+            }
+
+            .hero__stats {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .stat:not(:last-child)::after {
+                display: none;
+            }
+
+            .packs {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
 <body>
-<header class="topbar">
-    <div class="container topbar__inner">
-        <a th:href="@{/index}" class="brand">
-            <span class="brand__mark">NT</span>
-            <span class="brand__name">NextTrip</span>
-        </a>
+    <div class="premium-bg"></div>
 
-        <nav class="nav">
-            <a th:href="@{/index}" class="nav__link">Explore</a>
-            <a th:href="@{/flights/search-view}" class="nav__link">Flight Search</a>
-            <a th:href="@{/travel-packs}" class="nav__link">Travel Packs</a>
-            <a th:href="@{/chat}" class="nav__link">AI Chat</a>
+    <header class="topbar">
+        <div class="topbar__inner">
+            <a th:href="@{/index}" class="brand">
+                <span class="brand__mark">NT</span>
+                <span class="brand__name">NextTrip</span>
+            </a>
 
-        </nav>
+            <nav class="nav">
+                <a th:href="@{/index}" class="nav__link">Explore</a>
+                <a th:href="@{/flights/search-view}" class="nav__link">Flight Search</a>
+                <a th:href="@{/timetable}" class="nav__link">Timetable</a>
+                <a th:href="@{/travel-packs}" class="nav__link">Travel Packs</a>
+                <a th:href="@{/chat}" class="nav__link">AI Chat</a>
+            </nav>
 
-        <div class="topbar__actions">
-            <a class="btn btn--ghost" th:href="@{/chat}">Ask AI</a>
-            <a class="btn btn--primary" th:href="@{/travel-packs}">Explore packs</a>
-        </div>
-    </div>
-</header>
-
-<main class="page">
-    <section class="hero">
-        <div class="container hero__grid">
-            <div>
-                <span class="pill">AI-powered travel</span>
-
-                <h1 class="hero__title">
-                    NextTrip — travel
-                    <span class="accent">beyond the map</span>
-                </h1>
-
-                <p class="hero__subtitle muted">
-                    Discover destinations, compare prices, and plan your trip with AI.
-                </p>
-
-                <div class="hero__actions">
-                    <a th:href="@{/flights/search-view}" class="btn btn--primary">Search Flights</a>
-                    <a th:href="@{/travel-packs}" class="btn">View Packs</a>
-                </div>
-
-                <div class="hero__stats">
-                    <div class="stat">
-                        <div class="stat__num">1k+</div>
-                        <div class="stat__label muted">Travelers</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat__num">120+</div>
-                        <div class="stat__label muted">Curated packs</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat__num">24/7</div>
-                        <div class="stat__label muted">AI assistant</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Search card -->
-            <div class="card card__pad hero__card">
-                <div class="card__title">Quick search</div>
-                <form class="searchbar" th:action="@{/flights/search-view/results}" method="get">
-                    <input class="input" name="origin" placeholder="From (TIA)" value="TIA">
-                    <input class="input" name="destination" placeholder="To (BUD)" value="BUD">
-                    <input class="input" name="date" type="date">
-                    <input class="input" name="adults" type="number" min="1" value="1" style="max-width:110px">
-                    <button class="btn btn--primary" type="submit">Search</button>
-                </form>
-                <div class="card__hint muted">Tip: enter airport codes for fastest results.</div>
+            <div class="topbar__actions">
+                <a class="btn btn--ghost" th:href="@{/chat}">Ask AI</a>
+                <a class="btn btn--primary" th:href="@{/travel-packs}">Explore Packs</a>
             </div>
         </div>
-    </section>
+    </header>
 
-    <!-- HOW IT WORKS -->
-    <section class="section">
-        <div class="container">
-            <div class="section__head">
-                <h2>How it works</h2>
-                <p class="muted">Book your next trip in three simple steps.</p>
-            </div>
-
-            <div class="steps">
-                <div class="step card card__pad">
-                    <div class="step__icon">🔎</div>
-                    <div class="step__title">Search routes</div>
-                    <div class="muted">Choose your destination and dates to see available options.</div>
-                </div>
-                <div class="step card card__pad">
-                    <div class="step__icon">📊</div>
-                    <div class="step__title">Compare prices</div>
-                    <div class="muted">See multiple airlines & packages in one place.</div>
-                </div>
-                <div class="step card card__pad">
-                    <div class="step__icon">✅</div>
-                    <div class="step__title">Book fast</div>
-                    <div class="muted">Secure checkout and instant confirmation.</div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="section section--alt">
-        <div class="container">
-            <div class="section__head section__head--row">
-                <div>
-                    <h2>Featured Travel Packs</h2>
-                    <p class="muted">Curated trips with hotel, activities, and flexible options.</p>
-                </div>
-                <a class="btn" th:href="@{/travel-packs}">See all packs</a>
-            </div>
-
-            <div class="packs">
-                <a class="pack card" th:href="@{/travel-packs}">
-                    <div class="pack__media pack__media--barcelona">
-                        <span class="tag tag--best">Best seller</span>
-                        <div class="pack__place">Barcelona</div>
+    <main>
+        <section class="hero">
+            <div class="hero__content">
+                <div class="hero__left">
+                    <span class="hero__badge">✨ AI-Powered Travel</span>
+                    <h1 class="hero__title">
+                        NextTrip — travel
+                        <span class="accent">beyond the map</span>
+                    </h1>
+                    <p class="hero__subtitle">
+                        Discover destinations, compare prices, and plan your perfect trip with AI-powered recommendations. 
+                        Your next adventure starts here.
+                    </p>
+                    <div class="hero__actions">
+                        <a th:href="@{/flights/search-view}" class="btn btn--primary">Search Flights</a>
+                        <a th:href="@{/travel-packs}" class="btn" style="background: rgba(255,255,255,0.25); color: white; backdrop-filter: blur(10px); border: 2px solid rgba(255,255,255,0.3);">View Packs</a>
                     </div>
-                    <div class="pack__body">
-                        <div class="pack__title">Barcelona Beach Escape</div>
-                        <div class="muted pack__meta">5 days • Hotel • City tour • Beach access</div>
-                        <div class="pack__foot">
-                            <div class="price">from €599<span class="muted">/person</span></div>
-                            <span class="btn btn--small">View</span>
+                    <div class="hero__stats">
+                        <div class="stat">
+                            <div class="stat__num">1k+</div>
+                            <div class="stat__label">Travelers</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat__num">120+</div>
+                            <div class="stat__label">Curated Packs</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat__num">24/7</div>
+                            <div class="stat__label">AI Assistant</div>
                         </div>
                     </div>
-                </a>
+                </div>
 
-                <a class="pack card" th:href="@{/travel-packs}">
-                    <div class="pack__media pack__media--paris">
-                        <span class="tag">City break</span>
-                        <div class="pack__place">Paris</div>
+                <div class="hero__card">
+                    <div class="card__title">Quick Search</div>
+                    <form class="searchbar" th:action="@{/flights/search-view/results}" method="get">
+                        <input class="input" name="origin" placeholder="From (City or Airport)" value="" autocomplete="off">
+                        <input class="input" name="destination" placeholder="To (City or Airport)" value="" autocomplete="off">
+                        <input class="input" name="date" type="date">
+                        <input class="input" name="adults" type="number" min="1" value="1" placeholder="Passengers">
+                        <button class="btn btn--primary" type="submit" style="width: 100%; margin-top: 0.5rem;">Search Flights</button>
+                    </form>
+                    <div class="card__hint">
+                        <span>💡</span>
+                        <span>Tip: Enter city names or airport codes</span>
                     </div>
-                    <div class="pack__body">
-                        <div class="pack__title">Paris City Romance</div>
-                        <div class="muted pack__meta">4 days • Boutique hotel • Seine cruise</div>
-                        <div class="pack__foot">
-                            <div class="price">from €749<span class="muted">/person</span></div>
-                            <span class="btn btn--small">View</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section__head">
+                    <h2>How It Works</h2>
+                    <p>Book your next trip in three simple steps</p>
+                </div>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step__icon">🔎</div>
+                        <div class="step__title">Search Routes</div>
+                        <p>Choose your destination and dates to see available options from multiple airlines.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step__icon">📊</div>
+                        <div class="step__title">Compare Prices</div>
+                        <p>See multiple airlines, packages, and travel options all in one place.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step__icon">✅</div>
+                        <div class="step__title">Book Fast</div>
+                        <p>Secure checkout and instant confirmation for your perfect trip.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section section--alt">
+            <div class="container">
+                <div class="section__head section__head--row">
+                    <div>
+                        <h2>Featured Travel Packs</h2>
+                        <p>Curated trips with hotel, activities, and flexible options</p>
+                    </div>
+                    <a class="btn" th:href="@{/travel-packs}" style="background: var(--gray-light); color: var(--dark);">See All Packs</a>
+                </div>
+
+                <div class="packs">
+                    <a class="pack" th:href="@{/travel-packs}">
+                        <div class="pack__media pack__media--barcelona">
+                            <img src="https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=800&q=80" alt="Barcelona" loading="lazy">
+                            <span class="tag tag--best">Best Seller</span>
+                            <div class="pack__place">Barcelona</div>
                         </div>
-                    </div>
-                </a>
-
-                <a class="pack card" th:href="@{/travel-packs}">
-                    <div class="pack__media pack__media--alps">
-                        <span class="tag tag--adventure">Adventure</span>
-                        <div class="pack__place">Interlaken</div>
-                    </div>
-                    <div class="pack__body">
-                        <div class="pack__title">Swiss Alps Adventure</div>
-                        <div class="muted pack__meta">6 days • Mountain lodge • Hiking • Lake tour</div>
-                        <div class="pack__foot">
-                            <div class="price">from €1299<span class="muted">/person</span></div>
-                            <span class="btn btn--small">View</span>
+                        <div class="pack__body">
+                            <div class="pack__title">Barcelona Beach Escape</div>
+                            <div class="pack__meta">5 days • Hotel • City tour • Beach access</div>
+                            <div class="pack__foot">
+                                <div class="price">from €599<span>/person</span></div>
+                                <span class="btn btn--small">View</span>
+                            </div>
                         </div>
+                    </a>
+
+                    <a class="pack" th:href="@{/travel-packs}">
+                        <div class="pack__media pack__media--paris">
+                            <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=80" alt="Paris" loading="lazy">
+                            <span class="tag">City Break</span>
+                            <div class="pack__place">Paris</div>
+                        </div>
+                        <div class="pack__body">
+                            <div class="pack__title">Paris City Romance</div>
+                            <div class="pack__meta">4 days • Boutique hotel • Seine cruise</div>
+                            <div class="pack__foot">
+                                <div class="price">from €749<span>/person</span></div>
+                                <span class="btn btn--small">View</span>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a class="pack" th:href="@{/travel-packs}">
+                        <div class="pack__media pack__media--alps">
+                            <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80" alt="Swiss Alps" loading="lazy">
+                            <span class="tag tag--adventure">Adventure</span>
+                            <div class="pack__place">Interlaken</div>
+                        </div>
+                        <div class="pack__body">
+                            <div class="pack__title">Swiss Alps Adventure</div>
+                            <div class="pack__meta">6 days • Mountain lodge • Hiking • Lake tour</div>
+                            <div class="pack__foot">
+                                <div class="price">from €1299<span>/person</span></div>
+                                <span class="btn btn--small">View</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="container">
+                <div class="section__head">
+                    <h2>What Travelers Say</h2>
+                    <p>Real feedback from people using NextTrip</p>
+                </div>
+
+                <div class="testimonials">
+                    <div class="testimonial">
+                        <div class="stars">★★★★★</div>
+                        <p>"The packs are super clean and the flight comparison saved me money. Highly recommend!"</p>
+                        <div class="author">Sara, London</div>
                     </div>
-                </a>
+                    <div class="testimonial">
+                        <div class="stars">★★★★★</div>
+                        <p>"Booked a weekend trip in minutes. The UI feels premium and the AI suggestions are spot on."</p>
+                        <div class="author">Marco, Milan</div>
+                    </div>
+                    <div class="testimonial">
+                        <div class="stars">★★★★★</div>
+                        <p>"Loved the suggestions and the itinerary ideas. Perfect for families planning vacations."</p>
+                        <div class="author">Emma, Sydney</div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section class="section">
+        <section class="section">
+            <div class="container">
+                <div class="cta">
+                    <h3>Ready to Plan Your Next Trip?</h3>
+                    <p>Explore curated packs or search flights instantly</p>
+                    <div class="cta__actions">
+                        <a class="btn" th:href="@{/travel-packs}">Explore Packs</a>
+                        <a class="btn" th:href="@{/chat}">Ask the AI</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
         <div class="container">
-            <div class="section__head">
-                <h2>What travelers say</h2>
-                <p class="muted">Real feedback from people using NextTrip.</p>
+            <div class="brand" style="justify-content: center;">
+                <span class="brand__mark">NT</span>
+                <span class="brand__name">NextTrip</span>
             </div>
-
-            <div class="testimonials">
-                <div class="card card__pad">
-                    <div class="stars">★★★★★</div>
-                    <p>“The packs are super clean and the flight comparison saved me money.”</p>
-                    <div class="muted">Sara, London</div>
-                </div>
-                <div class="card card__pad">
-                    <div class="stars">★★★★★</div>
-                    <p>“Booked a weekend trip in minutes. The UI feels premium.”</p>
-                    <div class="muted">Marco, Milan</div>
-                </div>
-                <div class="card card__pad">
-                    <div class="stars">★★★★★</div>
-                    <p>“Loved the suggestions and the itinerary ideas. Perfect for families.”</p>
-                    <div class="muted">Emma, Sydney</div>
-                </div>
-            </div>
+            <p>Travel beyond the map</p>
+            <div class="copyright">© 2025 NextTrip. All rights reserved.</div>
         </div>
-    </section>
+    </footer>
 
-    <section class="section">
-        <div class="container">
-            <div class="cta card card__pad">
-                <div>
-                    <h3>Ready to plan your next trip?</h3>
-                    <p class="muted">Explore curated packs or search flights instantly.</p>
-                </div>
-                <div class="cta__actions">
-                    <a class="btn btn--primary" th:href="@{/travel-packs}">Explore packs</a>
-                    <a class="btn" th:href="@{/chat}">Ask the AI</a>
-                </div>
-            </div>
-        </div>
-    </section>
-</main>
+    <script>
+        // Set default date to tomorrow
+        const dateInput = document.querySelector('input[name="date"]');
+        if (dateInput && !dateInput.value) {
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            dateInput.value = tomorrow.toISOString().split('T')[0];
+        }
+
+        // Add smooth scroll behavior
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>

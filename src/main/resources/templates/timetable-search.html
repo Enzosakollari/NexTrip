@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Timetable Search • NextTrip</title>
+
+  <link rel="stylesheet" href="/css/app.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    .autocomplete-container {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+    
+    .autocomplete-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      max-height: 300px;
+      overflow-y: auto;
+      z-index: 1000;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      display: none;
+    }
+    
+    .autocomplete-dropdown.show {
+      display: block;
+    }
+    
+    .autocomplete-item {
+      padding: 10px 15px;
+      cursor: pointer;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .autocomplete-item:hover {
+      background-color: #f5f5f5;
+    }
+    
+    .autocomplete-item:last-child {
+      border-bottom: none;
+    }
+    
+    .autocomplete-item strong {
+      display: block;
+      color: #333;
+    }
+    
+    .autocomplete-item .icon {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    
+    .route-result {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    
+    .route-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+    
+    .route-route {
+      font-size: 18px;
+      font-weight: 600;
+      color: #333;
+    }
+    
+    .route-duration {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .leg {
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+      border-left: 3px solid #4a90e2;
+      padding-left: 16px;
+      margin-bottom: 8px;
+    }
+    
+    .leg-type {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-right: 12px;
+      min-width: 80px;
+      text-align: center;
+    }
+    
+    .leg-type.train {
+      background: #039;
+      color: white;
+    }
+    
+    .leg-type.tram {
+      background: #9d1b6e;
+      color: white;
+    }
+    
+    .leg-type.bus {
+      background: #0066cc;
+      color: white;
+    }
+    
+    .leg-type.walk {
+      background: #999;
+      color: white;
+    }
+    
+    .leg-info {
+      flex: 1;
+    }
+    
+    .leg-line {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 4px;
+    }
+    
+    .leg-stops {
+      font-size: 12px;
+      color: #666;
+    }
+    
+    .leg-time {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+    
+    .tab {
+      padding: 12px 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      color: #666;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+    }
+    
+    .tab.active {
+      color: #4a90e2;
+      border-bottom-color: #4a90e2;
+      font-weight: 600;
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    .stationboard-item {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .stationboard-time {
+      font-weight: 600;
+      min-width: 80px;
+      color: #333;
+    }
+    
+    .stationboard-line {
+      min-width: 60px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 12px;
+      margin: 0 12px;
+    }
+    
+    .stationboard-destination {
+      flex: 1;
+      color: #666;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+    }
+    
+    .error {
+      background: #fee;
+      color: #c33;
+      padding: 12px;
+      border-radius: 4px;
+      margin: 16px 0;
+    }
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="container topbar__inner">
+    <a href="/" class="brand">
+      <span class="brand__mark">NT</span>
+      <span class="brand__name">NextTrip</span>
+    </a>
+
+    <nav class="nav">
+      <a href="/index" class="nav__link">Explore</a>
+      <a href="/flights-search" class="nav__link">Flight Search</a>
+      <a href="/timetable" class="nav__link nav__link--active">Timetable</a>
+      <a href="/travel-packs" class="nav__link">Travel Packs</a>
+      <a href="/chat" class="nav__link">AI Chat</a>
+    </nav>
+
+    <div class="topbar__actions">
+      <a class="btn btn--ghost" href="/login">Login</a>
+      <a class="btn btn--primary" href="/travel-packs">Search Trips</a>
+    </div>
+  </div>
+</header>
+
+<main class="page">
+  <section class="section">
+    <div class="container">
+
+      <div class="section__head">
+        <h2>Swiss Public Transport Timetable</h2>
+        <p class="muted">Search routes, stations, and schedules powered by search.ch</p>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="route">Route Search</button>
+        <button class="tab" data-tab="stationboard">Station Board</button>
+        <button class="tab" data-tab="station">Station Info</button>
+      </div>
+
+      <!-- Route Search Tab -->
+      <div id="route-tab" class="tab-content active">
+        <div class="card card__pad">
+          <form id="route-form" class="searchbar">
+            <div class="autocomplete-container">
+              <input type="text" id="from-input" class="input" placeholder="From (e.g. Bern)" autocomplete="off">
+              <div id="from-dropdown" class="autocomplete-dropdown"></div>
+            </div>
+            <div class="autocomplete-container">
+              <input type="text" id="to-input" class="input" placeholder="To (e.g. Zürich)" autocomplete="off">
+              <div id="to-dropdown" class="autocomplete-dropdown"></div>
+            </div>
+            <input type="date" id="route-date" class="input">
+            <input type="time" id="route-time" class="input">
+            <button class="btn btn--primary" type="submit">Search Route</button>
+          </form>
+        </div>
+
+        <div id="route-results" style="margin-top: 20px;"></div>
+      </div>
+
+      <!-- Station Board Tab -->
+      <div id="stationboard-tab" class="tab-content">
+        <div class="card card__pad">
+          <form id="stationboard-form" class="searchbar">
+            <div class="autocomplete-container" style="flex: 1;">
+              <input type="text" id="stationboard-input" class="input" placeholder="Station (e.g. Bern)" autocomplete="off">
+              <div id="stationboard-dropdown" class="autocomplete-dropdown"></div>
+            </div>
+            <input type="date" id="stationboard-date" class="input">
+            <input type="time" id="stationboard-time" class="input">
+            <select id="stationboard-mode" class="input" style="max-width:150px">
+              <option value="depart">Departures</option>
+              <option value="arrival">Arrivals</option>
+            </select>
+            <input type="number" id="stationboard-limit" class="input" placeholder="Limit" value="15" style="max-width:100px">
+            <button class="btn btn--primary" type="submit">Get Station Board</button>
+          </form>
+        </div>
+
+        <div id="stationboard-results" style="margin-top: 20px;"></div>
+      </div>
+
+      <!-- Station Info Tab -->
+      <div id="station-tab" class="tab-content">
+        <div class="card card__pad">
+          <form id="station-form" class="searchbar">
+            <div class="autocomplete-container" style="flex: 1;">
+              <input type="text" id="station-input" class="input" placeholder="Station (e.g. Bern)" autocomplete="off">
+              <div id="station-dropdown" class="autocomplete-dropdown"></div>
+            </div>
+            <button class="btn btn--primary" type="submit">Get Station Info</button>
+          </form>
+        </div>
+
+        <div id="station-results" style="margin-top: 20px;"></div>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <div>
+      <strong>NextTrip</strong>
+      <p class="muted">Travel beyond the map.</p>
+    </div>
+    <div class="muted">© 2025 NextTrip</div>
+  </div>
+</footer>
+
+<script>
+  // Tab switching
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      const tabName = tab.dataset.tab;
+      
+      // Update tabs
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      
+      // Update content
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.getElementById(tabName + '-tab').classList.add('active');
+    });
+  });
+
+  // Autocomplete functionality
+  let autocompleteTimeout;
+  
+  function setupAutocomplete(inputId, dropdownId, onSelect) {
+    const input = document.getElementById(inputId);
+    const dropdown = document.getElementById(dropdownId);
+    
+    input.addEventListener('input', (e) => {
+      const term = e.target.value.trim();
+      
+      // Clear selected station when user types manually
+      if (inputId === 'from-input') {
+        selectedFromStation = null;
+      } else if (inputId === 'to-input') {
+        selectedToStation = null;
+      }
+      
+      clearTimeout(autocompleteTimeout);
+      
+      if (term.length < 2) {
+        dropdown.classList.remove('show');
+        return;
+      }
+      
+      autocompleteTimeout = setTimeout(async () => {
+        try {
+          const response = await fetch(`/api/timetable/completion?term=${encodeURIComponent(term)}`);
+          const suggestions = await response.json();
+          
+          dropdown.innerHTML = '';
+          
+          if (suggestions.length === 0) {
+            dropdown.innerHTML = '<div class="autocomplete-item">No suggestions found</div>';
+          } else {
+            suggestions.forEach(item => {
+              const div = document.createElement('div');
+              div.className = 'autocomplete-item';
+              div.innerHTML = `<strong>${item.label || item.html || ''}</strong>`;
+              div.addEventListener('click', () => {
+                input.value = item.label || '';
+                dropdown.classList.remove('show');
+                if (onSelect) onSelect(item);
+              });
+              dropdown.appendChild(div);
+            });
+          }
+          
+          dropdown.classList.add('show');
+        } catch (error) {
+          console.error('Autocomplete error:', error);
+        }
+      }, 300);
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.remove('show');
+      }
+    });
+  }
+
+  // Store selected station data
+  let selectedFromStation = null;
+  let selectedToStation = null;
+  
+  // Setup autocomplete for all inputs
+  setupAutocomplete('from-input', 'from-dropdown', (item) => {
+    selectedFromStation = item;
+  });
+  setupAutocomplete('to-input', 'to-dropdown', (item) => {
+    selectedToStation = item;
+  });
+  setupAutocomplete('stationboard-input', 'stationboard-dropdown');
+  setupAutocomplete('station-input', 'station-dropdown');
+
+  // Route search
+  document.getElementById('route-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    // Use station ID if available from autocomplete, otherwise use the input value
+    const fromInput = document.getElementById('from-input').value;
+    const toInput = document.getElementById('to-input').value;
+    
+    // Prefer ID if available, otherwise use label or input value
+    const from = selectedFromStation?.id || selectedFromStation?.label || fromInput;
+    const to = selectedToStation?.id || selectedToStation?.label || toInput;
+    
+    const date = document.getElementById('route-date').value;
+    const time = document.getElementById('route-time').value;
+    
+    if (!from || !to) {
+      alert('Please enter both from and to stations');
+      return;
+    }
+    
+    const resultsDiv = document.getElementById('route-results');
+    resultsDiv.innerHTML = '<div class="loading">Searching routes...</div>';
+    
+    try {
+      let url = `/api/timetable/route?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`;
+      if (date) url += `&date=${date}`;
+      if (time) url += `&time=${time}`;
+      
+      const response = await fetch(url);
+      const data = await response.json();
+      
+      if (data.connections && data.connections.length > 0) {
+        let html = `<div style="margin-bottom: 16px; color: #666;">
+          Found ${data.count || data.connections.length} connection(s)
+        </div>`;
+        
+        data.connections.forEach(conn => {
+          const duration = Math.floor(conn.duration / 60);
+          html += `
+            <div class="route-result">
+              <div class="route-header">
+                <div class="route-route">${conn.from} → ${conn.to}</div>
+                <div class="route-duration">${Math.floor(duration / 60)}h ${duration % 60}m</div>
+              </div>
+              <div>
+                ${conn.legs ? conn.legs.map(leg => {
+                  const legType = leg.type || 'train';
+                  const legTypeClass = legType.replace('_', '-');
+                  return `
+                    <div class="leg">
+                      <span class="leg-type ${legTypeClass}">${leg.line || legType}</span>
+                      <div class="leg-info">
+                        <div class="leg-line">${leg.name || ''} ${leg.number || ''}</div>
+                        <div class="leg-time">${leg.departure || ''} → ${leg.arrival || ''}</div>
+                        ${leg.terminal ? `<div class="leg-stops">To: ${leg.terminal}</div>` : ''}
+                      </div>
+                    </div>
+                  `;
+                }).join('') : ''}
+              </div>
+            </div>
+          `;
+        });
+        
+        resultsDiv.innerHTML = html;
+      } else {
+        resultsDiv.innerHTML = '<div class="muted">No routes found</div>';
+      }
+    } catch (error) {
+      console.error('Route search error:', error);
+      resultsDiv.innerHTML = '<div class="error">Error searching routes. Please try again.</div>';
+    }
+  });
+
+  // Station board search
+  document.getElementById('stationboard-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const stop = document.getElementById('stationboard-input').value;
+    const date = document.getElementById('stationboard-date').value;
+    const time = document.getElementById('stationboard-time').value;
+    const mode = document.getElementById('stationboard-mode').value;
+    const limit = document.getElementById('stationboard-limit').value || 15;
+    
+    if (!stop) {
+      alert('Please enter a station');
+      return;
+    }
+    
+    const resultsDiv = document.getElementById('stationboard-results');
+    resultsDiv.innerHTML = '<div class="loading">Loading station board...</div>';
+    
+    try {
+      let url = `/api/timetable/stationboard?stop=${encodeURIComponent(stop)}&mode=${mode}&limit=${limit}`;
+      if (date) url += `&date=${date}`;
+      if (time) url += `&time=${time}`;
+      url += '&show_tracks=1';
+      
+      const response = await fetch(url);
+      const data = await response.json();
+      
+      if (data.connections && data.connections.length > 0) {
+        let html = `<div style="margin-bottom: 16px;">
+          <strong>${data.stop ? data.stop.name : stop}</strong>
+        </div>`;
+        
+        data.connections.forEach(conn => {
+          const timeStr = conn.time ? new Date(conn.time).toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'}) : '';
+          const bgColor = conn.color ? '#' + conn.color.split('~')[0] : '#039';
+          html += `
+            <div class="stationboard-item">
+              <div class="stationboard-time">${timeStr}</div>
+              <div class="stationboard-line" style="background: ${bgColor}; color: white;">
+                ${conn.line || conn.type_name || ''}
+              </div>
+              <div class="stationboard-destination">
+                ${conn.terminal ? conn.terminal.name : ''}
+              </div>
+            </div>
+          `;
+        });
+        
+        resultsDiv.innerHTML = html;
+      } else {
+        resultsDiv.innerHTML = '<div class="muted">No connections found</div>';
+      }
+    } catch (error) {
+      console.error('Station board error:', error);
+      resultsDiv.innerHTML = '<div class="error">Error loading station board. Please try again.</div>';
+    }
+  });
+
+  // Station info search
+  document.getElementById('station-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const stop = document.getElementById('station-input').value;
+    
+    if (!stop) {
+      alert('Please enter a station');
+      return;
+    }
+    
+    const resultsDiv = document.getElementById('station-results');
+    resultsDiv.innerHTML = '<div class="loading">Loading station info...</div>';
+    
+    try {
+      const response = await fetch(`/api/timetable/station?stop=${encodeURIComponent(stop)}`);
+      const data = await response.json();
+      
+      if (data.id) {
+        resultsDiv.innerHTML = `
+          <div class="card card__pad">
+            <h3>${data.name || stop}</h3>
+            <div style="margin-top: 16px;">
+              <p><strong>ID:</strong> ${data.id}</p>
+              <p><strong>Type:</strong> ${data.type || 'N/A'}</p>
+              ${data.lat && data.lon ? `<p><strong>Coordinates:</strong> ${data.lat}, ${data.lon}</p>` : ''}
+              ${data.x && data.y ? `<p><strong>Swiss Coordinates:</strong> ${data.x}, ${data.y}</p>` : ''}
+            </div>
+          </div>
+        `;
+      } else {
+        resultsDiv.innerHTML = '<div class="muted">Station not found</div>';
+      }
+    } catch (error) {
+      console.error('Station info error:', error);
+      resultsDiv.innerHTML = '<div class="error">Error loading station info. Please try again.</div>';
+    }
+  });
+
+  // Set default date/time
+  const now = new Date();
+  const dateStr = now.toISOString().split('T')[0];
+  const timeStr = now.toTimeString().split(' ')[0].substring(0, 5);
+  
+  document.getElementById('route-date').value = dateStr;
+  document.getElementById('route-time').value = timeStr;
+  document.getElementById('stationboard-date').value = dateStr;
+  document.getElementById('stationboard-time').value = timeStr;
+</script>
+
+<script src="/js/app.js"></script>
+</body>
+</html>
