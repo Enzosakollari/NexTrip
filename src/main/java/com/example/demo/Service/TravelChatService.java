@@ -26,7 +26,6 @@ public class TravelChatService {
     public String askAssistant(String userMessage) {
         String url = baseUrl + "/chat/completions";
 
-        // OpenAI-compatible "messages" format (Router)
         List<Map<String, Object>> messages = List.of(
                 Map.of(
                         "role", "system",
@@ -79,7 +78,6 @@ public class TravelChatService {
             return "Sorry, I couldn't generate a travel suggestion right now.";
 
         } catch (HttpStatusCodeException e) {
-            // show HF body in logs to debug (model/provider issues, auth, etc.)
             System.err.println("HF Router error: " + e.getStatusCode() + " body=" + e.getResponseBodyAsString());
             return "Sorry, I had a problem talking to the AI service (" + e.getStatusCode() + ").";
         } catch (Exception e) {

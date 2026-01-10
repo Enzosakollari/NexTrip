@@ -22,27 +22,25 @@ public class EmailService {
 
     public void sendVerificationEmail(String email, String verificationToken) {
         String subject = "Email Verification";
-        String path = "/req/signup/verify"; // Your existing verification endpoint
+        String path = "/req/signup/verify";
         String message = "Click the button below to verify your email address.";
         sendEmail(email, verificationToken, subject, path, message);
     }
 
     public void sendForgottenPasswordEmail(String email, String resetToken) {
         String subject = "Reset Password";
-        String path = "/req/signup/reset-password"; // Your existing reset endpoint
+        String path = "/req/signup/reset-password";
         String message = "Click the button below to reset your password.";
         sendEmail(email, resetToken, subject, path, message);
     }
 
     private void sendEmail(String email, String token, String subject, String path, String message) {
         try {
-            // This is the same link structure you had before with query parameters
             String actionUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
                     .path(path)
                     .queryParam("token", token)
                     .toUriString();
 
-            // Keep your current dark theme style but with the working link structure
             String content = String.format("""
                     <div style="font-family: 'Segoe UI', Helvetica, Arial, sans-serif; max-width: 600px; margin: 30px auto;
                                       padding: 25px 30px; border-radius: 10px; background-color: #121212;\s
@@ -86,7 +84,6 @@ public class EmailService {
             helper.setFrom(from);
             helper.setText(content, true);
 
-            // Attach logo
             FileSystemResource logo = new FileSystemResource(
                     new File("src/main/resources/static/Images/logo.png")
             );
@@ -94,7 +91,7 @@ public class EmailService {
 
             mailSender.send(mimeMessage);
             System.out.println(" Email sent successfully to " + email);
-            System.out.println(" Verification URL: " + actionUrl); // Debug print
+            System.out.println(" Verification URL: " + actionUrl);
 
         } catch (Exception e) {
             e.printStackTrace();

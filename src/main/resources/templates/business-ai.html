@@ -7,7 +7,6 @@
 </head>
 <body>
 
-<!-- BUSINESS NAVBAR -->
 <header class="topbar">
     <div th:replace="~{fragments/business-navbar :: businessNav('ai')}"></div>
 </header>
@@ -19,7 +18,6 @@
             <h1>AI Assistant</h1>
             <p class="muted">Ask AI for travel pack ideas, descriptions, pricing, or marketing text.</p>
 
-            <!-- CHAT FORM -->
             <form th:action="@{/business/ai}" method="post"
                   style="display:flex; gap:10px; margin-top:16px;">
 

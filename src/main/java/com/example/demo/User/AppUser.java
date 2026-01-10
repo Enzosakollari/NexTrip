@@ -7,10 +7,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "users") // Explicit table name to avoid reserved keyword issues
+@Table(name = "users")
 public class AppUser {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Changed for MySQL auto-increment
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique = true, nullable = false)
@@ -29,7 +29,6 @@ public class AppUser {
     @Column(name="reset_token")
     private String resetToken;
 
-    // Add constructors, setters if using Lombok @Data instead of @Getter
     public AppUser() {}
 
     public AppUser(String username, String password, String email) {

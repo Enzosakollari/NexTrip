@@ -47,7 +47,6 @@
         const q = (chatInput.value || '').trim();
         if (!q) return;
         chatOut.textContent = 'Sending…';
-        // replace with your real endpoint later (ex: /api/chat)
         setTimeout(() => {
             chatOut.textContent = 'Demo reply: I can help you plan that. Want a budget and dates?';
         }, 450);

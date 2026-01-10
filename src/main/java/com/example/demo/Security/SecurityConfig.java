@@ -27,7 +27,6 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // IMPORTANT: not @Bean -> avoids extra global beans confusion
     private AuthenticationProvider appProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(appUserService);
@@ -35,7 +34,6 @@ public class SecurityConfig {
         return provider;
     }
 
-    // IMPORTANT: not @Bean -> avoids extra global beans confusion
     private AuthenticationProvider businessProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(businessUserService);

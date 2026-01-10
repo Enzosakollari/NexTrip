@@ -27,7 +27,7 @@ public class AdminDetailsService implements UserDetailsService {
         return new org.springframework.security.core.userdetails.User(
                 admin.getUsername(),
                 admin.getPassword(),
-                List.of(new SimpleGrantedAuthority("ADMIN")) // no enum, just a string
+                List.of(new SimpleGrantedAuthority("ADMIN"))
         );
     }
 }

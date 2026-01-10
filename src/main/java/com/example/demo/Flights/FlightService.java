@@ -68,7 +68,6 @@ public class FlightService {
             if (data != null && data.isArray()) {
                 for (JsonNode item : data) {
                     Flight f = mapOffer(item);
-                    // override with query params just to be safe
                     f.setOriginAirportCode(originIata);
                     f.setDestinationAirportCode(destinationIata);
                     f.setProvider("AMADEUS");

@@ -288,10 +288,8 @@
 </head>
 <body>
 <div class="video-background">
-    <!-- Using your specified video file path -->
     <video autoplay muted loop id="bg-video">
         <source src="/videos/plane.mp4" type="video/mp4">
-        <!-- Fallback in case the video doesn't exist -->
         Your browser does not support the video tag.
     </video>
     <div class="video-overlay"></div>
@@ -300,7 +298,6 @@
 <div class="container">
     <div class="window">
         <div class="logo">
-            <!-- Using your logo image -->
             <img src="/images/logo.png" alt="Logo">
         </div>
         <h2>Create Account</h2>
@@ -353,7 +350,6 @@
             }
         });
 
-        // If video fails to load, provide a fallback
         video.addEventListener('error', function() {
             console.error('Video failed to load. Using fallback background.');
 
@@ -381,7 +377,6 @@
             logoDiv.style.color = '#4a90e2';
         });
 
-        // Form submission
         form.addEventListener('submit', function(event) {
             event.preventDefault();
 
@@ -394,13 +389,11 @@
             messageDiv.innerHTML = '';
             messageDiv.className = 'message';
 
-            // Password validation
             if (password !== confirmPassword) {
                 showMessage('Passwords do not match!', 'error');
                 return;
             }
 
-            // Create JSON object
             const userData = {
                 username: username,
                 password: password,
@@ -409,7 +402,6 @@
 
             console.log('Sending data:', userData);
 
-            // Send to backend
             fetch('/req/signup', {
                 method: 'POST',
                 headers: {
@@ -422,7 +414,6 @@
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
                     }
-                    // Check if the response is JSON or text
                     const contentType = response.headers.get('content-type');
                     if (contentType && contentType.includes('application/json')) {
                         return response.json();
@@ -446,7 +437,6 @@
             messageDiv.classList.add(type);
         }
 
-        // Try to play the video (handles autoplay restrictions)
         const playVideo = async () => {
             try {
                 await video.play();
@@ -459,7 +449,6 @@
 
         playVideo();
 
-        // Add a subtle parallax effect to the video background on scroll
         window.addEventListener('scroll', function() {
             const scrolled = window.pageYOffset;
             const video = document.querySelector('.video-background video');

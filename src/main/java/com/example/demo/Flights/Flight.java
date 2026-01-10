@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.time.OffsetDateTime;
 
 @Entity
-@Table(name = "flights")   // this will now store ticket offers
+@Table(name = "flights")
 @Getter
 @Setter
 public class Flight {
@@ -17,27 +17,16 @@ public class Flight {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Origin
-    private String originAirportCode;        // e.g. "TIA"
-    private String originCountry;            // optional for now
-
-    // Destination
-    private String destinationAirportCode;   // e.g. "BUD"
-    private String destinationCountry;       // optional for now
-
-    // Airline & flight number
-    private String airline;                  // e.g. "W6"
-    private String flightNumber;             // e.g. "6621"
-
-    // Times
+    private String originAirportCode;
+    private String originCountry;
+    private String destinationAirportCode;
+    private String destinationCountry;
+    private String airline;
+    private String flightNumber;
     private OffsetDateTime departureTime;
     private OffsetDateTime arrivalTime;
-
-    // Price
     private BigDecimal price;
-    private String currency;                 // e.g. "EUR"
-
-    // Meta
-    private String provider;                 // e.g. "AMADEUS"
-    private String offerId;                  // Amadeus data[i].id
+    private String currency;
+    private String provider;
+    private String offerId;
 }

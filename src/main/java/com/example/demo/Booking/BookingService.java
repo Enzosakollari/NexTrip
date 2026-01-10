@@ -29,7 +29,7 @@ public class BookingService {
         var user = appUserRepository.findByUsername(principal.getName())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        Booking booking = new Booking();              // NEW entity (id must be null)
+        Booking booking = new Booking();
         booking.setTravelPackage(pack);
         booking.setAppUser(user);
         booking.setFullName(fullName);

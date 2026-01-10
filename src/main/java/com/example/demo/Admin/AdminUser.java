@@ -20,7 +20,6 @@ public class AdminUser {
     @Column(nullable = false)
     private String password;
 
-    // optional, if you want later
     @Column(nullable = false)
     private boolean enabled = true;
 }

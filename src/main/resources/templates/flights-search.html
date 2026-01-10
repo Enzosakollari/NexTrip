@@ -41,7 +41,6 @@
         <p class="muted">Search flight offers powered by Amadeus.</p>
       </div>
 
-      <!-- SEARCH FORM -->
       <div class="card card__pad">
         <form class="searchbar" action="/flights/search-view/results" method="get">
           <input class="input" name="origin" placeholder="From (IATA, e.g. TIA)" th:value="${origin}">
@@ -59,7 +58,6 @@
         </div>
       </div>
 
-      <!-- RESULTS -->
       <div class="list" style="margin-top:16px;">
 
         <div th:if="${offers == null || #lists.isEmpty(offers)}" class="muted">
@@ -88,7 +86,6 @@
               </div>
             </div>
 
-            <!-- ROUTE & TIME -->
             <div class="kv"
                  th:text="${#temporals.format(o.departureTime,'HH:mm')
                  + ' ' + o.originAirportCode
@@ -98,7 +95,6 @@
               06:30 TIA → 08:45 FCO
             </div>
 
-            <!-- PRICE -->
             <div class="price">
               <div class="amt"
                    th:text="${o.price != null ? o.currency + ' ' + o.price : '—'}">

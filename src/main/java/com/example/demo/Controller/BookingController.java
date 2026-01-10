@@ -19,7 +19,7 @@ public class BookingController {
     @GetMapping("/packs/{packId}/book")
     public String bookForm(@PathVariable Long packId, Model model) {
         model.addAttribute("packId", packId);
-        return "booking-form"; // or return something else for now
+        return "booking-form";
     }
 
     @PostMapping("/bookings")

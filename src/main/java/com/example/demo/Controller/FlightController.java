@@ -21,8 +21,8 @@ public class FlightController {
 
     @GetMapping("/search")
     public List<Flight> search(
-            @RequestParam String origin,          // IATA, e.g. "TIA"
-            @RequestParam String destination,     // IATA, e.g. "BUD"
+            @RequestParam String origin,
+            @RequestParam String destination,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @RequestParam(defaultValue = "1") int adults,
             @RequestParam(defaultValue = "EUR") String currency
@@ -30,7 +30,7 @@ public class FlightController {
         return flightService.searchOffers(
                 origin,
                 destination,
-                date.toString(),   // "YYYY-MM-DD"
+                date.toString(),
                 adults,
                 currency
         );

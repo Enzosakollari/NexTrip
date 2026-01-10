@@ -62,9 +62,7 @@
 <div class="booking-container">
     <h2>Book this trip</h2>
 
-    <!-- IMPORTANT:
-         NO booking ID here
-         ONLY packId -->
+
     <form th:action="@{/bookings}" method="post">
 
         <input type="hidden" name="packId" th:value="${packId}"/>

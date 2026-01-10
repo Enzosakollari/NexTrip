@@ -22,7 +22,7 @@ public class Booking {
     private TravelPackage travelPackage;
 
     @ManyToOne
-    private AppUser appUser; // nullable → guest booking allowed
+    private AppUser appUser;
 
     private String fullName;
     private String email;

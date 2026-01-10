@@ -30,8 +30,7 @@ public class AmadeusClient {
     private Instant tokenExpiry = Instant.EPOCH;
 
     private synchronized void refreshTokenIfNeeded() {
-        // still valid for at least 60 seconds
-        if (accessToken != null && Instant.now().isBefore(tokenExpiry.minusSeconds(60))) {
+         if (accessToken != null && Instant.now().isBefore(tokenExpiry.minusSeconds(60))) {
             return;
         }
 

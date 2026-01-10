@@ -15,7 +15,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class AdminSecurityConfig {
 
     private final AdminDetailsService adminDetailsService;
-    private final PasswordEncoder passwordEncoder; // must exist in your project already
+    private final PasswordEncoder passwordEncoder;
 
     @Bean
     @Order(1)
@@ -38,7 +38,6 @@ public class AdminSecurityConfig {
                         .logoutUrl("/admin/logout")
                         .logoutSuccessUrl("/admin/login?logout=true")
                 )
-                // keep CSRF enabled (safe). Your forms include csrf input in templates.
                 .csrf(Customizer.withDefaults());
 
         return http.build();

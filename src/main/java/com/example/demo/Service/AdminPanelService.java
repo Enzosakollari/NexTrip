@@ -42,7 +42,6 @@ public class AdminPanelService {
     }
 
     public List<Booking> allBookings() {
-        // if you have createdAt in Booking, use it:
         try {
             return bookingRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
         } catch (Exception ignored) {

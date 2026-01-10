@@ -18,7 +18,6 @@ public class BusinessUserService implements UserDetailsService {
     private final BusinessUserRepository businessRepo;
     private final TravelPackageRepository packRepo;
 
-    // AUTH
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         BusinessUser u = businessRepo.findByUsername(username)
@@ -31,15 +30,12 @@ public class BusinessUserService implements UserDetailsService {
         );
     }
 
-    // HELPERS
     public BusinessUser currentBusiness(Principal principal) {
         if (principal == null) return null;
         return businessRepo.findByUsername(principal.getName()).orElse(null);
     }
 
-    // PACKS
     public List<TravelPackage> getMyPackages(Long businessId) {
-        // ideally repository method: findByBusinessUserId(businessId)
         return packRepo.findByBusinessUserId(businessId);
     }
 
@@ -58,8 +54,6 @@ public class BusinessUserService implements UserDetailsService {
         BusinessUser business = businessRepo.findById(businessId)
                 .orElseThrow(() -> new RuntimeException("Business not found"));
 
-        // optional: block until approved
-        // if (!business.isApproved()) throw new RuntimeException("Not approved");
 
         pack.setId(null);
         pack.setBusinessUser(business);

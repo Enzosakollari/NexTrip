@@ -45,6 +45,6 @@ public class BusinessAiController {
         model.addAttribute("business", business);
         model.addAttribute("message", message);
         model.addAttribute("reply", reply);
-        return "business-ai"; // ❗ NOT redirect
+        return "business-ai";
     }
 }

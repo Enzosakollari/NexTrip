@@ -25,7 +25,7 @@ public class FlightViewController {
     public String searchFlights(
             @RequestParam String origin,
             @RequestParam String destination,
-            @RequestParam String date,          // YYYY-MM-DD
+            @RequestParam String date,
             @RequestParam(defaultValue = "1") int adults,
             @RequestParam(defaultValue = "EUR") String currency,
             Model model
