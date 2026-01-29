@@ -36,6 +36,12 @@ public class BusinessUser {
     @Column(nullable = false)
     private String contactEmail;
 
+    @Column(length = 2000)
+    private String description;
+
+    private String logoUrl;
+    private String bannerUrl;
+
     private boolean approved = false;
 
     public BusinessUser() {}

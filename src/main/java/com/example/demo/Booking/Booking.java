@@ -5,6 +5,8 @@ import com.example.demo.User.AppUser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 
@@ -31,13 +33,16 @@ public class Booking {
     private int travelersCount;
 
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @Column(length = 20)
     private BookingStatus status;
 
     private LocalDateTime createdAt;
+    private String stripeSessionId;
 
     @PrePersist
     void onCreate() {
         createdAt = LocalDateTime.now();
-        status = BookingStatus.PENDING;
+        status = BookingStatus.CONFIRMED;
     }
 }

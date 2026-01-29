@@ -7,9 +7,14 @@
 
   <link rel="stylesheet" href="/css/app.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <div th:replace="~{fragments/navbar :: navbarStyles}"></div>
   <style>
     .flight-search-hero {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background:
+        linear-gradient(135deg, rgba(11, 19, 36, 0.8) 0%, rgba(11, 47, 109, 0.65) 60%, rgba(15, 23, 52, 0.75) 100%),
+        url("https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=1600&q=80&auto=format&fit=crop");
+      background-size: cover;
+      background-position: center;
       padding: 60px 20px;
       margin-bottom: 40px;
       border-radius: 0 0 24px 24px;
@@ -41,6 +46,37 @@
       max-width: 1000px;
       margin-left: auto;
       margin-right: auto;
+    }
+
+    .hero-highlights {
+      max-width: 1000px;
+      margin: 24px auto 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .highlight-card {
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      padding: 16px 18px;
+      border-radius: 14px;
+      backdrop-filter: blur(12px);
+      text-align: left;
+    }
+
+    .highlight-title {
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .highlight-text {
+      font-size: 13px;
+      opacity: 0.9;
+      line-height: 1.5;
     }
     
     .search-form-grid {
@@ -164,6 +200,64 @@
       gap: 16px;
       margin-bottom: 24px;
     }
+
+    .search-tips {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .tip-card {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .trip-type {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .trip-toggle {
+      display: inline-flex;
+      gap: 6px;
+      background: #f3f4f6;
+      padding: 6px;
+      border-radius: 999px;
+      width: fit-content;
+      position: relative;
+      z-index: 2;
+      pointer-events: auto;
+    }
+
+    .trip-option {
+      border: none;
+      background: transparent;
+      color: #6b7280;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      pointer-events: auto;
+      position: relative;
+      z-index: 2;
+    }
+
+    .trip-option.active {
+      background: #111827;
+      color: white;
+      box-shadow: 0 6px 16px rgba(17, 24, 39, 0.18);
+    }
+
+    .is-hidden {
+      display: none;
+    }
     
     .search-button {
       width: 100%;
@@ -193,6 +287,53 @@
       max-width: 1000px;
       margin-left: auto;
       margin-right: auto;
+    }
+
+    .inspiration-grid {
+      max-width: 1000px;
+      margin: 30px auto 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+    }
+
+    .inspiration-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+
+    .inspiration-card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .inspiration-body {
+      padding: 16px;
+    }
+
+    .inspiration-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 6px;
+    }
+
+    .inspiration-sub {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    .inspiration-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #6b7280;
     }
     
     .results-header {
@@ -242,6 +383,16 @@
       gap: 16px;
       margin-bottom: 8px;
     }
+
+    .segment-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-top: 10px;
+      margin-bottom: 6px;
+    }
     
     .time-large {
       font-size: 24px;
@@ -272,14 +423,34 @@
       align-items: center;
       gap: 12px;
     }
-    
-    .airline-badge {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 8px 16px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 14px;
+
+    .airline-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid #e5e7eb;
+      padding: 6px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .flight-symbol {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: rgba(11, 19, 36, 0.15);
+      border: 1px solid rgba(17, 24, 39, 0.12);
+      color: #667eea;
+      flex-shrink: 0;
+    }
+
+    .flight-symbol svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
     }
     
     .flight-number {
@@ -314,6 +485,9 @@
       cursor: pointer;
       transition: all 0.3s ease;
       width: 100%;
+      display: block;
+      text-align: center;
+      text-decoration: none;
     }
     
     .select-button:hover {
@@ -379,68 +553,177 @@
         text-align: left;
       }
     }
+
+    /* Dark theme overrides */
+    body {
+      background: var(--app-bg);
+      color: #e6e8ef;
+    }
+
+    .search-card {
+      background: rgba(11, 19, 36, 0.92);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      box-shadow: 0 24px 50px rgba(2, 6, 23, 0.55);
+    }
+
+    .input-wrapper input,
+    .input-wrapper input:focus,
+    .input {
+      background: rgba(11, 19, 36, 0.8);
+      border-color: rgba(251, 191, 36, 0.25);
+      color: #e6e8ef;
+    }
+
+    .input-label,
+    .autocomplete-item .subtitle {
+      color: #a3b1c6;
+    }
+
+    .autocomplete-dropdown {
+      background: #0f1b34;
+      border-color: rgba(251, 191, 36, 0.2);
+    }
+
+    .autocomplete-item strong {
+      color: #e6e8ef;
+    }
+
+    .search-button {
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: #0b1324;
+      box-shadow: 0 12px 26px rgba(251, 191, 36, 0.25);
+    }
+
+    .search-button:hover {
+      box-shadow: 0 18px 34px rgba(251, 191, 36, 0.3);
+    }
+
+    .search-tips .tip-card {
+      background: rgba(11, 19, 36, 0.8);
+      border-color: rgba(251, 191, 36, 0.2);
+      color: #a3b1c6;
+    }
+
+    .flight-card,
+    .inspiration-card {
+      background: rgba(11, 19, 36, 0.9);
+      border-color: rgba(251, 191, 36, 0.2);
+      box-shadow: 0 16px 30px rgba(2, 6, 23, 0.4);
+    }
+
+    .results-count,
+    .time-large,
+    .price-amount,
+    .inspiration-title {
+      color: #e6e8ef;
+    }
+
+    .flight-duration,
+    .airport-code,
+    .price-currency,
+    .flight-number,
+    .inspiration-sub,
+    .inspiration-meta {
+      color: #a3b1c6;
+    }
+
+    .flight-symbol {
+      background: rgba(11, 19, 36, 0.8);
+      border-color: rgba(251, 191, 36, 0.28);
+      color: #fbbf24;
+    }
+
+    .airline-logo {
+      background: rgba(11, 19, 36, 0.85);
+      border-color: rgba(251, 191, 36, 0.3);
+    }
+
+    .select-button {
+      background: rgba(11, 19, 36, 0.8);
+      color: #fbbf24;
+      border: 1px solid rgba(251, 191, 36, 0.3);
+    }
+
+    .select-button:hover {
+      background: rgba(15, 23, 52, 0.9);
+    }
+
+    .select-button.is-disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
 
-<header class="topbar">
-  <div class="container topbar__inner">
-    <a href="/" class="brand">
-      <span class="brand__mark">NT</span>
-      <span class="brand__name">NextTrip</span>
-    </a>
-
-    <nav class="nav">
-      <a href="/index" class="nav__link">Explore</a>
-      <a href="/flights-search" class="nav__link nav__link--active">Flight Search</a>
-      <a href="/timetable" class="nav__link">Timetable</a>
-      <a href="/travel-packs" class="nav__link">Travel Packs</a>
-      <a href="/chat" class="nav__link">AI Chat</a>
-    </nav>
-
-    <div class="topbar__actions">
-      <a class="btn btn--ghost" href="/login">Login</a>
-      <a class="btn btn--primary" href="/travel-packs">Search Trips</a>
-    </div>
-  </div>
-</header>
+<div th:replace="fragments/navbar :: navbar"></div>
 
 <div class="flight-search-hero">
   <h1>Find Your Perfect Flight</h1>
   <p>Search and compare flights from thousands of airlines worldwide</p>
+  <div class="hero-highlights">
+    <div class="highlight-card">
+      <div class="highlight-title">Smart Fares</div>
+      <div class="highlight-text">Compare routes, airlines, and flexible dates in one view.</div>
+    </div>
+    <div class="highlight-card">
+      <div class="highlight-title">Secure Checkout</div>
+      <div class="highlight-text">Pay with Stripe and get instant confirmation.</div>
+    </div>
+    <div class="highlight-card">
+      <div class="highlight-title">Global Coverage</div>
+      <div class="highlight-text">Access live offers from major carriers worldwide.</div>
+    </div>
+  </div>
 </div>
 
 <main class="page">
   <div class="container">
     <div class="search-card">
-      <form id="flight-search-form" class="search-form-grid">
-        <div class="input-group">
-          <label class="input-label">From</label>
-          <div class="input-wrapper">
-            <input type="text" id="origin-input" name="origin" placeholder="City or airport" autocomplete="off" th:value="${origin}">
-            <div id="origin-dropdown" class="autocomplete-dropdown"></div>
+      <form id="flight-search-form">
+        <div class="search-form-grid">
+          <div class="input-group">
+            <label class="input-label">From</label>
+            <div class="input-wrapper">
+              <input type="text" id="origin-input" name="origin" placeholder="City or airport" autocomplete="off" th:value="${origin}">
+              <div id="origin-dropdown" class="autocomplete-dropdown"></div>
+            </div>
+          </div>
+          
+          <button type="button" class="swap-button" id="swap-button" aria-label="Swap origin and destination">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+            </svg>
+          </button>
+          
+          <div class="input-group">
+            <label class="input-label">To</label>
+            <div class="input-wrapper">
+              <input type="text" id="destination-input" name="destination" placeholder="City or airport" autocomplete="off" th:value="${destination}">
+              <div id="destination-dropdown" class="autocomplete-dropdown"></div>
+            </div>
           </div>
         </div>
-        
-        <button type="button" class="swap-button" id="swap-button" aria-label="Swap origin and destination">
-          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
-          </svg>
-        </button>
-        
-        <div class="input-group">
-          <label class="input-label">To</label>
-          <div class="input-wrapper">
-            <input type="text" id="destination-input" name="destination" placeholder="City or airport" autocomplete="off" th:value="${destination}">
-            <div id="destination-dropdown" class="autocomplete-dropdown"></div>
+
+        <div class="search-options">
+        <div class="trip-type">
+          <label class="input-label">Trip Type</label>
+          <div class="trip-toggle" role="tablist" aria-label="Trip type">
+            <button type="button" class="trip-option" data-trip="oneway">One-way</button>
+            <button type="button" class="trip-option" data-trip="roundtrip">Round-trip</button>
           </div>
+          <input type="hidden" id="trip-type-input" name="tripType" th:value="${tripType != null ? tripType : 'oneway'}">
         </div>
-      </form>
-      
-      <div class="search-options">
+
         <div class="input-group">
           <label class="input-label">Departure Date</label>
           <input type="date" id="date-input" name="date" class="input-wrapper input" th:value="${date}">
+        </div>
+
+        <div class="input-group is-hidden" id="return-date-group">
+          <label class="input-label">Return Date</label>
+          <input type="date" id="return-date-input" name="returnDate" class="input-wrapper input" th:value="${returnDate}">
         </div>
         
         <div class="input-group">
@@ -454,7 +737,50 @@
         </div>
         
         <div class="input-group">
-          <button type="submit" form="flight-search-form" class="search-button">Search Flights</button>
+          <button type="submit" class="search-button">Search Flights</button>
+        </div>
+        </div>
+      </form>
+
+      <div class="search-tips">
+        <div class="tip-card">Tip: Try nearby airports for better prices.</div>
+        <div class="tip-card">Tip: Morning departures often have more availability.</div>
+        <div class="tip-card">Tip: Flexible dates can unlock lower fares.</div>
+      </div>
+    </div>
+
+    <div class="inspiration-grid">
+      <div class="inspiration-card">
+        <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=900&q=80&auto=format&fit=crop" alt="City skyline">
+        <div class="inspiration-body">
+          <div class="inspiration-title">Weekend City Breaks</div>
+          <div class="inspiration-sub">Short, direct routes from your hub.</div>
+          <div class="inspiration-meta">
+            <span>2-3 hours</span>
+            <span>Best fares</span>
+          </div>
+        </div>
+      </div>
+      <div class="inspiration-card">
+        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&q=80&auto=format&fit=crop" alt="Beach">
+        <div class="inspiration-body">
+          <div class="inspiration-title">Sun & Coast</div>
+          <div class="inspiration-sub">Escape to beaches with nonstop flights.</div>
+          <div class="inspiration-meta">
+            <span>3-5 hours</span>
+            <span>Top demand</span>
+          </div>
+        </div>
+      </div>
+      <div class="inspiration-card">
+        <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=900&q=80&auto=format&fit=crop" alt="Mountains">
+        <div class="inspiration-body">
+          <div class="inspiration-title">Scenic Escapes</div>
+          <div class="inspiration-sub">Mountain gateways and adventure hubs.</div>
+          <div class="inspiration-meta">
+            <span>4-6 hours</span>
+            <span>Seasonal</span>
+          </div>
         </div>
       </div>
     </div>
@@ -483,34 +809,59 @@
             <div class="flight-route">
               <div class="flight-times">
                 <div>
-                  <div class="time-large" th:text="${#temporals.format(o.departureTime,'HH:mm')}">06:30</div>
-                  <div class="airport-code" th:text="${o.originAirportCode}">TIA</div>
+                  <div class="time-large" th:text="${o.departureTime != null ? #temporals.format(o.departureTime,'HH:mm') : '--:--'}">06:30</div>
+                  <div class="airport-code" th:text="${o.originAirportCode != null ? o.originAirportCode : '--'}">TIA</div>
                 </div>
-                <div class="flight-arrow">→</div>
+                <div class="flight-arrow">-></div>
                 <div>
-                  <div class="time-large" th:text="${#temporals.format(o.arrivalTime,'HH:mm')}">08:45</div>
-                  <div class="airport-code" th:text="${o.destinationAirportCode}">FCO</div>
+                  <div class="time-large" th:text="${o.arrivalTime != null ? #temporals.format(o.arrivalTime,'HH:mm') : '--:--'}">08:45</div>
+                  <div class="airport-code" th:text="${o.destinationAirportCode != null ? o.destinationAirportCode : '--'}">FCO</div>
                 </div>
               </div>
               <div class="flight-duration" th:if="${o.departureTime != null && o.arrivalTime != null}">
                 Duration: <span th:text="${#temporals.format(o.departureTime,'HH:mm') + ' - ' + #temporals.format(o.arrivalTime,'HH:mm')}"></span>
               </div>
+
+              <div class="segment-label" th:if="${o.returnDepartureTime != null || o.returnArrivalTime != null}">Return</div>
+              <div class="flight-times" th:if="${o.returnDepartureTime != null || o.returnArrivalTime != null}">
+                <div>
+                  <div class="time-large" th:text="${o.returnDepartureTime != null ? #temporals.format(o.returnDepartureTime,'HH:mm') : '--:--'}">14:20</div>
+                  <div class="airport-code" th:text="${o.returnOriginAirportCode != null ? o.returnOriginAirportCode : (o.destinationAirportCode != null ? o.destinationAirportCode : '--')}">FCO</div>
+                </div>
+                <div class="flight-arrow">-></div>
+                <div>
+                  <div class="time-large" th:text="${o.returnArrivalTime != null ? #temporals.format(o.returnArrivalTime,'HH:mm') : '--:--'}">16:45</div>
+                  <div class="airport-code" th:text="${o.returnDestinationAirportCode != null ? o.returnDestinationAirportCode : (o.originAirportCode != null ? o.originAirportCode : '--')}">TIA</div>
+                </div>
+              </div>
             </div>
             
             <div class="flight-airline">
+              <img class="airline-logo"
+                   th:if="${o.airline != null}"
+                   th:src="@{'https://images.kiwi.com/airlines/64/' + ${o.airline} + '.png'}"
+                   th:alt="${airlineNames != null && o.offerId != null && airlineNames[o.offerId] != null ? airlineNames[o.offerId] : (o.airline != null ? o.airline : 'Airline')}"
+                   loading="lazy"
+                   onerror="this.style.display='none';const s=this.parentElement.querySelector('.flight-symbol');if(s){s.style.display='grid';}">
+              <div class="flight-symbol" aria-hidden="true" style="display:none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 12l-7.5 2.5m7.5-2.5l-1.5 6m1.5-6L21 7m-10.5 5L6 9m4.5 3l4 7m0-7l-1.5-5"></path>
+                </svg>
+              </div>
               <div>
-                <div class="airline-badge" th:text="${o.airline != null ? o.airline : 'FL'}">FL</div>
-                <div class="flight-number" th:text="${o.flightNumber != null ? o.flightNumber : '—'}">—</div>
+                <div class="flight-number" th:text="${o.flightNumber != null ? o.flightNumber : '--'}">--</div>
+                <div class="flight-number" th:text="${airlineNames != null && o.offerId != null && airlineNames[o.offerId] != null ? airlineNames[o.offerId] : 'Airline'}">Airline</div>
               </div>
             </div>
             
             <div class="flight-price">
-              <div class="price-amount" th:text="${o.price != null ? o.currency + ' ' + o.price : '—'}">EUR —</div>
+              <div class="price-amount" th:text="${o.price != null ? (o.currency != null ? o.currency : 'EUR') + ' ' + o.price : '--'}">EUR --</div>
               <div class="price-currency">per person</div>
             </div>
           </div>
           
-          <button class="select-button">Select Flight</button>
+          <a class="select-button" th:if="${o.offerId != null}" th:href="@{/flights/checkout(offerId=${o.offerId})}">Select Flight</a>
+          <span class="select-button is-disabled" th:unless="${o.offerId != null}">Unavailable</span>
         </div>
       </div>
     </div>
@@ -535,6 +886,47 @@
   if (!dateInput.value) {
     dateInput.value = tomorrow.toISOString().split('T')[0];
   }
+  const returnDateInput = document.getElementById('return-date-input');
+  const returnDateGroup = document.getElementById('return-date-group');
+  const tripTypeInput = document.getElementById('trip-type-input');
+  const tripButtons = document.querySelectorAll('.trip-option');
+
+  function setTripType(type) {
+    if (!tripTypeInput || !returnDateInput || !returnDateGroup) return;
+    tripTypeInput.value = type;
+    tripButtons.forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.trip === type);
+    });
+    const isRoundTrip = type === 'roundtrip';
+    returnDateGroup.classList.toggle('is-hidden', !isRoundTrip);
+    returnDateInput.disabled = !isRoundTrip;
+    returnDateInput.required = isRoundTrip;
+    if (!isRoundTrip) {
+      returnDateInput.value = '';
+    }
+  }
+
+  function syncReturnMin() {
+    if (!returnDateInput) return;
+    const dep = dateInput.value;
+    if (dep) {
+      returnDateInput.min = dep;
+      if (returnDateInput.value && returnDateInput.value < dep) {
+        returnDateInput.value = dep;
+      }
+    }
+  }
+
+  const initialTripType = (tripTypeInput && tripTypeInput.value)
+    ? tripTypeInput.value
+    : (returnDateInput && returnDateInput.value ? 'roundtrip' : 'oneway');
+  setTripType(initialTripType);
+  syncReturnMin();
+  dateInput.addEventListener('change', syncReturnMin);
+
+  tripButtons.forEach((btn) => {
+    btn.addEventListener('click', () => setTripType(btn.dataset.trip));
+  });
 
   // Autocomplete functionality
   let autocompleteTimeout;
@@ -644,6 +1036,19 @@
     formData.append('date', dateValue);
     formData.append('adults', document.getElementById('adults-input').value);
     formData.append('currency', document.getElementById('currency-input').value);
+
+    const tripType = tripTypeInput ? tripTypeInput.value : 'oneway';
+    formData.append('tripType', tripType);
+    if (tripType === 'roundtrip') {
+      const returnDateValue = returnDateInput ? returnDateInput.value : '';
+      if (!returnDateValue) {
+        if (returnDateInput) {
+          returnDateInput.reportValidity();
+        }
+        return;
+      }
+      formData.append('returnDate', returnDateValue);
+    }
     
     window.location.href = `/flights/search-view/results?${formData.toString()}`;
   });

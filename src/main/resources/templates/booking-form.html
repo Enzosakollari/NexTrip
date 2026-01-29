@@ -4,31 +4,35 @@
     <meta charset="UTF-8">
     <title>Book Travel Package</title>
 
-    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/app.css}">
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: #f5f7fb;
+            background: var(--app-bg);
+            color: #e6e8ef;
         }
 
         .booking-container {
             max-width: 520px;
             margin: 60px auto;
-            background: #fff;
+            background: rgba(11, 19, 36, 0.9);
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,.1);
+            border: 1px solid rgba(251, 191, 36, 0.25);
+            box-shadow: 0 18px 40px rgba(2, 6, 23, 0.6);
         }
 
         h2 {
             margin-bottom: 20px;
             text-align: center;
+            color: #f8fafc;
         }
 
         label {
             display: block;
             margin-top: 15px;
             font-weight: 600;
+            color: #a3b1c6;
         }
 
         input {
@@ -36,23 +40,34 @@
             padding: 10px;
             margin-top: 6px;
             border-radius: 6px;
-            border: 1px solid #ccc;
+            border: 1px solid rgba(251, 191, 36, 0.25);
+            background: rgba(11, 19, 36, 0.8);
+            color: #e6e8ef;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #fbbf24;
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2);
         }
 
         button {
             margin-top: 25px;
             width: 100%;
             padding: 12px;
-            background: #4f46e5;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
             border: none;
-            color: white;
+            color: #0b1324;
             font-size: 16px;
             border-radius: 6px;
             cursor: pointer;
+            font-weight: 700;
+            box-shadow: 0 12px 24px rgba(251, 191, 36, 0.25);
         }
 
         button:hover {
-            background: #4338ca;
+            transform: translateY(-2px);
+            box-shadow: 0 16px 30px rgba(251, 191, 36, 0.3);
         }
     </style>
 </head>
@@ -63,7 +78,11 @@
     <h2>Book this trip</h2>
 
 
-    <form th:action="@{/bookings}" method="post">
+    <div th:if="${fullyBooked}" style="background: #fee; color: #b91c1c; padding: 10px; border-radius: 6px; margin-bottom: 12px;">
+        This pack is fully booked. You can still view it, but booking is closed.
+    </div>
+
+    <form th:action="@{/bookings/checkout}" method="post">
 
         <input type="hidden" name="packId" th:value="${packId}"/>
 
@@ -79,9 +98,19 @@
         <label>Number of travelers</label>
         <input type="number" name="travelersCount" min="1" value="1" required>
 
-        <button type="submit">Confirm Booking</button>
+        <button type="submit" th:disabled="${fullyBooked}">Pay &amp; Book</button>
     </form>
 </div>
 
+<footer class="footer">
+    <div class="container footer__inner">
+        <div>
+            <strong>NextTrip</strong>
+            <p class="muted">Travel beyond the map.</p>
+        </div>
+        <div class="muted">© 2025 NextTrip</div>
+    </div>
+</footer>
 </body>
 </html>
+

@@ -54,7 +54,7 @@ public class SecurityConfig {
                                 "/business/signup",
                                 "/business/perform_login",
                                 "/req/business/**",
-                                "/css/**", "/js/**", "/images/**", "/videos/**",
+                                "/css/**", "/js/**", "/images/**", "/videos/**", "/uploads/**",
                                 "/error"
                         ).permitAll()
                         .anyRequest().authenticated()
@@ -86,7 +86,10 @@ public class SecurityConfig {
                                 "/", "/index",
                                 "/login", "/signup", "/perform_login", "/req/**",
                                 "/booking-success",
-                                "/css/**", "/js/**", "/images/**", "/videos/**",
+                                "/flights/checkout-success",
+                                "/flights/checkout-cancel",
+                                "/css/**", "/js/**", "/images/**", "/videos/**", "/uploads/**",
+                                "/companies/**",
                                 "/api/flights/**",
                                 "/error"
                         ).permitAll()

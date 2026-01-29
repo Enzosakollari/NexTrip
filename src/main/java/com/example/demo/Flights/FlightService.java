@@ -106,14 +106,32 @@ public class FlightService {
             int adults,
             String currency
     ) {
+        return searchOffers(originIata, destinationIata, departureDateIso, null, adults, currency);
+    }
+
+    public List<Flight> searchOffers(
+            String originIata,
+            String destinationIata,
+            String departureDateIso,
+            String returnDateIso,
+            int adults,
+            String currency
+    ) {
         try {
-            String url = baseUrl + "/v2/shopping/flight-offers"
-                    + "?originLocationCode=" + originIata
-                    + "&destinationLocationCode=" + destinationIata
-                    + "&departureDate=" + departureDateIso
-                    + "&adults=" + adults
-                    + "&currencyCode=" + currency
-                    + "&max=10";
+            StringBuilder urlBuilder = new StringBuilder(baseUrl)
+                    .append("/v2/shopping/flight-offers")
+                    .append("?originLocationCode=").append(originIata)
+                    .append("&destinationLocationCode=").append(destinationIata)
+                    .append("&departureDate=").append(departureDateIso)
+                    .append("&adults=").append(adults)
+                    .append("&currencyCode=").append(currency)
+                    .append("&max=10");
+
+            if (returnDateIso != null && !returnDateIso.isBlank()) {
+                urlBuilder.append("&returnDate=").append(returnDateIso);
+            }
+
+            String url = urlBuilder.toString();
 
             HttpHeaders headers = new HttpHeaders();
             headers.setBearerAuth(amadeusClient.getValidAccessToken());
@@ -139,6 +157,7 @@ public class FlightService {
                     f.setOriginAirportCode(originIata);
                     f.setDestinationAirportCode(destinationIata);
                     f.setProvider("AMADEUS");
+                    f.setAdults(adults);
                     flights.add(f);
                 }
             }
@@ -155,6 +174,7 @@ public class FlightService {
         Flight f = new Flight();
 
         f.setOfferId(item.path("id").asText(""));
+        f.setRawOfferJson(item.toString());
 
         JsonNode priceNode = item.path("price");
         BigDecimal total = new BigDecimal(priceNode.path("total").asText("0"));
@@ -165,34 +185,11 @@ public class FlightService {
         JsonNode itineraries = item.path("itineraries");
         if (itineraries.isArray() && itineraries.size() > 0) {
             JsonNode firstItinerary = itineraries.get(0);
-            JsonNode segments = firstItinerary.path("segments");
-            if (segments.isArray() && segments.size() > 0) {
-                JsonNode firstSegment = segments.get(0);
+            applyItinerary(firstItinerary, false, f);
 
-                String carrierCode = firstSegment.path("carrierCode").asText("");
-                String flightNumber = firstSegment.path("number").asText("");
-
-                f.setAirline(carrierCode);
-                f.setFlightNumber(flightNumber);
-
-                JsonNode departure = firstSegment.path("departure");
-                JsonNode arrival = firstSegment.path("arrival");
-
-                String depAirport = departure.path("iataCode").asText("");
-                String arrAirport = arrival.path("iataCode").asText("");
-
-                f.setOriginAirportCode(depAirport);
-                f.setDestinationAirportCode(arrAirport);
-
-                String depTime = departure.path("at").asText(null);
-                String arrTime = arrival.path("at").asText(null);
-
-                if (depTime != null && !depTime.isEmpty()) {
-                    f.setDepartureTime(parseAmadeusDateTime(depTime));
-                }
-                if (arrTime != null && !arrTime.isEmpty()) {
-                    f.setArrivalTime(parseAmadeusDateTime(arrTime));
-                }
+            if (itineraries.size() > 1) {
+                JsonNode returnItinerary = itineraries.get(1);
+                applyItinerary(returnItinerary, true, f);
             }
         }
 
@@ -200,6 +197,56 @@ public class FlightService {
         f.setDestinationCountry(null);
 
         return f;
+    }
+
+    private void applyItinerary(JsonNode itinerary, boolean isReturn, Flight f) {
+        if (itinerary == null || itinerary.isMissingNode()) {
+            return;
+        }
+
+        JsonNode segments = itinerary.path("segments");
+        if (!segments.isArray() || segments.isEmpty()) {
+            return;
+        }
+
+        JsonNode firstSegment = segments.get(0);
+        JsonNode lastSegment = segments.get(segments.size() - 1);
+
+        String carrierCode = firstSegment.path("carrierCode").asText("");
+        String flightNumber = firstSegment.path("number").asText("");
+
+        JsonNode departure = firstSegment.path("departure");
+        JsonNode arrival = lastSegment.path("arrival");
+
+        String depAirport = departure.path("iataCode").asText("");
+        String arrAirport = arrival.path("iataCode").asText("");
+
+        String depTime = departure.path("at").asText(null);
+        String arrTime = arrival.path("at").asText(null);
+
+        if (isReturn) {
+            f.setReturnAirline(carrierCode);
+            f.setReturnFlightNumber(flightNumber);
+            f.setReturnOriginAirportCode(depAirport);
+            f.setReturnDestinationAirportCode(arrAirport);
+            if (depTime != null && !depTime.isEmpty()) {
+                f.setReturnDepartureTime(parseAmadeusDateTime(depTime));
+            }
+            if (arrTime != null && !arrTime.isEmpty()) {
+                f.setReturnArrivalTime(parseAmadeusDateTime(arrTime));
+            }
+        } else {
+            f.setAirline(carrierCode);
+            f.setFlightNumber(flightNumber);
+            f.setOriginAirportCode(depAirport);
+            f.setDestinationAirportCode(arrAirport);
+            if (depTime != null && !depTime.isEmpty()) {
+                f.setDepartureTime(parseAmadeusDateTime(depTime));
+            }
+            if (arrTime != null && !arrTime.isEmpty()) {
+                f.setArrivalTime(parseAmadeusDateTime(arrTime));
+            }
+        }
     }
 
     private OffsetDateTime parseAmadeusDateTime(String value) {

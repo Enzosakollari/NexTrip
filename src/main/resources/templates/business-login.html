@@ -7,12 +7,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { display:flex; justify-content:center; align-items:center; min-height:100vh; overflow:hidden; background:#0a192f; }
+        body { display:flex; justify-content:center; align-items:center; min-height:100vh; overflow:hidden; background:#0b1324; }
 
         .video-background { position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1; overflow:hidden; }
         .video-background video { width:100%; height:100%; object-fit:cover; object-position:center; transform:scale(1.05); filter:brightness(0.8); }
         .video-overlay { position:absolute; top:0; left:0; width:100%; height:100%;
-            background: linear-gradient(135deg, rgba(10,25,47,0.85) 0%, rgba(20,40,80,0.7) 50%, rgba(10,25,47,0.85) 100%);
+            background: linear-gradient(135deg, rgba(11,19,36,0.85) 0%, rgba(22,43,107,0.65) 50%, rgba(11,19,36,0.85) 100%);
+            animation: none;
+        }
+
+        @keyframes overlayShift {
+            0% { background-position: center, 0 0; }
+            50% { background-position: center, 200px -120px; }
+            100% { background-position: center, 0 0; }
         }
 
         .container { width:100%; max-width:420px; padding:20px; z-index:1; opacity:0; animation:fadeIn 1.2s ease-out forwards; animation-delay:.3s; }
@@ -179,5 +186,15 @@
         });
     });
 </script>
+<footer class="footer">
+    <div class="container footer__inner">
+        <div>
+            <strong>NextTrip</strong>
+            <p class="muted">Travel beyond the map.</p>
+        </div>
+        <div class="muted">© 2025 NextTrip</div>
+    </div>
+</footer>
 </body>
 </html>
+

@@ -7,29 +7,229 @@
     <title>Travel Packs • NextTrip</title>
     <link rel="stylesheet" href="/css/app.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <div th:replace="~{fragments/navbar :: navbarStyles}"></div>
+
+    <style>
+        body {
+            background: var(--app-bg);
+            color: #e6e8ef;
+        }
+
+        .packs-hero {
+            background:
+                linear-gradient(135deg, rgba(11, 19, 36, 0.75) 0%, rgba(11, 47, 109, 0.6) 60%, rgba(15, 23, 52, 0.7) 100%),
+                url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1600&q=80&auto=format&fit=crop");
+            background-size: cover;
+            background-position: center;
+            padding: 64px 20px;
+            border-radius: 0 0 24px 24px;
+            color: white;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .packs-hero h1 {
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .packs-hero p {
+            font-size: 16px;
+            opacity: 0.95;
+        }
+
+        .hero-chips {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+
+        .hero-chip {
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
+            margin: 24px 0 32px;
+        }
+
+        .category-card {
+            background: rgba(11, 19, 36, 0.9);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 14px 30px rgba(2, 6, 23, 0.45);
+        }
+
+        .category-card img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .category-body {
+            padding: 16px;
+        }
+
+        .category-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #e6e8ef;
+        }
+
+        .category-text {
+            font-size: 13px;
+            color: #a3b1c6;
+            line-height: 1.5;
+        }
+
+        .info-strip {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+            margin-bottom: 32px;
+        }
+
+        .info-card {
+            background: rgba(11, 19, 36, 0.8);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            border-radius: 14px;
+            padding: 14px 16px;
+            font-size: 13px;
+            color: #a3b1c6;
+        }
+
+        .packs {
+            gap: 2rem;
+        }
+
+        .pack.card {
+            background: rgba(11, 19, 36, 0.9);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            border-radius: 22px;
+            box-shadow: 0 20px 40px rgba(2, 6, 23, 0.45);
+            overflow: hidden;
+        }
+
+        .pack__media {
+            height: 220px;
+            position: relative;
+            border-radius: 20px 20px 0 0;
+            overflow: hidden;
+        }
+
+        .pack__media::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(11, 19, 36, 0.15) 0%, rgba(11, 19, 36, 0.55) 60%, rgba(11, 19, 36, 0.9) 100%);
+        }
+
+        .pack__photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .pack__place {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            z-index: 2;
+            font-size: 24px;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+        }
+
+        .pack__tag {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            z-index: 2;
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            background: rgba(251, 191, 36, 0.95);
+            color: #0b1324;
+        }
+
+        .pack__badge {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            z-index: 2;
+            width: 60px;
+            height: auto;
+            filter: drop-shadow(0 6px 14px rgba(2, 6, 23, 0.5));
+        }
+
+        .pack__body {
+            padding: 20px;
+            background: linear-gradient(180deg, rgba(11, 19, 36, 0.9), rgba(11, 19, 36, 0.98));
+        }
+
+        .pack__title {
+            color: #e6e8ef;
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 6px;
+        }
+
+        .pack__meta {
+            color: #a3b1c6;
+            font-size: 13px;
+        }
+
+        .price {
+            color: #fbbf24;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .btn--small {
+            background: rgba(11, 19, 36, 0.8);
+            border: 1px solid rgba(251, 191, 36, 0.35);
+            color: #fbbf24;
+            box-shadow: none;
+        }
+
+        .btn--small:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(2, 6, 23, 0.45);
+        }
+    </style>
 </head>
 <body>
 
-<header class="topbar">
-    <div class="container topbar__inner">
-        <a href="/index" class="brand">
-            <span class="brand__mark">NT</span>
-            <span class="brand__name">NextTrip</span>
-        </a>
+<div th:replace="fragments/navbar :: navbar"></div>
 
-        <nav class="nav">
-            <a href="/index" class="nav__link">Explore</a>
-            <a href="/flights/search-view" class="nav__link">Flight Search</a>
-            <a href="/travel-packs" class="nav__link nav__link--active">Travel Packs</a>
-            <a href="/chat" class="nav__link">AI Chat</a>
-        </nav>
 
-        <div class="topbar__actions">
-            <a class="btn btn--ghost" href="/login">Login</a>
-            <a class="btn btn--primary" href="/index">Home</a>
-        </div>
+<div class="packs-hero">
+    <h1>Curated Travel Packs</h1>
+    <p>Handpicked itineraries with hotels, activities, and flexible dates.</p>
+    <div class="hero-chips">
+        <span class="hero-chip">Verified businesses</span>
+        <span class="hero-chip">Flexible dates</span>
+        <span class="hero-chip">Secure checkout</span>
+        <span class="hero-chip">Trusted reviews</span>
     </div>
-</header>
+</div>
 
 <main class="page">
     <section class="section">
@@ -41,15 +241,55 @@
                 </div>
             </div>
 
+            <div class="category-grid">
+                <div class="category-card">
+                    <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=900&q=80&auto=format&fit=crop" alt="Adventure">
+                    <div class="category-body">
+                        <div class="category-title">Adventure Escapes</div>
+                        <div class="category-text">Mountains, lakes, and immersive outdoor itineraries.</div>
+                    </div>
+                </div>
+                <div class="category-card">
+                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&q=80&auto=format&fit=crop" alt="Beach">
+                    <div class="category-body">
+                        <div class="category-title">Beach &amp; Sun</div>
+                        <div class="category-text">Relaxed coastal stays with beachfront experiences.</div>
+                    </div>
+                </div>
+                <div class="category-card">
+                    <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=900&q=80&auto=format&fit=crop" alt="City Breaks">
+                    <div class="category-body">
+                        <div class="category-title">City Breaks</div>
+                        <div class="category-text">Short trips packed with iconic sights and culture.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-strip">
+                <div class="info-card">Each pack includes curated stays, activities, and local tips.</div>
+                <div class="info-card">Travelers can book instantly and receive tickets inside the app.</div>
+                <div class="info-card">Look for the "Fully booked" badge on popular experiences.</div>
+            </div>
+
             <div class="packs" th:if="${!#lists.isEmpty(packs)}">
                 <a class="pack card" th:each="p : ${packs}" th:href="@{'/travel-packs/' + ${p.id}}">
                     <div class="pack__media">
+                        <div class="pack__tag" th:text="${p.fullyBooked ? 'Fully Booked' : 'Featured'}">Featured</div>
+                        <img class="pack__photo"
+                             th:if="${p.thumbnailUrl != null and !#strings.isEmpty(p.thumbnailUrl)}"
+                             th:src="${p.thumbnailUrl}"
+                             alt="Pack photo">
+                        <img class="pack__photo"
+                             th:if="${(p.thumbnailUrl == null or #strings.isEmpty(p.thumbnailUrl)) and p.imageUrl != null and !#strings.isEmpty(p.imageUrl)}"
+                             th:src="${p.imageUrl}"
+                             alt="Pack photo">
+                        <img th:if="${p.fullyBooked}" src="/images/booked.png" alt="Fully booked" class="pack__badge">
                         <div class="pack__place" th:text="${p.destination}">Destination</div>
                     </div>
 
                     <div class="pack__body">
                         <div class="pack__title" th:text="${p.title}">Title</div>
-                        <div class="muted pack__meta" th:text="${p.durationDays + ' days • ' + p.currency + ' ' + p.price}">meta</div>
+                        <div class="muted pack__meta" th:text="${p.durationDays + ' days - ' + p.capacity + ' seats - ' + (p.startDate != null ? p.startDate : 'TBD') + ' to ' + (p.endDate != null ? p.endDate : 'TBD') + ' - ' + p.currency + ' ' + p.price}">meta</div>
 
                         <div class="pack__foot">
                             <div class="price" th:text="${p.currency + ' ' + p.price}">€</div>
@@ -65,6 +305,16 @@
         </div>
     </section>
 </main>
+
+<footer class="footer">
+    <div class="container footer__inner">
+        <div>
+            <strong>NextTrip</strong>
+            <p class="muted">Travel beyond the map.</p>
+        </div>
+        <div class="muted">Â© 2025 NextTrip</div>
+    </div>
+</footer>
 
 <script src="/js/app.js"></script>
 </body>

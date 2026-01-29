@@ -3,7 +3,7 @@ package com.example.demo.Booking;
 
 
 public enum BookingStatus {
-    PENDING,
     CONFIRMED,
+    COMPLETED,
     CANCELLED
 }

@@ -7,6 +7,7 @@
 
     <link rel="stylesheet" href="/css/app.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <div th:replace="~{fragments/navbar :: navbarStyles}"></div>
 
     <style>
         .chat-layout {
@@ -97,27 +98,7 @@
 </head>
 
 <body>
-<header class="topbar">
-    <div class="container topbar__inner">
-        <a href="/index" class="brand">
-            <span class="brand__mark">NT</span>
-            <span class="brand__name">NextTrip</span>
-        </a>
-
-        <nav class="nav">
-            <a href="/index" class="nav__link">Explore</a>
-            <a href="/flights/search-view" class="nav__link">Flight Search</a>
-            <a href="/travel-packs" class="nav__link">Travel Packs</a>
-            <a href="/chat" class="nav__link nav__link--active">AI Chat</a>
-            <a href="/contact" class="nav__link">Contact</a>
-        </nav>
-
-        <div class="topbar__actions">
-            <a class="btn btn--ghost" href="/login">Login</a>
-            <a class="btn btn--primary" href="/travel-packs">Search Trips</a>
-        </div>
-    </div>
-</header>
+<div th:replace="fragments/navbar :: navbar"></div>
 
 <main class="page">
     <section class="section">

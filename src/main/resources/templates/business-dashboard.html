@@ -15,28 +15,29 @@
         }
 
         :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --accent: #ec4899;
-            --dark: #0f172a;
-            --light: #f8fafc;
-            --white: #ffffff;
-            --gray: #64748b;
-            --gray-light: #e2e8f0;
-            --success: #10b981;
+            --primary: #0b2f6d;
+            --primary-dark: #071c3e;
+            --accent: #fbbf24;
+            --dark: #0b1324;
+            --light: #e6e8ef;
+            --muted: #a3b1c6;
+            --panel: rgba(11, 19, 36, 0.88);
+            --panel-soft: rgba(11, 19, 36, 0.72);
+            --panel-border: rgba(251, 191, 36, 0.2);
+            --success: #22c55e;
             --warning: #f59e0b;
             --danger: #ef4444;
         }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            color: var(--dark);
-            background: var(--light);
+            color: var(--light);
+            background: var(--app-bg);
             line-height: 1.6;
         }
 
         .page {
-            padding: 2rem 0;
+            padding: 2.5rem 0 4rem;
             min-height: calc(100vh - 80px);
         }
 
@@ -46,198 +47,148 @@
             padding: 0 2rem;
         }
 
-        .section {
-            margin-bottom: 3rem;
+        .muted {
+            color: var(--muted);
         }
 
-        .section__head {
-            margin-bottom: 2rem;
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
         }
 
-        .section__head h2 {
+        .dashboard-header h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
+            font-size: 3rem;
             font-weight: 900;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
-        .section__head p {
-            color: var(--gray);
-            font-size: 1.125rem;
+        .dashboard-header p {
+            font-size: 1.1rem;
+            color: var(--muted);
+            max-width: 520px;
+        }
+
+        .section {
+            margin-bottom: 3.5rem;
+        }
+
+        .section__head {
+            margin-bottom: 1.75rem;
+        }
+
+        .section__head h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.3rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .section__head--row {
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
+            gap: 1.5rem;
         }
 
         .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
             gap: 2rem;
-            margin-bottom: 3rem;
         }
 
         .dashboard-card {
-            background: white;
+            background: var(--panel);
             border-radius: 24px;
-            padding: 2.5rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-            border: 1px solid var(--gray-light);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 2.25rem;
+            border: 1px solid var(--panel-border);
+            box-shadow: 0 22px 45px rgba(2, 6, 23, 0.55);
+            position: relative;
+            overflow: hidden;
         }
 
-        .dashboard-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        .dashboard-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(251, 191, 36, 0.08), transparent 55%);
+            pointer-events: none;
         }
 
         .card__title {
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             font-weight: 800;
-            margin-bottom: 0.5rem;
-            color: var(--dark);
+            margin-bottom: 0.4rem;
         }
 
         .card__subtitle {
-            color: var(--gray);
+            color: var(--muted);
             font-size: 0.95rem;
             margin-bottom: 1.5rem;
-        }
-
-        .company-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1.25rem;
-            background: var(--light);
-            border-radius: 16px;
-            margin-bottom: 1rem;
-        }
-
-        .company-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-
-        .company-details h3 {
-            font-size: 1.25rem;
-            font-weight: 800;
-            margin-bottom: 0.25rem;
-            color: var(--dark);
-        }
-
-        .company-details p {
-            color: var(--gray);
-            font-size: 0.9rem;
-        }
-
-        .status-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .status-item {
-            padding: 1rem;
-            background: var(--light);
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .status-item strong {
-            font-weight: 700;
-            color: var(--dark);
-        }
-
-        .status-badge {
-            padding: 0.375rem 0.875rem;
-            border-radius: 100px;
-            font-size: 0.875rem;
-            font-weight: 700;
-        }
-
-        .status-badge--verified {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-        }
-
-        .status-badge--pending {
-            background: rgba(245, 158, 11, 0.1);
-            color: var(--warning);
-        }
-
-        .status-badge--approved {
-            background: rgba(16, 185, 129, 0.1);
-            color: var(--success);
-        }
-
-        .warning-message {
-            margin-top: 1rem;
-            padding: 1rem;
-            background: rgba(245, 158, 11, 0.1);
-            border-left: 4px solid var(--warning);
-            border-radius: 8px;
-            color: var(--dark);
-            font-size: 0.9rem;
         }
 
         .action-buttons {
             display: flex;
             gap: 0.75rem;
             flex-wrap: wrap;
-            margin-bottom: 1rem;
         }
 
         .btn {
-            padding: 0.875rem 1.75rem;
+            padding: 0.85rem 1.7rem;
             border-radius: 12px;
             font-weight: 600;
             text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: none;
+            transition: all 0.25s ease;
+            border: 1px solid rgba(251, 191, 36, 0.3);
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
             font-size: 0.95rem;
+            background: rgba(11, 19, 36, 0.85);
+            color: var(--light);
         }
 
         .btn--primary {
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #0b1324;
+            border: none;
+            box-shadow: 0 10px 26px rgba(251, 191, 36, 0.25);
         }
 
         .btn--primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+            box-shadow: 0 16px 32px rgba(251, 191, 36, 0.28);
         }
 
         .btn--secondary {
-            background: white;
-            color: var(--dark);
-            border: 2px solid var(--gray-light);
+            background: rgba(11, 19, 36, 0.7);
+            color: var(--light);
         }
 
         .btn--secondary:hover {
-            border-color: var(--primary);
-            color: var(--primary);
+            border-color: rgba(251, 191, 36, 0.6);
+        }
+
+        .btn--ghost {
+            background: transparent;
+            color: var(--muted);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+        }
+
+        .btn--ghost:hover {
+            color: var(--light);
+            border-color: rgba(251, 191, 36, 0.4);
         }
 
         .btn--small {
@@ -246,114 +197,498 @@
         }
 
         .btn--danger {
-            background: var(--danger);
-            color: white;
+            background: rgba(239, 68, 68, 0.18);
+            color: #fecaca;
+            border: 1px solid rgba(239, 68, 68, 0.4);
         }
 
         .btn--danger:hover {
-            background: #dc2626;
+            background: rgba(239, 68, 68, 0.28);
         }
 
-        .card__hint {
-            margin-top: 1rem;
-            padding: 0.875rem;
-            background: rgba(99, 102, 241, 0.05);
-            border-radius: 10px;
-            color: var(--gray);
-            font-size: 0.875rem;
+        .profile-grid {
+            display: grid;
+            gap: 1.5rem;
         }
 
-        .packs-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
+        .profile-card {
+            background: var(--panel);
+            border-radius: 28px;
+            border: 1px solid var(--panel-border);
+            box-shadow: 0 24px 50px rgba(2, 6, 23, 0.6);
+            overflow: hidden;
+            width: 100%;
         }
 
-        .pack-item {
-            background: white;
-            border-radius: 16px;
-            padding: 1.5rem;
+        .profile-view {
+            display: grid;
+            gap: 1.5rem;
+            padding: 2rem;
+        }
+
+        .profile-cover {
+            height: 220px;
+            border-radius: 20px;
+            overflow: hidden;
+            background: linear-gradient(120deg, rgba(11, 47, 109, 0.9), rgba(15, 23, 52, 0.9));
+            position: relative;
+        }
+
+        .profile-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-cover::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.55));
+        }
+
+        .profile-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 2px solid var(--gray-light);
-            transition: all 0.3s ease;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin-top: -48px;
+            position: relative;
+            z-index: 2;
         }
 
-        .pack-item:hover {
-            border-color: var(--primary);
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.1);
-        }
-
-        .pack-item__left {
+        .profile-main {
             display: flex;
             align-items: center;
-            gap: 1rem;
-            flex: 1;
+            gap: 1.5rem;
         }
 
-        .pack-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
-
-        .pack-info h3 {
-            font-size: 1.125rem;
+        .profile-avatar {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            border: 2px solid rgba(251, 191, 36, 0.6);
+            background: rgba(11, 19, 36, 0.9);
+            display: grid;
+            place-items: center;
             font-weight: 800;
-            margin-bottom: 0.5rem;
-            color: var(--dark);
+            color: #fbbf24;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 12px 30px rgba(2, 6, 23, 0.6);
         }
 
-        .pack-info p {
-            color: var(--gray);
-            font-size: 0.9rem;
+        .profile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        .pack-actions {
+        .profile-info {
+            display: grid;
+            gap: 0.35rem;
+        }
+
+        .profile-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--muted);
+        }
+
+        .profile-name {
+            font-size: 1.6rem;
+            font-weight: 800;
+        }
+
+        .profile-handle {
+            color: var(--muted);
+        }
+
+        .profile-meta {
+            display: grid;
+            grid-template-columns: minmax(240px, 2fr) minmax(200px, 1fr);
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .profile-description {
+            color: var(--light);
+        }
+
+        .profile-badges {
             display: flex;
+            flex-direction: column;
             gap: 0.75rem;
         }
 
-        .empty-state {
-            background: white;
-            border-radius: 24px;
-            padding: 4rem 2rem;
+        .status-pill {
+            padding: 0.45rem 0.9rem;
+            border-radius: 999px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            background: rgba(251, 191, 36, 0.12);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.35);
             text-align: center;
-            border: 2px dashed var(--gray-light);
+        }
+
+        .status-pill--good {
+            background: rgba(34, 197, 94, 0.18);
+            color: #86efac;
+            border-color: rgba(34, 197, 94, 0.45);
+        }
+
+        .status-pill--warn {
+            background: rgba(245, 158, 11, 0.18);
+            color: #fcd34d;
+            border-color: rgba(245, 158, 11, 0.45);
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat-pill {
+            padding: 1rem 1.2rem;
+            border-radius: 16px;
+            background: var(--panel-soft);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #fbbf24;
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(280px, 1fr);
+            gap: 2rem;
+            align-items: start;
+        }
+
+        .overview-income {
+            position: sticky;
+            top: 110px;
+            align-self: start;
+        }
+
+        .earnings-card {
+            display: grid;
+            gap: 1.4rem;
+        }
+
+        .performance-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat-tile {
+            padding: 0.9rem 1rem;
+            border-radius: 14px;
+            background: var(--panel-soft);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+        }
+
+        .stat-tile .stat-label {
+            font-size: 0.75rem;
+        }
+
+        .stat-tile .stat-value {
+            font-size: 1.2rem;
+            font-weight: 800;
+        }
+
+        .popular-pack {
+            padding: 1.1rem 1.2rem;
+            border-radius: 16px;
+            background: rgba(251, 191, 36, 0.08);
+            border: 1px solid rgba(251, 191, 36, 0.25);
+            display: grid;
+            gap: 0.35rem;
+        }
+
+        .popular-pack__label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--muted);
+        }
+
+        .popular-pack__title {
+            font-size: 1.1rem;
+            font-weight: 800;
+        }
+
+        .popular-pack__value {
+            font-weight: 800;
+            color: #fbbf24;
+        }
+
+        .profile-banner {
+            height: 200px;
+            border-radius: 18px;
+            overflow: hidden;
+            background: linear-gradient(120deg, rgba(11, 47, 109, 0.9), rgba(15, 23, 52, 0.9));
+            position: relative;
+        }
+
+        .profile-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-banner::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.55));
+        }
+
+        .profile-row {
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .profile-logo {
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            border: 2px solid rgba(251, 191, 36, 0.6);
+            background: rgba(11, 19, 36, 0.9);
+            display: grid;
+            place-items: center;
+            font-weight: 800;
+            color: #fbbf24;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .profile-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-name {
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .status-item {
+            padding: 0.9rem 1rem;
+            background: var(--panel-soft);
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-item strong {
+            font-weight: 700;
+        }
+
+        .status-badge {
+            padding: 0.35rem 0.85rem;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .status-badge--verified {
+            background: rgba(34, 197, 94, 0.15);
+            color: #86efac;
+        }
+
+        .status-badge--pending {
+            background: rgba(245, 158, 11, 0.18);
+            color: #fcd34d;
+        }
+
+        .status-badge--approved {
+            background: rgba(34, 197, 94, 0.15);
+            color: #86efac;
+        }
+
+        .warning-message {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(245, 158, 11, 0.18);
+            border-left: 4px solid #fbbf24;
+            border-radius: 10px;
+            color: var(--light);
+            font-size: 0.9rem;
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .profile-form {
+            padding: 2rem;
+        }
+
+        .profile-form .input {
+            width: 100%;
+            border: 1px solid rgba(251, 191, 36, 0.25);
+            background: rgba(11, 19, 36, 0.8);
+            color: var(--light);
+            border-radius: 12px;
+            padding: 0.75rem 0.85rem;
+        }
+
+        .profile-form .input:focus {
+            outline: none;
+            border-color: #fbbf24;
+            box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.2);
+        }
+
+        .preview-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .preview-grid img {
+            width: 100%;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .earnings-total {
+            display: grid;
+            gap: 0.35rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .earnings-amount {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: #fbbf24;
+        }
+
+        .earnings-breakdown h3 {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--muted);
+            margin-bottom: 1rem;
+        }
+
+        .earnings-list {
+            display: grid;
+            gap: 0.85rem;
+        }
+
+        .earnings-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.85rem 1rem;
+            background: var(--panel-soft);
+            border-radius: 12px;
+            border: 1px solid rgba(251, 191, 36, 0.12);
+        }
+
+        .earnings-pack {
+            font-weight: 700;
+        }
+
+        .earnings-value {
+            font-weight: 800;
+            color: #fbbf24;
+        }
+
+        .packs--dashboard {
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        }
+
+        .packs--dashboard .pack {
+            background: var(--panel);
+            border: 1px solid rgba(251, 191, 36, 0.15);
+            box-shadow: 0 18px 40px rgba(2, 6, 23, 0.45);
+        }
+
+        .packs--dashboard .pack__body {
+            color: var(--light);
+        }
+
+        .packs--dashboard .pack__meta {
+            color: var(--muted);
+        }
+
+        .packs--dashboard .pack__foot .price {
+            color: #fbbf24;
+        }
+
+        .packs--dashboard .pack__media {
+            height: 260px;
+        }
+
+        .popular-badge {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(251, 191, 36, 0.92);
+            color: #0b1324;
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            box-shadow: 0 8px 18px rgba(2, 6, 23, 0.3);
+        }
+
+        .empty-state {
+            background: var(--panel);
+            border-radius: 24px;
+            padding: 3rem 2rem;
+            text-align: center;
+            border: 1px dashed rgba(251, 191, 36, 0.3);
         }
 
         .empty-state__icon {
-            font-size: 4rem;
+            font-size: 3rem;
             margin-bottom: 1rem;
         }
 
         .empty-state h3 {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: 800;
             margin-bottom: 0.5rem;
-            color: var(--dark);
-        }
-
-        .empty-state p {
-            color: var(--gray);
-            margin-bottom: 1.5rem;
         }
 
         /* Modal */
         .modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            inset: 0;
             z-index: 2000;
             align-items: center;
             justify-content: center;
@@ -365,21 +700,19 @@
 
         .modal__backdrop {
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            inset: 0;
             background: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(4px);
         }
 
         .modal__card {
             position: relative;
-            background: white;
+            background: var(--panel);
             border-radius: 24px;
             padding: 2.5rem;
             max-width: 500px;
             width: 90%;
+            border: 1px solid rgba(251, 191, 36, 0.2);
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             z-index: 1;
         }
@@ -388,7 +721,6 @@
             font-size: 1.5rem;
             font-weight: 800;
             margin-bottom: 0.5rem;
-            color: var(--dark);
         }
 
         .modal__actions {
@@ -398,15 +730,23 @@
             margin-top: 1.5rem;
         }
 
-        .btn--ghost {
-            background: transparent;
-            color: var(--gray);
-            border: 2px solid var(--gray-light);
-        }
+        @media (max-width: 900px) {
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
 
-        .btn--ghost:hover {
-            border-color: var(--gray);
-            color: var(--dark);
+            .overview-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .overview-income {
+                position: static;
+            }
+
+            .profile-meta {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 768px) {
@@ -414,18 +754,14 @@
                 grid-template-columns: 1fr;
             }
 
-            .pack-item {
+            .profile-content {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 1rem;
             }
 
-            .pack-actions {
-                width: 100%;
-            }
-
-            .pack-actions .btn {
-                flex: 1;
+            .profile-main {
+                flex-direction: column;
+                align-items: flex-start;
             }
         }
     </style>
@@ -436,67 +772,136 @@
 
 <main class="page">
     <div class="container">
-        <div class="dashboard-grid">
-            <!-- Company Profile Card -->
-            <div class="dashboard-card">
-                <div class="card__title">Company Profile</div>
-                <p class="card__subtitle">Your business account details</p>
-
-                <div class="company-info">
-                    <div class="company-icon">🏢</div>
-                    <div class="company-details">
-                        <h3 th:text="${business.companyName}">Company Name</h3>
-                        <p th:text="${business.contactEmail}">email@company.com</p>
-                    </div>
-                </div>
-
-                <div class="status-grid">
-                    <div class="status-item">
-                        <strong>Email</strong>
-                        <span class="status-badge" 
-                              th:classappend="${business.verified} ? 'status-badge--verified' : 'status-badge--pending'"
-                              th:text="${business.verified ? 'Verified' : 'Not verified'}">Verified</span>
-                    </div>
-                    <div class="status-item">
-                        <strong>Approval</strong>
-                        <span class="status-badge" 
-                              th:classappend="${business.approved} ? 'status-badge--approved' : 'status-badge--pending'"
-                              th:text="${business.approved ? 'Approved' : 'Pending'}">Pending</span>
-                    </div>
-                </div>
-
-                <div class="warning-message" th:if="${!business.approved}">
-                    You can view your packs, but publishing/creating might be blocked until approval.
-                </div>
+        <div class="dashboard-header">
+            <div>
+                <h1>Business Dashboard</h1>
+                <p>Run your travel company from one cockpit: branding, packs, and earnings.</p>
             </div>
-
-            <!-- Quick Actions Card -->
-            <div class="dashboard-card">
-                <div class="card__title">Quick Actions</div>
-                <p class="card__subtitle">Manage travel packs</p>
-
-                <div class="action-buttons">
-                    <a class="btn btn--primary" th:href="@{/business/packs/new}">
-                        <span>+</span>
-                        <span>Add Travel Pack</span>
-                    </a>
-                    <a class="btn btn--secondary" th:href="@{/business/packs}">
-                        Open Packs Page
-                    </a>
-                </div>
-
-                <div class="card__hint">
-                    💡 Tip: Use "Edit" and "Delete" buttons inside your pack list.
-                </div>
+            <div class="action-buttons">
+                <a class="btn btn--primary" th:href="@{/business/packs/new}">
+                    <span>+</span>
+                    <span>Create Pack</span>
+                </a>
+                <a class="btn btn--secondary" th:href="@{/business/packs}">
+                    My Packs
+                </a>
             </div>
         </div>
 
-        <!-- My Travel Packs Section -->
-        <div class="section">
+        <section class="section" id="profile">
+            <div class="section__head">
+                <h2>Company Profile</h2>
+                <p class="muted">Your public-facing company profile.</p>
+            </div>
+
+            <div class="profile-card">
+                <div id="profileView" class="profile-view">
+                    <div class="profile-cover">
+                        <img th:if="${business.bannerUrl != null}" th:src="${business.bannerUrl}" alt="Company banner">
+                    </div>
+
+                    <div class="profile-content">
+                        <div class="profile-main">
+                            <div class="profile-avatar">
+                                <img th:if="${business.logoUrl != null}" th:src="${business.logoUrl}" alt="Company logo">
+                                <span th:if="${business.logoUrl == null}"
+                                      th:text="${business.companyName != null ? #strings.substring(business.companyName,0,1) : 'N'}">N</span>
+                            </div>
+                            <div class="profile-info">
+                                <div class="profile-label">Company name</div>
+                                <div class="profile-name" th:text="${business.companyName}">Company</div>
+                                <div class="profile-handle" th:text="${business.contactEmail}">email@company.com</div>
+                            </div>
+                        </div>
+                        <div class="profile-actions">
+                            <button class="btn btn--primary" type="button" id="editProfileBtn">Edit Profile</button>
+                        </div>
+                    </div>
+
+                    <div class="profile-meta">
+                        <div>
+                            <div class="profile-label">Public description</div>
+                            <div class="profile-description"
+                                 th:text="${(business.description != null and !#strings.isEmpty(business.description)) ? business.description : 'Add your company description.'}">
+                                Add your company description.
+                            </div>
+                        </div>
+                        <div class="profile-badges">
+                            <div class="status-pill"
+                                 th:classappend="${business.verified} ? ' status-pill--good' : ' status-pill--warn'"
+                                 th:text="${business.verified ? 'Email verified' : 'Email not verified'}">Email verified</div>
+                            <div class="status-pill"
+                                 th:classappend="${business.approved} ? ' status-pill--good' : ' status-pill--warn'"
+                                 th:text="${business.approved ? 'Approved' : 'Pending approval'}">Approved</div>
+                        </div>
+                    </div>
+
+                    <div class="profile-stats">
+                        <div class="stat-pill">
+                            <span class="stat-label">Bookings</span>
+                            <span class="stat-value" th:text="${totalBookings}">0</span>
+                        </div>
+                        <div class="stat-pill">
+                            <span class="stat-label">Tickets Sold</span>
+                            <span class="stat-value" th:text="${totalTickets}">0</span>
+                        </div>
+                        <div class="stat-pill">
+                            <span class="stat-label">Top Pack</span>
+                            <span class="stat-value" th:text="${popularPack != null ? popularPack.title : 'N/A'}">N/A</span>
+                        </div>
+                    </div>
+
+                    <div class="warning-message" th:if="${!business.approved}">
+                        You can view your packs, but publishing/creating might be blocked until approval.
+                    </div>
+                </div>
+
+                <form id="profileEdit" method="post" th:action="@{/business/profile}" enctype="multipart/form-data" class="profile-grid profile-form" style="display:none;">
+                    <div>
+                        <label class="muted">Company name</label>
+                        <div class="input" th:text="${business.companyName}">Company</div>
+                    </div>
+
+                    <div>
+                        <label class="muted">Public description</label>
+                        <textarea class="input" name="description" rows="5"
+                                  th:text="${business.description}"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="muted">Logo (square)</label>
+                        <input class="input" type="file" name="logo" accept="image/*">
+                    </div>
+
+                    <div>
+                        <label class="muted">Banner (wide)</label>
+                        <input class="input" type="file" name="banner" accept="image/*">
+                    </div>
+
+                    <div class="preview-grid" th:if="${business.logoUrl != null or business.bannerUrl != null}">
+                        <div th:if="${business.logoUrl != null}">
+                            <div class="muted" style="margin-bottom:6px;">Current logo</div>
+                            <img th:src="${business.logoUrl}" alt="Company logo">
+                        </div>
+                        <div th:if="${business.bannerUrl != null}">
+                            <div class="muted" style="margin-bottom:6px;">Current banner</div>
+                            <img th:src="${business.bannerUrl}" alt="Company banner" style="height: 220px;">
+                        </div>
+                    </div>
+
+                    <div class="profile-actions">
+                        <button class="btn btn--primary" type="submit">Save Profile</button>
+                        <button class="btn btn--ghost" type="button" id="cancelEditBtn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <section class="section" id="packs">
             <div class="section__head section__head--row">
                 <div>
-                    <h2>My Travel Packs</h2>
-                    <p>All packages you have published</p>
+                    <h2>Travel Packs</h2>
+                    <p class="muted">All packages you have published.</p>
                 </div>
                 <a class="btn btn--primary" th:href="@{/business/packs/new}">
                     <span>+</span>
@@ -504,47 +909,121 @@
                 </a>
             </div>
 
-            <div class="packs-list" th:if="${packs != null and !packs.isEmpty()}">
-                <div class="pack-item" th:each="p : ${packs}">
-                    <div class="pack-item__left">
-                        <div class="pack-icon">📦</div>
-                        <div class="pack-info">
-                            <h3 th:text="${p.title}">Pack title</h3>
-                            <p>
-                                <span th:text="${p.destination}">Destination</span>
-                                <span> • </span>
-                                <span th:text="${p.durationDays}">0</span> days
-                                <span> • </span>
-                                <span th:text="${p.price}">0</span>
-                                <span th:text="${p.currency}">EUR</span>
-                            </p>
+            <div class="overview-grid">
+                <div class="overview-packs">
+                    <div class="packs packs--dashboard" th:if="${packs != null and !packs.isEmpty()}">
+                        <div class="pack card" th:each="p : ${packs}">
+                            <div class="pack__media">
+                                <div class="popular-badge" th:if="${popularPack != null and p.id == popularPack.id}">
+                                    Most Popular
+                                </div>
+                                <img class="pack__photo"
+                                     th:if="${p.thumbnailUrl != null and !#strings.isEmpty(p.thumbnailUrl)}"
+                                     th:src="${p.thumbnailUrl}"
+                                     alt="Pack photo">
+                                <img class="pack__photo"
+                                     th:if="${(p.thumbnailUrl == null or #strings.isEmpty(p.thumbnailUrl)) and p.imageUrl != null and !#strings.isEmpty(p.imageUrl)}"
+                                     th:src="${p.imageUrl}"
+                                     alt="Pack photo">
+                                <div class="pack__place" th:text="${p.destination}">Destination</div>
+                            </div>
+
+                            <div class="pack__body">
+                                <div class="pack__title" th:text="${p.title}">Pack title</div>
+                                <div class="muted pack__meta"
+                                     th:text="${p.durationDays + ' days - ' + p.capacity + ' seats - ' + (p.startDate != null ? p.startDate : 'TBD') + ' to ' + (p.endDate != null ? p.endDate : 'TBD') + ' - ' + p.currency + ' ' + p.price}">
+                                    meta
+                                </div>
+
+                                <div class="pack__foot">
+                                    <div>
+                                        <div class="price" th:text="${p.currency + ' ' + p.price}">EUR 0</div>
+                                        <div class="muted" style="font-size: 13px;">
+                                            Earnings:
+                                            <span th:text="${p.currency}">EUR</span>
+                                            <span th:text="${packEarnings[p.id]}">0</span>
+                                        </div>
+                                    </div>
+                                    <div style="display:flex; gap:8px;">
+                                        <a class="btn btn--secondary btn--small"
+                                           th:href="@{/business/packs/{packId}/edit(packId=${p.id})}">
+                                            Edit
+                                        </a>
+                                        <button class="btn btn--danger btn--small"
+                                                type="button"
+                                                th:attr="data-delete-url=@{/business/packs/{packId}/delete(packId=${p.id})}"
+                                                onclick="openDeleteModal(this)">
+                                            Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="pack-actions">
-                        <a class="btn btn--secondary btn--small"
-                           th:href="@{/business/packs/{packId}/edit(packId=${p.id})}">
-                            Edit
+
+                    <div class="empty-state" th:if="${packs == null or packs.isEmpty()}">
+                        <h3>No packs yet</h3>
+                        <p>Create your first travel pack to start selling.</p>
+                        <a class="btn btn--primary" th:href="@{/business/packs/new}">
+                            <span>+</span>
+                            <span>Add Travel Pack</span>
                         </a>
-                        <button class="btn btn--danger btn--small"
-                                type="button"
-                                th:attr="data-delete-url=@{/business/packs/{packId}/delete(packId=${p.id})}"
-                                onclick="openDeleteModal(this)">
-                            Delete
-                        </button>
                     </div>
                 </div>
-            </div>
 
-            <div class="empty-state" th:if="${packs == null or packs.isEmpty()}">
-                <div class="empty-state__icon">📦</div>
-                <h3>No packs yet</h3>
-                <p>Create your first travel pack to start selling.</p>
-                <a class="btn btn--primary" th:href="@{/business/packs/new}">
-                    <span>+</span>
-                    <span>Add Travel Pack</span>
-                </a>
+                <aside class="overview-income">
+                    <div class="dashboard-card earnings-card">
+                        <div class="card__title">Earnings &amp; Performance</div>
+                        <p class="card__subtitle">Revenue, bookings, and ticket sales.</p>
+
+                        <div class="performance-stats">
+                            <div class="stat-tile">
+                                <div class="stat-label">Total Bookings</div>
+                                <div class="stat-value" th:text="${totalBookings}">0</div>
+                            </div>
+                            <div class="stat-tile">
+                                <div class="stat-label">Tickets Sold</div>
+                                <div class="stat-value" th:text="${totalTickets}">0</div>
+                            </div>
+                        </div>
+
+                        <div class="earnings-total">
+                            <div class="earnings-amount" th:text="${earningsCurrency + ' ' + earnings}">EUR 0.00</div>
+                            <div class="muted">Total earnings from completed payments.</div>
+                        </div>
+
+                        <div class="popular-pack" th:if="${popularPack != null}">
+                            <div class="popular-pack__label">Most popular package</div>
+                            <div class="popular-pack__title" th:text="${popularPack.title}">Popular pack</div>
+                            <div class="muted" th:text="${popularPack.destination}">Destination</div>
+                            <div class="popular-pack__value" th:text="${popularPackTickets + ' tickets'}">0 tickets</div>
+                        </div>
+                        <div class="popular-pack empty-state" th:if="${popularPack == null}">
+                            <h3>No popular pack yet</h3>
+                            <p>Bookings will highlight your top seller.</p>
+                        </div>
+
+                        <div class="earnings-breakdown">
+                            <h3>By travel pack</h3>
+                            <div class="earnings-list" th:if="${packs != null and !packs.isEmpty()}">
+                                <div class="earnings-row" th:each="p : ${packs}">
+                                    <div>
+                                        <div class="earnings-pack" th:text="${p.title}">Pack title</div>
+                                        <div class="muted" th:text="${p.destination}">Destination</div>
+                                    </div>
+                                    <div class="earnings-value" th:text="${p.currency + ' ' + packEarnings[p.id]}">EUR 0</div>
+                                </div>
+                            </div>
+
+                            <div class="empty-state" th:if="${packs == null or packs.isEmpty()}">
+                                <h3>No earnings yet</h3>
+                                <p>Create your first travel pack to start generating revenue.</p>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
             </div>
-        </div>
+        </section>
     </div>
 </main>
 
@@ -578,7 +1057,34 @@
         modal.classList.remove("is-open");
         modal.setAttribute("aria-hidden", "true");
     }
+
+    const profileView = document.getElementById("profileView");
+    const profileEdit = document.getElementById("profileEdit");
+    const editProfileBtn = document.getElementById("editProfileBtn");
+    const cancelEditBtn = document.getElementById("cancelEditBtn");
+
+    if (profileView && profileEdit && editProfileBtn && cancelEditBtn) {
+        editProfileBtn.addEventListener("click", () => {
+            profileView.style.display = "none";
+            profileEdit.style.display = "grid";
+        });
+
+        cancelEditBtn.addEventListener("click", () => {
+            profileEdit.style.display = "none";
+            profileView.style.display = "grid";
+        });
+    }
 </script>
 
+<footer class="footer">
+    <div class="container footer__inner">
+        <div>
+            <strong>NextTrip</strong>
+            <p class="muted">Travel beyond the map.</p>
+        </div>
+        <div class="muted">© 2025 NextTrip</div>
+    </div>
+</footer>
 </body>
 </html>
+

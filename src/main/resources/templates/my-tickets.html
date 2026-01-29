@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Tickets - NextTrip</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <div th:replace="~{fragments/navbar :: navbarStyles}"></div>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0b2f6d;
+            --primary-dark: #081f47;
+            --accent: #0ea5a4;
+            --dark: #0b1324;
+            --light: #f8fafc;
+            --white: #ffffff;
+            --gray: #64748b;
+            --gray-light: #e2e8f0;
+            --success: #16a34a;
+            --info: #2563eb;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--dark);
+            background: var(--app-bg);
+            line-height: 1.6;
+        }
+
+        .page {
+            padding: 2rem 0;
+            min-height: calc(100vh - 80px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .page-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-header p {
+            color: var(--gray);
+            font-size: 1.125rem;
+        }
+
+        .section-header {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .section-header p {
+            color: var(--gray);
+        }
+
+        .tickets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(560px, 1fr));
+            gap: 2rem;
+        }
+
+        .package-ticket {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            background: #0f172a;
+            border-radius: 22px;
+            overflow: hidden;
+            border: 1px solid rgba(15, 23, 42, 0.15);
+            box-shadow: 0 18px 50px rgba(15, 23, 42, 0.18);
+            position: relative;
+        }
+
+        .package-ticket::after {
+            content: "";
+            position: absolute;
+            left: 60%;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: rgba(255, 255, 255, 0.2);
+            border-left: 2px dashed rgba(255, 255, 255, 0.35);
+        }
+
+        .package-ticket__media {
+            min-height: 260px;
+            background-color: #0f172a;
+            background-size: cover;
+            background-position: center;
+            color: #fff;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .package-ticket__media::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.55), rgba(30, 41, 59, 0.45)),
+                        radial-gradient(circle at top left, rgba(236, 72, 153, 0.25), transparent 60%),
+                        radial-gradient(circle at bottom right, rgba(99, 102, 241, 0.25), transparent 60%);
+            z-index: 0;
+        }
+
+        .package-ticket__media > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .package-ticket__tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(15, 23, 42, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .package-ticket__title {
+            font-size: 1.6rem;
+            font-weight: 900;
+            line-height: 1.2;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+
+        .package-ticket__destination {
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-top: 6px;
+            letter-spacing: 1px;
+        }
+
+        .package-ticket__right {
+            background: #f8fafc;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            position: relative;
+        }
+
+        .package-ticket__right h3 {
+            font-size: 1.1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #0f172a;
+        }
+
+        .package-ticket__info {
+            display: grid;
+            gap: 10px;
+        }
+
+        .package-ticket__info .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .package-ticket__info span {
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .package-ticket__info label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #64748b;
+        }
+
+        .package-ticket__barcode {
+            height: 42px;
+            border-radius: 8px;
+            background: repeating-linear-gradient(
+                90deg,
+                #0f172a 0,
+                #0f172a 2px,
+                transparent 2px,
+                transparent 4px
+            );
+            opacity: 0.8;
+        }
+
+        .package-ticket__code {
+            font-size: 0.85rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-align: center;
+            color: #0f172a;
+        }
+
+        .plane-tickets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(580px, 1fr));
+            gap: 2rem;
+        }
+
+        .plane-ticket {
+            background: #ffffff;
+            border-radius: 18px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .plane-ticket__bar {
+            background: #0b2c6b;
+            color: #fff;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .plane-ticket__bar-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .plane-ticket__bar svg {
+            width: 18px;
+            height: 18px;
+            fill: #f8fafc;
+        }
+
+        .plane-ticket__body {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 220px;
+            position: relative;
+        }
+
+        .plane-ticket__body::after {
+            content: "";
+            position: absolute;
+            top: 16px;
+            bottom: 16px;
+            left: calc(100% - 220px);
+            border-left: 2px dashed #d6dbe5;
+        }
+
+        .plane-ticket__main {
+            padding: 20px 24px 22px;
+            position: relative;
+        }
+
+        .plane-ticket__main::after {
+            content: "";
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(15, 118, 110, 0.12), transparent 70%);
+            transform: translateY(-50%);
+        }
+
+        .plane-ticket__route {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .plane-ticket__route span {
+            font-weight: 900;
+        }
+
+        .plane-ticket__meta {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        .plane-ticket__divider {
+            margin: 14px 0 10px;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(15, 23, 42, 0.12), transparent);
+        }
+
+        .plane-ticket__details {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px 18px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .plane-ticket__label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #94a3b8;
+            font-weight: 700;
+        }
+
+        .plane-ticket__value {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .plane-ticket__stub {
+            background: #f8fafc;
+            padding: 20px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+        }
+
+        .plane-ticket__stub::before,
+        .plane-ticket__stub::after {
+            content: "";
+            position: absolute;
+            left: -12px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+        }
+
+        .plane-ticket__stub::before {
+            top: 14px;
+        }
+
+        .plane-ticket__stub::after {
+            bottom: 14px;
+        }
+
+        .plane-ticket__stub-title {
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #0f172a;
+        }
+
+        .plane-ticket__barcode {
+            height: 44px;
+            border-radius: 8px;
+            background: repeating-linear-gradient(
+                90deg,
+                #0f172a 0,
+                #0f172a 2px,
+                transparent 2px,
+                transparent 4px
+            );
+            opacity: 0.7;
+        }
+
+        .plane-ticket__code {
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: #0f172a;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge--confirmed {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .status-badge--completed {
+            background: rgba(59, 130, 246, 0.12);
+            color: var(--info);
+        }
+
+        .status-badge--cancelled {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .empty-state {
+            background: white;
+            border-radius: 24px;
+            padding: 4rem 2rem;
+            text-align: center;
+            border: 2px dashed var(--gray-light);
+        }
+
+        .empty-state__icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .empty-state p {
+            color: var(--gray);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+
+        .btn--primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn--primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        @media (max-width: 900px) {
+            .package-ticket {
+                grid-template-columns: 1fr;
+            }
+
+            .plane-ticket__body {
+                grid-template-columns: 1fr;
+            }
+
+            .plane-ticket__body::after {
+                display: none;
+            }
+
+            .plane-ticket__stub::before,
+            .plane-ticket__stub::after {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .tickets-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .plane-tickets-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<main class="page">
+    <div class="container">
+        <div class="page-header">
+            <h1>My Tickets</h1>
+            <p>All your confirmed travel tickets in one place</p>
+        </div>
+
+        <section style="margin-bottom: 3rem;">
+            <div class="section-header">
+                <h2>Travel Package Tickets</h2>
+                <p>Your boarding-pass style tickets for travel packs.</p>
+            </div>
+
+            <div th:if="${#lists.isEmpty(tickets)}" class="empty-state">
+                <div class="empty-state__icon">TICKET</div>
+                <h2>No tickets yet</h2>
+                <p>Your tickets will appear here once you make a reservation</p>
+                <a href="/travel-packs" class="btn btn--primary" style="margin-top: 1rem;">Explore Travel Packs</a>
+            </div>
+
+            <div class="tickets-grid" th:if="${!#lists.isEmpty(tickets)}">
+                <div class="package-ticket" th:each="t : ${tickets}">
+                    <div class="package-ticket__media"
+                         th:with="cover=${(t.travelPackage.thumbnailUrl != null and !#strings.isEmpty(t.travelPackage.thumbnailUrl)) ? t.travelPackage.thumbnailUrl : (t.travelPackage.imageUrl != null and !#strings.isEmpty(t.travelPackage.imageUrl) ? t.travelPackage.imageUrl : null)}"
+                         th:style="${cover != null} ? |background-image:url(${cover});| : ''">
+                        <div class="package-ticket__tag">Boarding Pass</div>
+                        <div>
+                            <div class="package-ticket__title" th:text="${t.travelPackage.title}">Pack Title</div>
+                            <div class="package-ticket__destination" th:text="${t.travelPackage.destination}">Destination</div>
+                        </div>
+                        <div style="font-size: 0.85rem; opacity: 0.9;" th:text="${#temporals.format(t.createdAt, 'dd MMM yyyy, HH:mm')}">01 Jan 2026, 12:00</div>
+                    </div>
+                    <div class="package-ticket__right">
+                        <h3>Ticket Details</h3>
+                        <div class="package-ticket__info">
+                            <div class="row">
+                                <label>Passenger</label>
+                                <span th:text="${t.fullName}">John Doe</span>
+                            </div>
+                            <div class="row">
+                                <label>Email</label>
+                                <span th:text="${t.email}">john@example.com</span>
+                            </div>
+                            <div class="row">
+                                <label>Travelers</label>
+                                <span th:text="${t.travelersCount}">2</span>
+                            </div>
+                            <div class="row">
+                                <label>Dates</label>
+                                <span th:text="${(t.travelPackage.startDate != null ? t.travelPackage.startDate : 'TBD') + ' to ' + (t.travelPackage.endDate != null ? t.travelPackage.endDate : 'TBD')}">Dates</span>
+                            </div>
+                            <div class="row">
+                                <label>Status</label>
+                                <span th:text="${t.status}">CONFIRMED</span>
+                            </div>
+                        </div>
+                        <div class="status-badge"
+                             th:classappend="${t.status == 'CONFIRMED'} ? 'status-badge--confirmed' : (${t.status == 'COMPLETED'} ? 'status-badge--completed' : 'status-badge--cancelled')"
+                             th:text="${t.status}">CONFIRMED</div>
+                        <div class="package-ticket__barcode"></div>
+                        <div class="package-ticket__code" th:text="${'NT-' + t.id}">NT-0</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-header">
+                <h2>Plane Tickets</h2>
+                <p>Flight tickets booked directly through NextTrip.</p>
+            </div>
+
+            <div th:if="${planeTickets == null || #lists.isEmpty(planeTickets)}" class="empty-state">
+                <div class="empty-state__icon">&#9992;</div>
+                <h2>No plane tickets yet</h2>
+                <p>Your confirmed flight tickets will appear here after checkout.</p>
+            </div>
+
+            <div class="plane-tickets-grid" th:if="${planeTickets != null && !#lists.isEmpty(planeTickets)}">
+                <div class="plane-ticket" th:each="p : ${planeTickets}">
+                    <div class="plane-ticket__bar">
+                        <div class="plane-ticket__bar-group">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M2 12l19-9-4 9 4 9z"></path>
+                            </svg>
+                            <span>Boarding Pass</span>
+                        </div>
+                        <div class="plane-ticket__bar-group">
+                            <span>Boarding Pass</span>
+                        </div>
+                    </div>
+                    <div class="plane-ticket__body">
+                        <div class="plane-ticket__main">
+                            <div class="plane-ticket__route">
+                                <span th:text="${p.originAirportCode}">CDG</span>
+                                <span>-></span>
+                                <span th:text="${p.destinationAirportCode}">BER</span>
+                            </div>
+                            <div class="plane-ticket__meta" th:text="${p.bookingReference != null && !#strings.isEmpty(p.bookingReference) ? 'Booking Ref: ' + p.bookingReference : 'Order: ' + (p.amadeusOrderId != null ? p.amadeusOrderId : 'Pending')}">
+                                Booking Ref
+                            </div>
+                            <div class="plane-ticket__divider"></div>
+                            <div class="plane-ticket__details">
+                                <div>
+                                    <div class="plane-ticket__label">Passenger</div>
+                                    <div class="plane-ticket__value" th:text="${p.firstName + ' ' + p.lastName}">Name</div>
+                                </div>
+                                <div>
+                                    <div class="plane-ticket__label">Email</div>
+                                    <div class="plane-ticket__value" th:text="${p.email}">email</div>
+                                </div>
+                                <div>
+                                    <div class="plane-ticket__label">Departure</div>
+                                    <div class="plane-ticket__value"
+                                         th:text="${p.departureTime != null ? #temporals.format(p.departureTime, 'dd MMM yyyy, HH:mm') : 'TBD'}">Date</div>
+                                </div>
+                                <div>
+                                    <div class="plane-ticket__label">Arrival</div>
+                                    <div class="plane-ticket__value"
+                                         th:text="${p.arrivalTime != null ? #temporals.format(p.arrivalTime, 'dd MMM yyyy, HH:mm') : 'TBD'}">Date</div>
+                                </div>
+                                <div>
+                                    <div class="plane-ticket__label">Airline</div>
+                                    <div class="plane-ticket__value" th:text="${airlineNames[p.id]}">GQ 123 · Airline</div>
+                                </div>
+                                <div>
+                                    <div class="plane-ticket__label">Checked Bag</div>
+                                    <div class="plane-ticket__value" th:text="${checkedBags[p.id]}">23 KG</div>
+                                </div>
+                                <div>
+                                    <div class="plane-ticket__label">Cabin Bag</div>
+                                    <div class="plane-ticket__value" th:text="${cabinBags[p.id]}">8 KG</div>
+                                </div>
+                                <div>
+                                    <div class="plane-ticket__label">Price</div>
+                                    <div class="plane-ticket__value" th:text="${p.currency + ' ' + p.price}">EUR 0.00</div>
+                                </div>
+                                <div th:if="${p.returnDepartureTime != null}">
+                                    <div class="plane-ticket__label">Return Departure</div>
+                                    <div class="plane-ticket__value"
+                                         th:text="${#temporals.format(p.returnDepartureTime, 'dd MMM yyyy, HH:mm')}">Return</div>
+                                </div>
+                                <div th:if="${p.returnArrivalTime != null}">
+                                    <div class="plane-ticket__label">Return Arrival</div>
+                                    <div class="plane-ticket__value"
+                                         th:text="${#temporals.format(p.returnArrivalTime, 'dd MMM yyyy, HH:mm')}">Return</div>
+                                </div>
+                                <div th:if="${p.returnAirline != null && !#strings.isEmpty(p.returnAirline)}">
+                                    <div class="plane-ticket__label">Return Airline</div>
+                                    <div class="plane-ticket__value" th:text="${returnAirlineNames[p.id]}">Return Airline</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="plane-ticket__stub">
+                            <div class="plane-ticket__stub-title">Ticket Stub</div>
+                            <div>
+                                <div class="plane-ticket__label">Passenger</div>
+                                <div class="plane-ticket__value" th:text="${p.firstName + ' ' + p.lastName}">Name</div>
+                            </div>
+                            <div>
+                                <div class="plane-ticket__label">Flight</div>
+                                <div class="plane-ticket__value" th:text="${airlineNames[p.id]}">GQ 123 · Airline</div>
+                            </div>
+                            <div>
+                                <div class="plane-ticket__label">Depart</div>
+                                <div class="plane-ticket__value"
+                                     th:text="${p.departureTime != null ? #temporals.format(p.departureTime, 'dd MMM yyyy, HH:mm') : 'TBD'}">Date</div>
+                            </div>
+                            <div class="status-badge"
+                                 th:classappend="${p.orderStatus == 'CONFIRMED'} ? 'status-badge--confirmed' : (${p.orderStatus == 'FAILED'} ? 'status-badge--cancelled' : 'status-badge--completed')"
+                                 th:text="${p.orderStatus}">CONFIRMED</div>
+                            <div class="plane-ticket__barcode"></div>
+                            <div class="plane-ticket__code" th:text="${p.bookingReference != null && !#strings.isEmpty(p.bookingReference) ? p.bookingReference : 'NT-' + p.id}">NT-0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container footer__inner">
+        <div>
+            <strong>NextTrip</strong>
+            <p class="muted">Travel beyond the map.</p>
+        </div>
+        <div class="muted">© 2025 NextTrip</div>
+    </div>
+</footer>
+</body>
+</html>
+

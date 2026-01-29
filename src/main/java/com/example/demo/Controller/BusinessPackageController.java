@@ -2,11 +2,13 @@ package com.example.demo.Controller;
 
 import com.example.demo.Business.TravelPackage;
 import com.example.demo.Service.BusinessUserService;
+import com.example.demo.Service.FileStorageService;
 import com.example.demo.User.BusinessUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 
@@ -16,6 +18,7 @@ import java.security.Principal;
 public class BusinessPackageController {
 
     private final BusinessUserService businessService;
+    private final FileStorageService fileStorageService;
 
     @GetMapping("/packs")
     public String myPacks(Model model, Principal principal) {
@@ -39,10 +42,26 @@ public class BusinessPackageController {
     }
 
     @PostMapping("/packs")
-    public String create(@ModelAttribute TravelPackage pack, Principal principal) {
+    public String create(@ModelAttribute TravelPackage pack,
+                         @RequestParam(value = "image", required = false) MultipartFile image,
+                         @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail,
+                         @RequestParam(value = "galleryFiles", required = false) MultipartFile[] galleryFiles,
+                         Principal principal) {
         BusinessUser business = businessService.currentBusiness(principal);
         if (business == null) return "redirect:/business/login";
 
+        String imageUrl = fileStorageService.storePackImage(image);
+        if (imageUrl != null) {
+            pack.setImageUrl(imageUrl);
+        }
+        String thumbnailUrl = fileStorageService.storePackImage(thumbnail);
+        if (thumbnailUrl != null) {
+            pack.setThumbnailUrl(thumbnailUrl);
+        }
+        var galleryUrls = fileStorageService.storePackImages(galleryFiles);
+        if (!galleryUrls.isEmpty()) {
+            pack.setGalleryImages(String.join(",", galleryUrls));
+        }
         businessService.createPackage(business.getId(), pack);
         return "redirect:/business/packs";
     }
@@ -59,10 +78,27 @@ public class BusinessPackageController {
     }
 
     @PostMapping("/packs/{packId}")
-    public String update(@PathVariable Long packId, @ModelAttribute TravelPackage pack, Principal principal) {
+    public String update(@PathVariable Long packId,
+                         @ModelAttribute TravelPackage pack,
+                         @RequestParam(value = "image", required = false) MultipartFile image,
+                         @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail,
+                         @RequestParam(value = "galleryFiles", required = false) MultipartFile[] galleryFiles,
+                         Principal principal) {
         BusinessUser business = businessService.currentBusiness(principal);
         if (business == null) return "redirect:/business/login";
 
+        String imageUrl = fileStorageService.storePackImage(image);
+        if (imageUrl != null) {
+            pack.setImageUrl(imageUrl);
+        }
+        String thumbnailUrl = fileStorageService.storePackImage(thumbnail);
+        if (thumbnailUrl != null) {
+            pack.setThumbnailUrl(thumbnailUrl);
+        }
+        var galleryUrls = fileStorageService.storePackImages(galleryFiles);
+        if (!galleryUrls.isEmpty()) {
+            pack.setGalleryImages(String.join(",", galleryUrls));
+        }
         businessService.updatePackage(business.getId(), packId, pack);
         return "redirect:/business/packs";
     }

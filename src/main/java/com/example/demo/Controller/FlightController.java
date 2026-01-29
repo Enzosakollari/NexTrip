@@ -25,6 +25,9 @@ public class FlightController {
             @RequestParam String origin,
             @RequestParam String destination,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate returnDate,
             @RequestParam(defaultValue = "1") int adults,
             @RequestParam(defaultValue = "EUR") String currency
     ) {
@@ -32,6 +35,7 @@ public class FlightController {
                 origin,
                 destination,
                 date.toString(),
+                returnDate != null ? returnDate.toString() : null,
                 adults,
                 currency
         );

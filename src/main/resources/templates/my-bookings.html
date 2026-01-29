@@ -1,35 +1,383 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>My Bookings</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings - NextTrip</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <div th:replace="~{fragments/navbar :: navbarStyles}"></div>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0b2f6d;
+            --primary-dark: #081f47;
+            --accent: #0ea5a4;
+            --dark: #0b1324;
+            --light: #f8fafc;
+            --white: #ffffff;
+            --gray: #64748b;
+            --gray-light: #e2e8f0;
+            --success: #16a34a;
+            --info: #2563eb;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--dark);
+            background: var(--app-bg);
+            line-height: 1.6;
+        }
+
+        .page {
+            padding: 2rem 0;
+            min-height: calc(100vh - 80px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .page-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .page-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .page-header p {
+            color: var(--gray);
+            font-size: 1.125rem;
+        }
+
+        .bookings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .booking-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            border: 2px solid var(--gray-light);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .booking-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+        }
+
+        .booking-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+
+        .booking-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-light);
+        }
+
+        .booking-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            color: var(--dark);
+        }
+
+        .booking-date {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .booking-details {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            background: var(--light);
+            border-radius: 10px;
+        }
+
+        .detail-item strong {
+            font-weight: 600;
+            color: var(--gray);
+        }
+
+        .detail-item span {
+            font-weight: 700;
+            color: var(--dark);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+            font-size: 0.875rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-badge--confirmed {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .status-badge--completed {
+            background: rgba(59, 130, 246, 0.12);
+            color: var(--info);
+        }
+
+        .status-badge--cancelled {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .section {
+            margin-top: 2.5rem;
+        }
+
+        .section-header {
+            margin-bottom: 1.25rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .section-header p {
+            color: var(--gray);
+        }
+
+        .section-empty {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px dashed var(--gray-light);
+            color: var(--gray);
+        }
+
+        .empty-state {
+            background: white;
+            border-radius: 24px;
+            padding: 4rem 2rem;
+            text-align: center;
+            border: 2px dashed var(--gray-light);
+        }
+
+        .empty-state__icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .empty-state p {
+            color: var(--gray);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+
+        .btn--primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn--primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .bookings-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<div class="container">
+<div th:replace="fragments/navbar :: navbar"></div>
 
-    <h1>My Bookings</h1>
+<main class="page">
+    <div class="container">
+        <div class="page-header">
+            <h1>My Bookings</h1>
+            <p>View all your travel bookings and their status</p>
+        </div>
 
-    <div th:if="${#lists.isEmpty(bookings)}" class="muted">
-        You have no bookings yet.
+        <div th:if="${#lists.isEmpty(upcomingBookings) and #lists.isEmpty(historyBookings)}" class="empty-state">
+            <div class="empty-state__icon">📋</div>
+            <h2>No bookings yet</h2>
+            <p>Your bookings will appear here once you make a reservation</p>
+            <a href="/" class="btn btn--primary" style="margin-top: 1rem;">Explore Travel Packages</a>
+        </div>
+
+        <div th:if="${!#lists.isEmpty(upcomingBookings) or !#lists.isEmpty(historyBookings)}">
+            <section class="section">
+                <div class="section-header">
+                    <h2>Upcoming</h2>
+                    <p>Trips you still have ahead</p>
+                </div>
+
+                <div th:if="${#lists.isEmpty(upcomingBookings)}" class="section-empty">
+                    No upcoming bookings yet.
+                </div>
+
+                <div class="bookings-grid" th:if="${!#lists.isEmpty(upcomingBookings)}">
+                    <div class="booking-card" th:each="b : ${upcomingBookings}">
+                        <div class="booking-header">
+                            <h3 class="booking-title" th:text="${b.travelPackage.title}">Package Title</h3>
+                            <div class="booking-date" th:text="${#temporals.format(b.createdAt, 'dd MMM yyyy, HH:mm')}">01 Jan 2023, 12:00</div>
+                        </div>
+
+                        <div class="booking-details">
+                            <div class="detail-item">
+                                <strong>Travelers</strong>
+                                <span th:text="${b.travelersCount}">2</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Contact</strong>
+                                <span th:text="${b.fullName}">John Doe</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Email</strong>
+                                <span th:text="${b.email}">john@example.com</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Phone</strong>
+                                <span th:text="${b.phone}">+1234567890</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Status</strong>
+                                <span class="status-badge"
+                                      th:classappend="${b.status == 'CONFIRMED'} ? 'status-badge--confirmed' : (${b.status == 'COMPLETED'} ? 'status-badge--completed' : 'status-badge--cancelled')"
+                                      th:text="${b.status}">CONFIRMED</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <div class="section-header">
+                    <h2>My Booking History</h2>
+                    <p>Trips you've already completed</p>
+                </div>
+
+                <div th:if="${#lists.isEmpty(historyBookings)}" class="section-empty">
+                    No completed trips yet.
+                </div>
+
+                <div class="bookings-grid" th:if="${!#lists.isEmpty(historyBookings)}">
+                    <div class="booking-card" th:each="b : ${historyBookings}">
+                        <div class="booking-header">
+                            <h3 class="booking-title" th:text="${b.travelPackage.title}">Package Title</h3>
+                            <div class="booking-date" th:text="${#temporals.format(b.createdAt, 'dd MMM yyyy, HH:mm')}">01 Jan 2023, 12:00</div>
+                        </div>
+
+                        <div class="booking-details">
+                            <div class="detail-item">
+                                <strong>Travelers</strong>
+                                <span th:text="${b.travelersCount}">2</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Contact</strong>
+                                <span th:text="${b.fullName}">John Doe</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Email</strong>
+                                <span th:text="${b.email}">john@example.com</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Phone</strong>
+                                <span th:text="${b.phone}">+1234567890</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Status</strong>
+                                <span class="status-badge"
+                                      th:classappend="${b.status == 'CONFIRMED'} ? 'status-badge--confirmed' : (${b.status == 'COMPLETED'} ? 'status-badge--completed' : 'status-badge--cancelled')"
+                                      th:text="${b.status}">CONFIRMED</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
     </div>
+</main>
 
-    <div th:each="b : ${bookings}" class="card">
-        <h3 th:text="${b.travelPackage.title}"></h3>
-
-        <p>Status:
-            <strong th:text="${b.status}"></strong>
-        </p>
-
-        <p>
-            People:
-            <span th:text="${b.travelersCount}"></span>
-        </p>
-
-        <p class="muted" th:text="${#temporals.format(b.createdAt, 'dd MMM yyyy')}"></p>
+<footer class="footer">
+    <div class="container footer__inner">
+        <div>
+            <strong>NextTrip</strong>
+            <p class="muted">Travel beyond the map.</p>
+        </div>
+        <div class="muted">© 2025 NextTrip</div>
     </div>
-
-</div>
-
+</footer>
 </body>
 </html>
+

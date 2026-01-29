@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Travel Package Ticket - NextTrip</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .ticket {
+      width: 600px;
+      margin: 50px auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      font-size: 16px;
+      color: #444;
+      background: #0f172a;
+    }
+
+    .ticket-header {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #fff;
+    }
+
+    .ticket-header h1 {
+      font-size: 30px;
+      text-transform: uppercase;
+      margin: 0;
+      font-weight: bold;
+    }
+
+    .ticket-header p {
+      margin: 5px 0;
+      font-size: 18px;
+    }
+
+    .ticket-details {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 25px;
+      color: #fff;
+    }
+
+    .ticket-details .detail {
+      width: 45%;
+      font-size: 14px;
+    }
+
+    .ticket-details .detail h3 {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .ticket-footer {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 16px;
+      color: #fff;
+    }
+
+    .ticket-footer .message {
+      font-size: 18px;
+      font-weight: bold;
+      margin: 20px 0;
+      color: #ffcc00;
+    }
+
+    .ticket-footer .barcode {
+      margin-top: 15px;
+      font-size: 12px;
+      letter-spacing: 1px;
+      color: #fff;
+    }
+
+    .btn {
+      padding: 12px 30px;
+      background-color: #ffcc00;
+      color: #333;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      display: inline-block;
+      margin-top: 20px;
+    }
+
+    .btn:hover {
+      background-color: #e6b800;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ticket">
+    <div class="ticket-header">
+      <h1>Your NextTrip Ticket</h1>
+      <p>Booking Reference: {{ticketCode}}</p>
+    </div>
+
+    <div class="ticket-details">
+      <div class="detail">
+        <h3>Passenger</h3>
+        <p><strong>Name:</strong> {{fullName}}</p>
+        <p><strong>Email:</strong> {{email}}</p>
+        <p><strong>Phone:</strong> {{phone}}</p>
+      </div>
+
+      <div class="detail">
+        <h3>Package Details</h3>
+        <p><strong>Package:</strong> {{packTitle}}</p>
+        <p><strong>Departure:</strong> {{startDate}}</p>
+        <p><strong>Return:</strong> {{endDate}}</p>
+      </div>
+    </div>
+
+    <div class="ticket-footer">
+      <p class="message">Your booking is confirmed.</p>
+      <div class="barcode">|  {{ticketCode}}  |</div>
+      <a href="{{viewTicketsUrl}}" class="btn">View My Tickets</a>
+    </div>
+  </div>
+
+<footer class="footer">
+    <div class="container footer__inner">
+        <div>
+            <strong>NextTrip</strong>
+            <p class="muted">Travel beyond the map.</p>
+        </div>
+        <div class="muted">© 2025 NextTrip</div>
+    </div>
+</footer>
+</body>
+</html>
+

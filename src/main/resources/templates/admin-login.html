@@ -9,11 +9,10 @@
 </head>
 <body>
 
-<header class="topbar">
+<header class="topbar admin-topbar">
     <div class="container topbar__inner">
         <a href="/" class="brand">
-            <span class="brand__mark">NT</span>
-            <span class="brand__name">NextTrip</span>
+            <img class="brand__logo" th:src="@{/images/nexttrip.png}" alt="NextTrip">
         </a>
 
         <div class="topbar__actions">
@@ -63,5 +62,15 @@
     </section>
 </main>
 
+<footer class="footer">
+    <div class="container footer__inner">
+        <div>
+            <strong>NextTrip</strong>
+            <p class="muted">Travel beyond the map.</p>
+        </div>
+        <div class="muted">© 2025 NextTrip</div>
+    </div>
+</footer>
 </body>
 </html>
+

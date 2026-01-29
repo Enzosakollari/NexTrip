@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Payment Canceled</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <style>
+        .cancel-wrap {
+            max-width: 720px;
+            margin: 80px auto;
+            text-align: center;
+        }
+        .cancel-icon {
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 18px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            background: rgba(239, 68, 68, 0.08);
+            color: #b91c1c;
+            font-size: 52px;
+            box-shadow: 0 18px 40px rgba(239, 68, 68, 0.15);
+        }
+        .cancel-card {
+            padding: 28px;
+        }
+        .cancel-actions {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+
+<div class="cancel-wrap card cancel-card">
+    <div class="cancel-icon">×</div>
+    <h1>Payment canceled</h1>
+    <p class="muted" th:text="${error != null ? error : 'No payment was made. You can try again.'}">
+        No payment was made. You can try again.
+    </p>
+
+    <div class="cancel-actions">
+        <a href="/travel-packs" class="btn btn--primary">Back to packs</a>
+        <a href="/" class="btn btn--ghost">Home</a>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container footer__inner">
+        <div>
+            <strong>NextTrip</strong>
+            <p class="muted">Travel beyond the map.</p>
+        </div>
+        <div class="muted">© 2025 NextTrip</div>
+    </div>
+</footer>
+</body>
+</html>
+

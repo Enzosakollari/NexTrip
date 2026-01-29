@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business Profile - NextTrip</title>
+    <link rel="stylesheet" href="/css/app.css">
+    <div th:replace="~{fragments/business-navbar :: businessNavbarStyles}"></div>
+    <style>
+        .profile-card {
+            max-width: 720px;
+        }
+
+        .profile-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .preview-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .preview-grid img {
+            width: 100%;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .logo-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 2px solid rgba(15, 23, 42, 0.08);
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="~{fragments/business-navbar :: businessNav('profile')}"></div>
+
+<main class="page">
+    <section class="section">
+        <div class="container">
+            <div class="section__head">
+                <h1>Company Profile</h1>
+                <p class="muted">Update your public-facing company info.</p>
+            </div>
+
+            <div class="card card__pad profile-card">
+                <div id="profileView" class="profile-grid">
+                    <div class="preview-grid">
+                        <div th:if="${business.bannerUrl != null}">
+                            <img th:src="${business.bannerUrl}" alt="Company banner" style="height: 220px;">
+                        </div>
+                        <div style="display:flex; align-items:center; gap:16px;">
+                            <div class="logo-preview" style="overflow:hidden; background:#fff;">
+                                <img th:if="${business.logoUrl != null}" th:src="${business.logoUrl}" alt="Company logo">
+                            </div>
+                            <div>
+                                <div class="muted" style="font-size:12px;">Company name</div>
+                                <div style="font-size:20px; font-weight:700;" th:text="${business.companyName}">Company</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="muted" style="font-size:12px;">Public description</div>
+                        <div th:text="${business.description}">Add your company description.</div>
+                    </div>
+
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <button class="btn btn--primary" type="button" id="editProfileBtn">Edit Profile</button>
+                        <a class="btn btn--ghost" th:href="@{/business/dashboard}">Back</a>
+                    </div>
+                </div>
+
+                <form id="profileEdit" method="post" enctype="multipart/form-data" class="profile-grid" style="display:none;">
+                    <div>
+                        <label class="muted">Company name</label>
+                        <div class="input" th:text="${business.companyName}">Company</div>
+                    </div>
+
+                    <div>
+                        <label class="muted">Public description</label>
+                        <textarea class="input" name="description" rows="5"
+                                  th:text="${business.description}"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="muted">Logo (square)</label>
+                        <input class="input" type="file" name="logo" accept="image/*">
+                    </div>
+
+                    <div>
+                        <label class="muted">Banner (wide)</label>
+                        <input class="input" type="file" name="banner" accept="image/*">
+                    </div>
+
+                    <div class="preview-grid" th:if="${business.logoUrl != null or business.bannerUrl != null}">
+                        <div th:if="${business.logoUrl != null}">
+                            <div class="muted" style="margin-bottom:6px;">Current logo</div>
+                            <img class="logo-preview" th:src="${business.logoUrl}" alt="Company logo">
+                        </div>
+                        <div th:if="${business.bannerUrl != null}">
+                            <div class="muted" style="margin-bottom:6px;">Current banner</div>
+                            <img th:src="${business.bannerUrl}" alt="Company banner" style="height: 220px;">
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <button class="btn btn--primary" type="submit">Save Profile</button>
+                        <button class="btn btn--ghost" type="button" id="cancelEditBtn">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+    const view = document.getElementById('profileView');
+    const edit = document.getElementById('profileEdit');
+    const editBtn = document.getElementById('editProfileBtn');
+    const cancelBtn = document.getElementById('cancelEditBtn');
+
+    if (editBtn && cancelBtn) {
+        editBtn.addEventListener('click', () => {
+            view.style.display = 'none';
+            edit.style.display = 'grid';
+        });
+        cancelBtn.addEventListener('click', () => {
+            edit.style.display = 'none';
+            view.style.display = 'grid';
+        });
+    }
+</script>
+
+<footer class="footer">
+    <div class="container footer__inner">
+        <div>
+            <strong>NextTrip</strong>
+            <p class="muted">Travel beyond the map.</p>
+        </div>
+        <div class="muted">© 2025 NextTrip</div>
+    </div>
+</footer>
+</body>
+</html>
+

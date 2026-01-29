@@ -25,8 +25,17 @@ public class Flight {
     private String flightNumber;
     private OffsetDateTime departureTime;
     private OffsetDateTime arrivalTime;
+    private Integer adults;
+    private String returnOriginAirportCode;
+    private String returnDestinationAirportCode;
+    private String returnAirline;
+    private String returnFlightNumber;
+    private OffsetDateTime returnDepartureTime;
+    private OffsetDateTime returnArrivalTime;
     private BigDecimal price;
     private String currency;
     private String provider;
     private String offerId;
+    @Column(columnDefinition = "LONGTEXT")
+    private String rawOfferJson;
 }

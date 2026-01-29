@@ -6,6 +6,7 @@
     <title>NextTrip - Travel Beyond the Map</title>
     <link rel="stylesheet" href="/css/app.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <div th:replace="~{fragments/navbar :: navbarStyles}"></div>
     <style>
         * {
             margin: 0;
@@ -14,25 +15,25 @@
         }
 
         :root {
-            --primary: #6366f1;
-            --primary-dark: #4f46e5;
-            --primary-light: #818cf8;
-            --accent: #ec4899;
-            --accent-light: #f472b6;
-            --dark: #0f172a;
-            --dark-light: #1e293b;
+            --primary: #0b2f6d;
+            --primary-dark: #081f47;
+            --primary-light: #3b82f6;
+            --accent: #0ea5a4;
+            --accent-light: #5eead4;
+            --dark: #0b1324;
+            --dark-light: #111c33;
             --light: #f8fafc;
             --white: #ffffff;
             --gray: #64748b;
             --gray-light: #e2e8f0;
-            --success: #10b981;
+            --success: #16a34a;
             --warning: #f59e0b;
         }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             color: var(--dark);
-            background: var(--light);
+            background: var(--app-bg);
             line-height: 1.6;
             overflow-x: hidden;
         }
@@ -1055,32 +1056,147 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Dark theme overrides for Explore (index) */
+        body {
+            color: #e6e8ef;
+        }
+
+        .premium-bg {
+            background:
+                radial-gradient(circle at 20% 30%, rgba(37, 99, 235, 0.18) 0%, transparent 55%),
+                radial-gradient(circle at 80% 70%, rgba(14, 165, 164, 0.14) 0%, transparent 55%),
+                radial-gradient(circle at 50% 50%, rgba(251, 191, 36, 0.08) 0%, transparent 55%),
+                linear-gradient(135deg, #0b1324 0%, #0f1b34 40%, #0b2f6d 70%, #0b1324 100%);
+            background-size: 300% 300%;
+        }
+
+        .topbar {
+            background: rgba(11, 19, 36, 0.92);
+            border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+            box-shadow: 0 18px 45px rgba(2, 6, 23, 0.6);
+        }
+
+        .nav__link {
+            color: #e6e8ef;
+        }
+
+        .nav__link:hover {
+            color: #fbbf24;
+        }
+
+        .nav__link::after {
+            background: linear-gradient(90deg, #fbbf24, #f59e0b);
+        }
+
+        .btn--ghost {
+            background: rgba(11, 19, 36, 0.6);
+            color: #fbbf24;
+            border: 2px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .btn--primary {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: #0b1324;
+            box-shadow: 0 10px 28px rgba(251, 191, 36, 0.25);
+        }
+
+        .hero__badge {
+            background: rgba(11, 19, 36, 0.7);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            color: #fbbf24;
+        }
+
+        .hero__stats {
+            background: rgba(11, 19, 36, 0.7);
+            border: 1px solid rgba(251, 191, 36, 0.25);
+        }
+
+        .stat__num {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat__label {
+            color: #a3b1c6;
+        }
+
+        .hero__card {
+            background: rgba(11, 19, 36, 0.92);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            box-shadow: 0 25px 80px rgba(2, 6, 23, 0.55);
+        }
+
+        .card__title,
+        .step__title,
+        .pack__title,
+        .testimonial p,
+        .section__head h2 {
+            color: #e6e8ef;
+        }
+
+        .input {
+            background: rgba(11, 19, 36, 0.8);
+            border-color: rgba(251, 191, 36, 0.2);
+            color: #e6e8ef;
+        }
+
+        .input::placeholder {
+            color: #a3b1c6;
+        }
+
+        .section--alt {
+            background: rgba(11, 19, 36, 0.6);
+        }
+
+        .step,
+        .pack,
+        .testimonial {
+            background: rgba(11, 19, 36, 0.88);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            box-shadow: 0 18px 45px rgba(2, 6, 23, 0.45);
+        }
+
+        .step p,
+        .pack__meta,
+        .testimonial .author,
+        .section__head p,
+        .card__hint {
+            color: #a3b1c6;
+        }
+
+        .price {
+            color: #fbbf24;
+        }
+
+        .tag {
+            background: rgba(11, 19, 36, 0.85);
+            color: #fbbf24;
+            border: 1px solid rgba(251, 191, 36, 0.35);
+        }
+
+        .cta {
+            background: linear-gradient(135deg, #0b1324 0%, #0b2f6d 50%, #0f1b34 100%);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .cta .btn {
+            background: #fbbf24;
+            color: #0b1324;
+        }
+
+        footer {
+            background: #0b1324;
+            border-top: 1px solid rgba(251, 191, 36, 0.2);
+        }
     </style>
 </head>
 <body>
     <div class="premium-bg"></div>
 
-    <header class="topbar">
-        <div class="topbar__inner">
-            <a th:href="@{/index}" class="brand">
-                <span class="brand__mark">NT</span>
-                <span class="brand__name">NextTrip</span>
-            </a>
-
-            <nav class="nav">
-                <a th:href="@{/index}" class="nav__link">Explore</a>
-                <a th:href="@{/flights/search-view}" class="nav__link">Flight Search</a>
-                <a th:href="@{/timetable}" class="nav__link">Timetable</a>
-                <a th:href="@{/travel-packs}" class="nav__link">Travel Packs</a>
-                <a th:href="@{/chat}" class="nav__link">AI Chat</a>
-            </nav>
-
-            <div class="topbar__actions">
-                <a class="btn btn--ghost" th:href="@{/chat}">Ask AI</a>
-                <a class="btn btn--primary" th:href="@{/travel-packs}">Explore Packs</a>
-            </div>
-        </div>
-    </header>
+    <div th:replace="fragments/navbar :: navbar"></div>
 
     <main>
         <section class="hero">
@@ -1262,16 +1378,15 @@
         </section>
     </main>
 
-    <footer>
-        <div class="container">
-            <div class="brand" style="justify-content: center;">
-                <span class="brand__mark">NT</span>
-                <span class="brand__name">NextTrip</span>
-            </div>
-            <p>Travel beyond the map</p>
-            <div class="copyright">© 2025 NextTrip. All rights reserved.</div>
+    <footer class="footer">
+    <div class="container footer__inner">
+        <div>
+            <strong>NextTrip</strong>
+            <p class="muted">Travel beyond the map.</p>
         </div>
-    </footer>
+        <div class="muted">© 2025 NextTrip</div>
+    </div>
+</footer>
 
     <script>
         // Set default date to tomorrow
@@ -1298,3 +1413,4 @@
     </script>
 </body>
 </html>
+

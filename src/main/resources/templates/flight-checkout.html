@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Checkout - NextTrip</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <div th:replace="~{fragments/navbar :: navbarStyles}"></div>
+    <style>
+        :root {
+            --sky-1: #eef2f8;
+            --sky-2: #f3f0e6;
+            --ink: #0b1324;
+            --navy: #0b1f3a;
+            --teal: #0ea5a4;
+            --orange: #f59e0b;
+            --card: #ffffff;
+            --line: rgba(15, 23, 42, 0.12);
+            --cloud: rgba(255, 255, 255, 0.85);
+        }
+
+        body {
+            font-family: "Sora", "Inter", "Segoe UI", sans-serif;
+            color: var(--ink);
+            background: var(--app-bg);
+        }
+
+        .checkout-page {
+            padding: 2rem 0 3rem;
+            position: relative;
+            isolation: isolate;
+        }
+
+        .checkout-page::before,
+        .checkout-page::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .checkout-page::before {
+            background:
+                radial-gradient(circle at 10% 10%, var(--cloud) 0 120px, transparent 140px),
+                radial-gradient(circle at 90% 15%, var(--cloud) 0 100px, transparent 120px),
+                radial-gradient(circle at 20% 70%, rgba(255, 255, 255, 0.7) 0 140px, transparent 170px);
+            opacity: 0.8;
+        }
+
+        .checkout-page::after {
+            background:
+                linear-gradient(120deg, rgba(14, 165, 164, 0.15), transparent 40%),
+                linear-gradient(320deg, rgba(249, 115, 22, 0.18), transparent 50%);
+        }
+
+        .checkout-hero {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2rem;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.35);
+            border-radius: 20px;
+            padding: 20px 26px;
+            margin-bottom: 1.8rem;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-eyebrow {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--teal);
+        }
+
+        .checkout-hero h1 {
+            font-size: 2.1rem;
+            margin: 0.25rem 0 0.35rem;
+        }
+
+        .hero-plane {
+            width: 160px;
+            height: 90px;
+            position: relative;
+        }
+
+        .hero-plane svg {
+            width: 100%;
+            height: 100%;
+        }
+        .checkout-wrap {
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+            gap: 2rem;
+        }
+        .checkout-card {
+            background: #ffffff;
+            border-radius: 18px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
+            padding: 24px;
+        }
+        .flight-summary {
+            background: linear-gradient(135deg, #0b1f3a, #122a4f 45%, #124e4a 100%);
+            color: #f8fafc;
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .flight-summary::before {
+            content: "";
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(14, 165, 164, 0.35), transparent 70%);
+            top: -120px;
+            right: -60px;
+        }
+        .flight-summary::after {
+            content: "";
+            position: absolute;
+            inset: 24px;
+            border: 1px dashed rgba(255, 255, 255, 0.18);
+            border-radius: 14px;
+            pointer-events: none;
+        }
+        .boarding-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.7rem;
+            letter-spacing: 1.6px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+        .flight-summary h2 {
+            margin-bottom: 0.5rem;
+        }
+        .flight-route {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #f8fafc;
+        }
+        .flight-meta {
+            color: rgba(248, 250, 252, 0.7);
+            font-weight: 600;
+            margin-top: 0.35rem;
+        }
+        .route-line {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 1rem 0 0.75rem;
+        }
+        .route-dot {
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-weight: 700;
+        }
+        .route-track {
+            flex: 1;
+            height: 1px;
+            position: relative;
+            background: repeating-linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0.5) 0 10px,
+                transparent 10px 18px
+            );
+        }
+        .route-plane {
+            position: absolute;
+            top: -10px;
+            right: 20%;
+            width: 28px;
+            height: 28px;
+            transform: rotate(10deg);
+            fill: #fbbf24;
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.3));
+        }
+        .flight-grid {
+            margin-top: 1.2rem;
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px 18px;
+        }
+        .flight-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.9px;
+            color: rgba(248, 250, 252, 0.65);
+            font-weight: 700;
+        }
+        .flight-value {
+            font-weight: 700;
+            color: #f8fafc;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .form-group label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #64748b;
+            font-weight: 700;
+        }
+        .form-group input,
+        .form-group select {
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            font-size: 0.95rem;
+            background: #f8fafc;
+        }
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.2);
+        }
+        .form-actions {
+            margin-top: 18px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .alert {
+            padding: 12px 14px;
+            border-radius: 12px;
+            margin-bottom: 14px;
+            font-size: 0.95rem;
+        }
+        .alert--error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+        .alert--warning {
+            background: rgba(252, 211, 77, 0.18);
+            color: #fef3c7;
+            border: 1px solid rgba(252, 211, 77, 0.4);
+        }
+        @media (max-width: 900px) {
+            .checkout-wrap {
+                grid-template-columns: 1fr;
+            }
+            .checkout-hero {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div th:replace="fragments/navbar :: navbar"></div>
+
+<main class="checkout-page">
+    <div class="container">
+        <div class="checkout-hero">
+            <div>
+                <div class="hero-eyebrow">Ready for takeoff</div>
+                <h1>Flight Checkout</h1>
+                <p class="muted">Complete traveler details, then pay securely to lock in your seats.</p>
+            </div>
+            <div class="hero-plane" aria-hidden="true">
+                <svg viewBox="0 0 120 60" role="img" focusable="false">
+                    <defs>
+                        <linearGradient id="planeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#0ea5a4"/>
+                            <stop offset="100%" stop-color="#2563eb"/>
+                        </linearGradient>
+                    </defs>
+                    <path fill="url(#planeGradient)" d="M115 30c0 3-2 5-5 5H72l-12 14-7-3 8-11H42l-7 7-5-2 4-7H20l-6 4-6-3 7-6-7-6 6-3 6 4h14l-4-7 5-2 7 7h19l-8-11 7-3 12 14h38c3 0 5 2 5 5z"/>
+                </svg>
+            </div>
+        </div>
+        <div class="checkout-wrap">
+            <div class="checkout-card flight-summary">
+                <div class="boarding-pill">Boarding Pass</div>
+                <h2>Flight Summary</h2>
+                <div class="flight-route" th:text="${flight.originAirportCode + ' -> ' + flight.destinationAirportCode}">TIA -> BER</div>
+                <div class="flight-meta" th:text="${flight.airline != null ? flight.airline + ' ' + flight.flightNumber : 'Airline TBD'}">GQ 123</div>
+                <div class="route-line">
+                    <span class="route-dot" th:text="${flight.originAirportCode}">TIA</span>
+                    <span class="route-track">
+                        <svg class="route-plane" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M2 12l19-9-4 9 4 9z"></path>
+                        </svg>
+                    </span>
+                    <span class="route-dot" th:text="${flight.destinationAirportCode}">BER</span>
+                </div>
+
+                <div class="flight-grid">
+                    <div>
+                        <div class="flight-label">Departure</div>
+                        <div class="flight-value" th:text="${flight.departureTime != null ? #temporals.format(flight.departureTime, 'dd MMM yyyy, HH:mm') : 'TBD'}">Date</div>
+                    </div>
+                    <div>
+                        <div class="flight-label">Arrival</div>
+                        <div class="flight-value" th:text="${flight.arrivalTime != null ? #temporals.format(flight.arrivalTime, 'dd MMM yyyy, HH:mm') : 'TBD'}">Date</div>
+                    </div>
+                    <div th:if="${flight.returnDepartureTime != null}">
+                        <div class="flight-label">Return Departure</div>
+                        <div class="flight-value" th:text="${#temporals.format(flight.returnDepartureTime, 'dd MMM yyyy, HH:mm')}">Date</div>
+                    </div>
+                    <div th:if="${flight.returnArrivalTime != null}">
+                        <div class="flight-label">Return Arrival</div>
+                        <div class="flight-value" th:text="${#temporals.format(flight.returnArrivalTime, 'dd MMM yyyy, HH:mm')}">Date</div>
+                    </div>
+                    <div>
+                        <div class="flight-label">Price</div>
+                        <div class="flight-value" th:text="${flight.currency + ' ' + flight.price}">EUR 0.00</div>
+                    </div>
+                    <div>
+                        <div class="flight-label">Offer ID</div>
+                        <div class="flight-value" th:text="${flight.offerId}">offer</div>
+                    </div>
+                </div>
+
+                <div class="alert alert--warning" th:if="${warning != null}" th:text="${warning}">Warning</div>
+            </div>
+
+            <div class="checkout-card">
+                <h2>Traveler Details</h2>
+
+                <div class="alert alert--error" th:if="${error != null}" th:text="${error}">Error</div>
+
+                <form method="post" action="/flights/checkout">
+                    <input type="hidden" name="offerId" th:value="${offerId}">
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input type="text" name="firstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input type="text" name="lastName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Gender</label>
+                            <select name="gender" required>
+                                <option value="MALE">Male</option>
+                                <option value="FEMALE">Female</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Date of Birth</label>
+                            <input type="date" name="dateOfBirth" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" name="email" th:value="${email}" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Country Code</label>
+                            <input type="text" name="phoneCountryCode" placeholder="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="text" name="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Nationality (2-letter)</label>
+                            <input type="text" name="nationality" placeholder="US" maxlength="2" pattern="[A-Za-z]{2}"
+                                   oninput="this.value = this.value.toUpperCase()" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Document Type</label>
+                            <select name="documentType" required>
+                                <option value="PASSPORT">Passport</option>
+                                <option value="ID">National ID</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Document Number</label>
+                            <input type="text" name="documentNumber" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Document Expiry</label>
+                            <input type="date" name="documentExpiry" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Document Issuance Date</label>
+                            <input type="date" name="documentIssuanceDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Document Issuance Country</label>
+                            <input type="text" name="documentIssuanceCountry" placeholder="US" maxlength="2" pattern="[A-Za-z]{2}"
+                                   oninput="this.value = this.value.toUpperCase()" required>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn--primary">Pay with Stripe</button>
+                        <a href="/flights/search-view" class="btn btn--ghost">Back to search</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container footer__inner">
+        <div>
+            <strong>NextTrip</strong>
+            <p class="muted">Travel beyond the map.</p>
+        </div>
+        <div class="muted">© 2025 NextTrip</div>
+    </div>
+</footer>
+</body>
+</html>
+

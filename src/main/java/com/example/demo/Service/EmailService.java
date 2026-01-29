@@ -1,8 +1,10 @@
 package com.example.demo.Service;
 
+import com.example.demo.Booking.Booking;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.time.format.DateTimeFormatter;
 
 @Service
 public class EmailService {
@@ -27,12 +31,12 @@ public class EmailService {
         sendEmail(email, verificationToken, subject, path, message);
     }
 
-    public void sendForgottenPasswordEmail(String email, String resetToken) {
-        String subject = "Reset Password";
-        String path = "/req/signup/reset-password";
-        String message = "Click the button below to reset your password.";
-        sendEmail(email, resetToken, subject, path, message);
-    }
+//    public void sendForgottenPasswordEmail(String email, String resetToken) {
+//        String subject = "Reset Password";
+//        String path = "/req/signup/reset-password";
+//        String message = "Click the button below to reset your password.";
+//        sendEmail(email, resetToken, subject, path, message);
+//    }
 
     private void sendEmail(String email, String token, String subject, String path, String message) {
         try {
@@ -103,6 +107,121 @@ public class EmailService {
         String path = "/req/business/verify";
         String message = "Click the button below to verify your business email address.";
         sendEmail(email, verificationToken, subject, path, message);
+    }
+
+    public void sendTicketEmail(Booking booking) {
+        if (booking == null) {
+            return;
+        }
+
+        String email = booking.getEmail();
+        if (email == null || email.isBlank()) {
+            return;
+        }
+
+        String subject = "Your NextTrip Ticket";
+        String viewTicketsUrl = buildAbsoluteUrl("/my-tickets");
+        String content = buildTicketEmailContent(booking, viewTicketsUrl);
+
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+            helper.setTo(email);
+            helper.setSubject(subject);
+            helper.setFrom(from);
+            helper.setText(content, true);
+            mailSender.send(mimeMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Failed to send ticket email: " + e.getMessage());
+        }
+    }
+
+    private String buildAbsoluteUrl(String path) {
+        try {
+            return ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path(path)
+                    .toUriString();
+        } catch (Exception ex) {
+            return path;
+        }
+    }
+
+    private String buildTicketEmailContent(Booking booking, String viewTicketsUrl) {
+        String template = loadTemplate("templates/ticket.html");
+        if (template == null || template.isBlank()) {
+            return buildTicketFallback(booking, viewTicketsUrl);
+        }
+
+        String ticketCode = booking.getId() != null ? "NT-" + booking.getId() : "NT-NEW";
+        String packTitle = booking.getTravelPackage() != null ? safe(booking.getTravelPackage().getTitle()) : "Travel Pack";
+        String destination = booking.getTravelPackage() != null ? safe(booking.getTravelPackage().getDestination()) : "TBD";
+        String startDate = booking.getTravelPackage() != null && booking.getTravelPackage().getStartDate() != null
+                ? booking.getTravelPackage().getStartDate().toString()
+                : "TBD";
+        String endDate = booking.getTravelPackage() != null && booking.getTravelPackage().getEndDate() != null
+                ? booking.getTravelPackage().getEndDate().toString()
+                : "TBD";
+        String createdAt = booking.getCreatedAt() != null
+                ? booking.getCreatedAt().format(DateTimeFormatter.ofPattern("dd MMM yyyy, HH:mm"))
+                : "-";
+
+        return template
+                .replace("{{ticketCode}}", ticketCode)
+                .replace("{{ticketId}}", safe(booking.getId()))
+                .replace("{{fullName}}", safe(booking.getFullName()))
+                .replace("{{email}}", safe(booking.getEmail()))
+                .replace("{{phone}}", safe(booking.getPhone()))
+                .replace("{{packTitle}}", packTitle)
+                .replace("{{destination}}", destination)
+                .replace("{{startDate}}", startDate)
+                .replace("{{endDate}}", endDate)
+                .replace("{{travelers}}", String.valueOf(booking.getTravelersCount()))
+                .replace("{{status}}", booking.getStatus() != null ? booking.getStatus().name() : "CONFIRMED")
+                .replace("{{createdAt}}", createdAt)
+                .replace("{{viewTicketsUrl}}", viewTicketsUrl);
+    }
+
+    private String buildTicketFallback(Booking booking, String viewTicketsUrl) {
+        String ticketCode = booking.getId() != null ? "NT-" + booking.getId() : "NT-NEW";
+        String packTitle = booking.getTravelPackage() != null ? safe(booking.getTravelPackage().getTitle()) : "Travel Pack";
+        return """
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 24px auto; padding: 24px; border: 1px solid #e2e8f0; border-radius: 14px; background: #fff;">
+                  <h2 style="margin:0 0 12px;">Your NextTrip Ticket</h2>
+                  <p style="margin:0 0 16px;">Thanks for booking. Your ticket is confirmed.</p>
+                  <div style="padding: 12px 16px; background: #f8fafc; border-radius: 10px; margin-bottom: 16px;">
+                    <strong>Ticket Code:</strong> %s
+                  </div>
+                  <p style="margin:0 0 6px;"><strong>Package:</strong> %s</p>
+                  <p style="margin:0 0 6px;"><strong>Name:</strong> %s</p>
+                  <p style="margin:0 0 16px;"><strong>Travelers:</strong> %s</p>
+                  <a href="%s" style="display:inline-block; padding:10px 16px; background:#2563eb; color:#fff; text-decoration:none; border-radius:10px;">View My Tickets</a>
+                </div>
+                """.formatted(
+                ticketCode,
+                packTitle,
+                safe(booking.getFullName()),
+                booking.getTravelersCount(),
+                viewTicketsUrl
+        );
+    }
+
+    private String loadTemplate(String resourcePath) {
+        try {
+            var resource = new ClassPathResource(resourcePath);
+            try (var stream = resource.getInputStream()) {
+                return new String(stream.readAllBytes(), StandardCharsets.UTF_8);
+            }
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    private String safe(Object value) {
+        if (value == null) {
+            return "";
+        }
+        return String.valueOf(value);
     }
 
 }

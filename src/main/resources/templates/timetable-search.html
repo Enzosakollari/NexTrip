@@ -7,7 +7,91 @@
 
   <link rel="stylesheet" href="/css/app.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <div th:replace="~{fragments/navbar :: navbarStyles}"></div>
   <style>
+    .timetable-hero {
+      background:
+        linear-gradient(135deg, rgba(11, 19, 36, 0.8) 0%, rgba(11, 47, 109, 0.6) 60%, rgba(15, 23, 52, 0.7) 100%),
+        url("https://images.unsplash.com/photo-1474487548417-781cb71495f3?w=1600&q=80&auto=format&fit=crop");
+      background-size: cover;
+      background-position: center;
+      border-radius: 0 0 24px 24px;
+      padding: 56px 20px;
+      color: white;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .timetable-hero h1 {
+      font-size: 38px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .timetable-hero p {
+      font-size: 16px;
+      opacity: 0.95;
+    }
+
+    .timetable-highlights {
+      max-width: 1100px;
+      margin: 24px auto 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    .highlight-tile {
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      border-radius: 14px;
+      padding: 14px 16px;
+      text-align: left;
+      backdrop-filter: blur(10px);
+    }
+
+    .highlight-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+
+    .highlight-text {
+      font-size: 13px;
+      opacity: 0.9;
+      line-height: 1.5;
+    }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin: 20px 0 28px;
+    }
+
+    .guide-card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    }
+
+    .guide-card h4 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #111827;
+    }
+
+    .guide-card p {
+      color: #6b7280;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
     .autocomplete-container {
       position: relative;
       display: inline-block;
@@ -221,31 +305,101 @@
       border-radius: 4px;
       margin: 16px 0;
     }
+
+    /* Dark theme overrides */
+    body {
+      background: var(--app-bg);
+      color: #e6e8ef;
+    }
+
+    .section__head h2,
+    .route-route,
+    .stationboard-time,
+    .leg-line,
+    .guide-card h4 {
+      color: #e6e8ef;
+    }
+
+    .section__head p,
+    .route-duration,
+    .leg-stops,
+    .leg-time,
+    .stationboard-destination,
+    .loading {
+      color: #a3b1c6;
+    }
+
+    .card,
+    .route-result,
+    .guide-card {
+      background: rgba(11, 19, 36, 0.9);
+      border: 1px solid rgba(251, 191, 36, 0.2);
+      box-shadow: 0 16px 30px rgba(2, 6, 23, 0.45);
+    }
+
+    .tabs {
+      border-bottom: 1px solid rgba(251, 191, 36, 0.2);
+    }
+
+    .tab {
+      color: #a3b1c6;
+    }
+
+    .tab.active {
+      color: #fbbf24;
+      border-bottom-color: #fbbf24;
+    }
+
+    .input,
+    .autocomplete-dropdown {
+      background: rgba(11, 19, 36, 0.8);
+      border-color: rgba(251, 191, 36, 0.25);
+      color: #e6e8ef;
+    }
+
+    .autocomplete-item {
+      border-bottom: 1px solid rgba(251, 191, 36, 0.15);
+    }
+
+    .autocomplete-item strong {
+      color: #e6e8ef;
+    }
+
+    .autocomplete-item:hover {
+      background-color: rgba(15, 23, 52, 0.8);
+    }
+
+    .route-header {
+      border-bottom-color: rgba(251, 191, 36, 0.2);
+    }
+
+    .stationboard-item {
+      border-bottom: 1px solid rgba(251, 191, 36, 0.15);
+    }
   </style>
 </head>
 <body>
 
-<header class="topbar">
-  <div class="container topbar__inner">
-    <a href="/" class="brand">
-      <span class="brand__mark">NT</span>
-      <span class="brand__name">NextTrip</span>
-    </a>
+<div th:replace="fragments/navbar :: navbar"></div>
 
-    <nav class="nav">
-      <a href="/index" class="nav__link">Explore</a>
-      <a href="/flights-search" class="nav__link">Flight Search</a>
-      <a href="/timetable" class="nav__link nav__link--active">Timetable</a>
-      <a href="/travel-packs" class="nav__link">Travel Packs</a>
-      <a href="/chat" class="nav__link">AI Chat</a>
-    </nav>
-
-    <div class="topbar__actions">
-      <a class="btn btn--ghost" href="/login">Login</a>
-      <a class="btn btn--primary" href="/travel-packs">Search Trips</a>
+<div class="timetable-hero">
+  <h1>Swiss Rail &amp; Transit Planner</h1>
+  <p>Live routes, station boards, and platform updates powered by search.ch</p>
+  <div class="timetable-highlights">
+    <div class="highlight-tile">
+      <div class="highlight-title">Live Connections</div>
+      <div class="highlight-text">See real-time routes with transfers and durations.</div>
+    </div>
+    <div class="highlight-tile">
+      <div class="highlight-title">Station Boards</div>
+      <div class="highlight-text">Track departures and arrivals in seconds.</div>
+    </div>
+    <div class="highlight-tile">
+      <div class="highlight-title">Smart Stations</div>
+      <div class="highlight-text">Lookup platforms, IDs, and coordinates fast.</div>
     </div>
   </div>
-</header>
+</div>
 
 <main class="page">
   <section class="section">
@@ -254,6 +408,21 @@
       <div class="section__head">
         <h2>Swiss Public Transport Timetable</h2>
         <p class="muted">Search routes, stations, and schedules powered by search.ch</p>
+      </div>
+
+      <div class="guide-grid">
+        <div class="guide-card">
+          <h4>Route Search</h4>
+          <p>Plan end-to-end journeys with train, tram, bus, and walking legs.</p>
+        </div>
+        <div class="guide-card">
+          <h4>Station Board</h4>
+          <p>View live departures or arrivals with line colors and track info.</p>
+        </div>
+        <div class="guide-card">
+          <h4>Station Info</h4>
+          <p>Get the station ID, type, and exact coordinates instantly.</p>
+        </div>
       </div>
 
       <div class="tabs">

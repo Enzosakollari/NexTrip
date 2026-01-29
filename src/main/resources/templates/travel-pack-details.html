@@ -6,35 +6,142 @@
   <title th:text="${pack.title + ' • NextTrip'}">Pack</title>
   <link rel="stylesheet" href="/css/app.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <div th:replace="~{fragments/navbar :: navbarStyles}"></div>
+
+  <style>
+    .pack-carousel {
+      position: relative;
+      margin-bottom: 14px;
+    }
+
+    .carousel__viewport {
+      overflow: hidden;
+      border-radius: 16px;
+      background: #0b1424;
+    }
+
+    .carousel__track {
+      display: flex;
+      transition: transform 0.4s ease;
+    }
+
+    .carousel__slide {
+      min-width: 100%;
+      height: 320px;
+      position: relative;
+    }
+
+    .carousel__slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .carousel__btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(15, 23, 42, 0.8);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+
+    .carousel__btn--prev { left: 12px; }
+    .carousel__btn--next { right: 12px; }
+
+    .carousel__thumbs {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .carousel__thumb {
+      border: 2px solid transparent;
+      padding: 0;
+      border-radius: 10px;
+      overflow: hidden;
+      width: 72px;
+      height: 56px;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .carousel__thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .carousel__thumb.is-active {
+      border-color: #4a90e2;
+      box-shadow: 0 6px 16px rgba(74, 144, 226, 0.35);
+    }
+  </style>
 </head>
 <body>
 
-<header class="topbar">
-  <div class="container topbar__inner">
-    <a href="/index" class="brand">
-      <span class="brand__mark">NT</span>
-      <span class="brand__name">NextTrip</span>
-    </a>
-
-    <nav class="nav">
-      <a href="/index" class="nav__link">Explore</a>
-      <a href="/travel-packs" class="nav__link nav__link--active">Travel Packs</a>
-      <a href="/chat" class="nav__link">AI Chat</a>
-    </nav>
-
-    <div class="topbar__actions">
-      <a class="btn btn--ghost" href="/login">Login</a>
-      <a class="btn btn--primary" href="/travel-packs">Back</a>
-    </div>
-  </div>
-</header>
+<div th:replace="fragments/navbar :: navbar"></div>
 
 <main class="page">
   <section class="section">
     <div class="container">
+      <div class="pack-carousel"
+           th:if="${(pack.imageUrl != null and !#strings.isEmpty(pack.imageUrl)) or (pack.galleryImages != null and !#strings.isEmpty(pack.galleryImages))}">
+        <button type="button" class="carousel__btn carousel__btn--prev" aria-label="Previous photo">
+          &lt;
+        </button>
+        <div class="carousel__viewport">
+          <div class="carousel__track">
+            <div class="carousel__slide" th:if="${pack.imageUrl != null and !#strings.isEmpty(pack.imageUrl)}">
+              <img th:src="${pack.imageUrl}" alt="Pack photo">
+            </div>
+            <div class="carousel__slide"
+                 th:each="img : ${#strings.arraySplit(pack.galleryImages, ',')}"
+                 th:if="${pack.galleryImages != null and !#strings.isEmpty(pack.galleryImages) and !#strings.isEmpty(img)}">
+              <img th:src="${img}" alt="Pack gallery photo">
+            </div>
+          </div>
+        </div>
+        <button type="button" class="carousel__btn carousel__btn--next" aria-label="Next photo">
+          &gt;
+        </button>
+        <div class="carousel__thumbs">
+          <button type="button"
+                  class="carousel__thumb"
+                  th:if="${pack.imageUrl != null and !#strings.isEmpty(pack.imageUrl)}">
+            <img th:src="${pack.imageUrl}" alt="Pack thumbnail">
+          </button>
+          <button type="button"
+                  class="carousel__thumb"
+                  th:each="img : ${#strings.arraySplit(pack.galleryImages, ',')}"
+                  th:if="${pack.galleryImages != null and !#strings.isEmpty(pack.galleryImages) and !#strings.isEmpty(img)}">
+            <img th:src="${img}" alt="Pack thumbnail">
+          </button>
+        </div>
+      </div>
+
       <div class="card card__pad">
         <h2 th:text="${pack.title}">Title</h2>
-        <p class="muted" th:text="${pack.destination + ' • ' + pack.durationDays + ' days'}">meta</p>
+        <p class="muted">
+          By
+          <a th:href="@{/companies/{id}(id=${pack.businessUser.id})}"
+             th:text="${pack.businessUser.companyName}"
+             style="font-weight:600;">
+            Company
+          </a>
+        </p>
+        <p class="muted" th:text="${pack.destination + ' - ' + pack.durationDays + ' days - ' + pack.capacity + ' seats - ' + (pack.startDate != null ? pack.startDate : 'TBD') + ' to ' + (pack.endDate != null ? pack.endDate : 'TBD')}">meta</p>
         <p th:text="${pack.description}">desc</p>
 
         <div style="display:flex; gap:10px; align-items:center; margin-top:12px;">
@@ -45,13 +152,17 @@
 
       <div class="card card__pad" style="margin-top:14px;">
         <h3>Book this pack</h3>
-        <p class="muted">MVP booking form (we’ll connect it to DB next).</p>
+        <p class="muted">MVP booking form (we'll connect it to DB next).</p>
+        <div th:if="${param.error}" class="card" style="padding:10px; margin-top:10px; border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.06);">
+          Booking failed. This pack has no remaining seats.
+        </div>
+        <div th:if="${pack.fullyBooked}" class="card" style="padding:10px; margin-top:10px; border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.06);">
+          <strong>Fully booked.</strong> You can still view this pack, but booking is closed.
+        </div>
 
         <form method="get"
               th:action="@{/packs/{id}/book(id=${pack.id})}"
               class="searchbar">
-
-          <input class="input" type="date" name="startDate" required>
 
           <input class="input"
                  type="number"
@@ -60,7 +171,7 @@
                  value="1"
                  style="max-width:140px;">
 
-          <button class="btn btn--primary" type="submit">
+          <button class="btn btn--primary" type="submit" th:disabled="${pack.fullyBooked}">
             Book now
           </button>
         </form>
@@ -71,6 +182,65 @@
 </main>
 
 <script src="/js/app.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const carousel = document.querySelector('.pack-carousel');
+    if (!carousel) {
+      return;
+    }
+
+    const track = carousel.querySelector('.carousel__track');
+    const slides = Array.from(carousel.querySelectorAll('.carousel__slide'));
+    const thumbs = Array.from(carousel.querySelectorAll('.carousel__thumb'));
+    const prevBtn = carousel.querySelector('.carousel__btn--prev');
+    const nextBtn = carousel.querySelector('.carousel__btn--next');
+
+    if (slides.length === 0) {
+      return;
+    }
+
+    let index = 0;
+
+    const update = () => {
+      track.style.transform = `translateX(-${index * 100}%)`;
+      thumbs.forEach((thumb, i) => {
+        thumb.classList.toggle('is-active', i === index);
+      });
+    };
+
+    const goTo = (nextIndex) => {
+      if (nextIndex < 0) {
+        index = slides.length - 1;
+      } else if (nextIndex >= slides.length) {
+        index = 0;
+      } else {
+        index = nextIndex;
+      }
+      update();
+    };
+
+    prevBtn.addEventListener('click', () => goTo(index - 1));
+    nextBtn.addEventListener('click', () => goTo(index + 1));
+
+    thumbs.forEach((thumb, i) => {
+      thumb.addEventListener('click', () => goTo(i));
+    });
+
+    update();
+  });
+</script>
+
+<footer class="footer">
+    <div class="container footer__inner">
+        <div>
+            <strong>NextTrip</strong>
+            <p class="muted">Travel beyond the map.</p>
+        </div>
+        <div class="muted">© 2025 NextTrip</div>
+    </div>
+</footer>
 </body>
 </html>
+
 

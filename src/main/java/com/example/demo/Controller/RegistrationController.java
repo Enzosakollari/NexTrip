@@ -33,19 +33,25 @@ public class RegistrationController {
     //switching to response entity to return a response entity object that contains the status code and the body of the response
     @PostMapping(value="/req/signup",consumes = "application/json",produces = "application/json")
     public  ResponseEntity<String> createUser(@RequestBody AppUser appUser){
-        AppUser existingAppUser=appUserRepository.findByEmail(appUser.getEmail());
-        if(existingAppUser!=null){
-            if(existingAppUser.isVerified()){
-                 return new ResponseEntity<>("User already exists",null);
-             }else{
-                String verificationToken= JwtTokenUtil.generateToken(appUser.getEmail());
-                existingAppUser.setVerificationToken(verificationToken);
-                appUserRepository.save(existingAppUser);
-                //send email code
-                emailService.sendVerificationEmail(existingAppUser.getEmail(),verificationToken);
-                return new ResponseEntity<>("Created", HttpStatus.OK); // 200
-
+        if (appUser.getEmail() != null) {
+            AppUser existingAppUser = appUserRepository.findByEmail(appUser.getEmail());
+            if (existingAppUser != null) {
+                if (existingAppUser.isVerified()) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already in use");
+                } else {
+                    String verificationToken = JwtTokenUtil.generateToken(appUser.getEmail());
+                    existingAppUser.setVerificationToken(verificationToken);
+                    appUserRepository.save(existingAppUser);
+                    //send email code
+                    emailService.sendVerificationEmail(existingAppUser.getEmail(), verificationToken);
+                    return ResponseEntity.ok("Created");
+                }
             }
+        }
+
+        if (appUser.getUsername() != null
+                && appUserRepository.findByUsername(appUser.getUsername()).isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Username already in use");
         }
 
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
@@ -55,6 +61,6 @@ public class RegistrationController {
         //send email code
         emailService.sendVerificationEmail(appUser.getEmail(),verificationToken);
 
-        return new ResponseEntity<>("Created", HttpStatus.OK); // 200
+        return ResponseEntity.ok("Created"); // 200
     }
 }

@@ -1,6 +1,7 @@
 package com.example.demo.Controller;
 
 import com.example.demo.Flights.Flight;
+import com.example.demo.Flights.FlightInfoUtil;
 import com.example.demo.Flights.FlightService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,8 @@ public class FlightViewController {
             @RequestParam String origin,
             @RequestParam String destination,
             @RequestParam(required = false) String date,
+            @RequestParam(required = false) String returnDate,
+            @RequestParam(required = false, defaultValue = "oneway") String tripType,
             @RequestParam(defaultValue = "1") int adults,
             @RequestParam(defaultValue = "EUR") String currency,
             Model model
@@ -34,6 +37,9 @@ public class FlightViewController {
         // Set default date to tomorrow if not provided
         if (date == null || date.trim().isEmpty()) {
             date = java.time.LocalDate.now().plusDays(1).toString();
+        }
+        if (returnDate != null && !returnDate.isBlank()) {
+            tripType = "roundtrip";
         }
         try {
             // Convert city/airport names to IATA codes if needed
@@ -46,6 +52,8 @@ public class FlightViewController {
                 model.addAttribute("origin", origin);
                 model.addAttribute("destination", destination);
                 model.addAttribute("date", date);
+                model.addAttribute("returnDate", returnDate);
+                model.addAttribute("tripType", tripType);
                 model.addAttribute("adults", adults);
                 model.addAttribute("currency", currency);
                 return "flights-search";
@@ -56,19 +64,48 @@ public class FlightViewController {
                 model.addAttribute("origin", origin);
                 model.addAttribute("destination", destination);
                 model.addAttribute("date", date);
+                model.addAttribute("returnDate", returnDate);
+                model.addAttribute("tripType", tripType);
                 model.addAttribute("adults", adults);
                 model.addAttribute("currency", currency);
                 return "flights-search";
             }
             
-            List<Flight> flights = flightService.searchOffers(originIata, destinationIata, date, adults, currency);
+            if (returnDate != null && !returnDate.isBlank()) {
+                try {
+                    java.time.LocalDate depart = java.time.LocalDate.parse(date);
+                    java.time.LocalDate ret = java.time.LocalDate.parse(returnDate);
+                    if (ret.isBefore(depart)) {
+                        model.addAttribute("error", "Return date must be the same day or after the departure date.");
+                        model.addAttribute("origin", origin);
+                        model.addAttribute("destination", destination);
+                        model.addAttribute("date", date);
+                        model.addAttribute("returnDate", returnDate);
+                        model.addAttribute("tripType", tripType);
+                        model.addAttribute("adults", adults);
+                        model.addAttribute("currency", currency);
+                        return "flights-search";
+                    }
+                } catch (java.time.format.DateTimeParseException ignored) {
+                    // Let the API handle invalid dates; keep UI feedback consistent
+                }
+            }
+
+            List<Flight> flights = flightService.searchOffers(originIata, destinationIata, date, returnDate, adults, currency);
 
             model.addAttribute("offers", flights);
+            model.addAttribute("airlineNames", flights.stream()
+                    .collect(java.util.stream.Collectors.toMap(
+                            Flight::getOfferId,
+                            f -> FlightInfoUtil.airlineName(f.getAirline())
+                    )));
             model.addAttribute("origin", origin);
             model.addAttribute("destination", destination);
             model.addAttribute("originIata", originIata);
             model.addAttribute("destinationIata", destinationIata);
             model.addAttribute("date", date);
+            model.addAttribute("returnDate", returnDate);
+            model.addAttribute("tripType", tripType);
             model.addAttribute("adults", adults);
             model.addAttribute("currency", currency);
 
@@ -78,6 +115,8 @@ public class FlightViewController {
             model.addAttribute("origin", origin);
             model.addAttribute("destination", destination);
             model.addAttribute("date", date);
+            model.addAttribute("returnDate", returnDate);
+            model.addAttribute("tripType", tripType);
             model.addAttribute("adults", adults);
             model.addAttribute("currency", currency);
             return "flights-search";
@@ -86,6 +125,8 @@ public class FlightViewController {
             model.addAttribute("origin", origin);
             model.addAttribute("destination", destination);
             model.addAttribute("date", date);
+            model.addAttribute("returnDate", returnDate);
+            model.addAttribute("tripType", tripType);
             model.addAttribute("adults", adults);
             model.addAttribute("currency", currency);
             return "flights-search";

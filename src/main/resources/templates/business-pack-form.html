@@ -26,6 +26,7 @@
             <div class="card card__pad">
                 <form th:action="${mode == 'edit'} ? @{/business/packs/{packId}(packId=${pack.id})} : @{/business/packs}"
                       method="post"
+                      enctype="multipart/form-data"
                       style="display:grid; gap:12px; max-width: 720px;">
 
                     <div style="display:grid; gap:6px;">
@@ -47,6 +48,26 @@
                     </div>
 
                     <div style="display:grid; gap:6px;">
+                        <label class="muted">Capacity</label>
+                        <input class="input" name="capacity" type="number" min="1"
+                               th:value="${pack.capacity}">
+                    </div>
+
+                    <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                        <div style="flex:1; min-width: 220px; display:grid; gap:6px;">
+                            <label class="muted">Start date</label>
+                            <input class="input" name="startDate" type="date"
+                                   th:value="${pack.startDate}">
+                        </div>
+
+                        <div style="flex:1; min-width: 220px; display:grid; gap:6px;">
+                            <label class="muted">End date</label>
+                            <input class="input" name="endDate" type="date"
+                                   th:value="${pack.endDate}">
+                        </div>
+                    </div>
+
+                    <div style="display:grid; gap:6px;">
                         <label class="muted">Description</label>
                         <textarea class="input" name="description" rows="6"
                                   th:text="${pack.description}"></textarea>
@@ -63,6 +84,52 @@
                             <label class="muted">Currency</label>
                             <input class="input" name="currency" placeholder="EUR"
                                    th:value="${pack.currency != null ? pack.currency : 'EUR'}">
+                        </div>
+                    </div>
+
+                    <div style="display:grid; gap:6px;">
+                        <label class="muted">Photo (optional)</label>
+                        <input class="input" type="file" name="image" accept="image/*">
+                        <div class="muted" style="font-size:12px;">
+                            Upload a JPG/PNG. Leave empty to keep the current photo.
+                        </div>
+                    </div>
+
+                    <div style="display:grid; gap:6px;">
+                        <label class="muted">Thumbnail (optional)</label>
+                        <input class="input" type="file" name="thumbnail" accept="image/*">
+                        <div class="muted" style="font-size:12px;">
+                            Used in list views. Leave empty to keep the current thumbnail.
+                        </div>
+                    </div>
+
+                    <div style="display:grid; gap:6px;">
+                        <label class="muted">Gallery photos (optional)</label>
+                        <input class="input" type="file" name="galleryFiles" accept="image/*" multiple>
+                        <div class="muted" style="font-size:12px;">
+                            These appear in the pack details carousel.
+                        </div>
+                    </div>
+
+                    <div th:if="${pack.imageUrl != null}" class="card" style="padding:10px; max-width: 360px;">
+                        <div class="muted" style="font-size:12px; margin-bottom:6px;">Current photo</div>
+                        <img th:src="${pack.imageUrl}" alt="Pack photo" style="width:100%; border-radius:10px;">
+                    </div>
+
+                    <div th:if="${pack.thumbnailUrl != null}" class="card" style="padding:10px; max-width: 240px;">
+                        <div class="muted" style="font-size:12px; margin-bottom:6px;">Current thumbnail</div>
+                        <img th:src="${pack.thumbnailUrl}" alt="Pack thumbnail" style="width:100%; border-radius:10px;">
+                    </div>
+
+                    <div th:if="${pack.galleryImages != null and !#strings.isEmpty(pack.galleryImages)}"
+                         class="card" style="padding:10px;">
+                        <div class="muted" style="font-size:12px; margin-bottom:6px;">Current gallery</div>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            <img th:each="img : ${#strings.arraySplit(pack.galleryImages, ',')}"
+                                 th:if="${!#strings.isEmpty(img)}"
+                                 th:src="${img}"
+                                 alt="Pack gallery"
+                                 style="width:90px; height:70px; object-fit:cover; border-radius:8px;">
                         </div>
                     </div>
 
@@ -119,5 +186,15 @@
     }
 </script>
 
+<footer class="footer">
+    <div class="container footer__inner">
+        <div>
+            <strong>NextTrip</strong>
+            <p class="muted">Travel beyond the map.</p>
+        </div>
+        <div class="muted">© 2025 NextTrip</div>
+    </div>
+</footer>
 </body>
 </html>
+

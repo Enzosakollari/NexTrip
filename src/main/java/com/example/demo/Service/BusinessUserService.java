@@ -69,6 +69,18 @@ public class BusinessUserService implements UserDetailsService {
         existing.setDescription(incoming.getDescription());
         existing.setPrice(incoming.getPrice());
         existing.setCurrency(incoming.getCurrency());
+        existing.setCapacity(incoming.getCapacity());
+        existing.setStartDate(incoming.getStartDate());
+        existing.setEndDate(incoming.getEndDate());
+        if (incoming.getImageUrl() != null && !incoming.getImageUrl().isBlank()) {
+            existing.setImageUrl(incoming.getImageUrl());
+        }
+        if (incoming.getThumbnailUrl() != null && !incoming.getThumbnailUrl().isBlank()) {
+            existing.setThumbnailUrl(incoming.getThumbnailUrl());
+        }
+        if (incoming.getGalleryImages() != null && !incoming.getGalleryImages().isBlank()) {
+            existing.setGalleryImages(incoming.getGalleryImages());
+        }
 
         packRepo.save(existing);
     }
