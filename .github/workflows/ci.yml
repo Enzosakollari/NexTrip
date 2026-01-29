@@ -33,7 +33,34 @@ jobs:
           java-version: "21"
           cache: maven
 
+      - name: Wait for MySQL
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mysql-client
+          until mysqladmin ping -h 127.0.0.1 -P 3306 -p1234 --silent; do
+            sleep 2
+          done
+
       - name: Run tests (with JaCoCo)
+        env:
+          DB_URL: jdbc:mysql://127.0.0.1:3306/nextrip
+          DB_USER: root
+          DB_PASSWORD: 1234
+          SPRING_PROFILES_ACTIVE: ci
+          MAIL_USER: test@example.com
+          MAIL_APP_PASSWORD: test-password
+          AMADEUS_API_BASE_URL: https://test.api.amadeus.com
+          AMADEUS_API_KEY: test-key
+          AMADEUS_API_SECRET: test-secret
+          HF_BASE_URL: https://router.huggingface.co/v1
+          HF_MODEL: meta-llama/Llama-3.1-8B-Instruct
+          HF_TOKEN: test-token
+          STRIPE_SECRET_KEY: sk_test_dummy
+          STRIPE_SUCCESS_URL: http://localhost:8080/booking-success?session_id={CHECKOUT_SESSION_ID}
+          STRIPE_CANCEL_URL: http://localhost:8080/booking-cancel
+          STRIPE_FLIGHT_SUCCESS_URL: http://localhost:8080/flights/checkout-success?session_id={CHECKOUT_SESSION_ID}
+          STRIPE_FLIGHT_CANCEL_URL: http://localhost:8080/flights/checkout-cancel
+          STRIPE_CURRENCY: eur
         run: mvn -B clean test
 
       - name: Upload JaCoCo report
