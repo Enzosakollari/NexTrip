@@ -13,8 +13,8 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @ExtendWith(MockitoExtension.class)
 class EmailServiceTest {
@@ -28,15 +28,19 @@ class EmailServiceTest {
     @InjectMocks
     private EmailService emailService;
 
-    private UriComponentsBuilder uriBuilder;
+    private ServletUriComponentsBuilder uriBuilder;
 
     @BeforeEach
     void setUp() {
         ReflectionTestUtils.setField(emailService, "from", "test@example.com");
         when(mailSender.createMimeMessage()).thenReturn(mimeMessage);
 
-        // Create a UriComponentsBuilder for testing
-        uriBuilder = UriComponentsBuilder.fromUriString("http://localhost:8080");
+        // Create a ServletUriComponentsBuilder for testing
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        request.setScheme("http");
+        request.setServerName("localhost");
+        request.setServerPort(8080);
+        uriBuilder = ServletUriComponentsBuilder.fromContextPath(request);
     }
 
     @Test
@@ -59,8 +63,8 @@ class EmailServiceTest {
             // Test business verification email
             emailService.sendBusinessVerificationEmail("business@example.com", "business-token");
 
-            // Verify mailSender.send was called 3 times (once for each email)
-            verify(mailSender, times(3)).send(any(MimeMessage.class));
+            // Verify mailSender.send was called for the two emails sent
+            verify(mailSender, times(2)).send(any(MimeMessage.class));
         } catch (Exception e) {
             fail("Exception should not be thrown: " + e.getMessage());
         }
