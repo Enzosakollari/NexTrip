@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Travel Packs • NextTrip</title>
+    <title>Travel Packs â€¢ NextTrip</title>
     <link rel="stylesheet" href="/css/app.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <div th:replace="~{fragments/navbar :: navbarStyles}"></div>
@@ -217,7 +217,7 @@
 </head>
 <body>
 
-<div th:replace="fragments/navbar :: navbar"></div>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 
 <div class="packs-hero">
@@ -292,7 +292,7 @@
                         <div class="muted pack__meta" th:text="${p.durationDays + ' days - ' + p.capacity + ' seats - ' + (p.startDate != null ? p.startDate : 'TBD') + ' to ' + (p.endDate != null ? p.endDate : 'TBD') + ' - ' + p.currency + ' ' + p.price}">meta</div>
 
                         <div class="pack__foot">
-                            <div class="price" th:text="${p.currency + ' ' + p.price}">€</div>
+                            <div class="price" th:text="${p.currency + ' ' + p.price}">â‚¬</div>
                             <span class="btn btn--small">View</span>
                         </div>
                     </div>
@@ -312,7 +312,7 @@
             <strong>NextTrip</strong>
             <p class="muted">Travel beyond the map.</p>
         </div>
-        <div class="muted">Â© 2025 NextTrip</div>
+        <div class="muted">Ã‚Â© 2025 NextTrip</div>
     </div>
 </footer>
 

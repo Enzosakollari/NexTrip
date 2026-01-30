@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Flight Search • NextTrip</title>
+  <title>Flight Search â€¢ NextTrip</title>
 
   <link rel="stylesheet" href="/css/app.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -657,7 +657,7 @@
 </head>
 <body>
 
-<div th:replace="fragments/navbar :: navbar"></div>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <div class="flight-search-hero">
   <h1>Find Your Perfect Flight</h1>
@@ -787,12 +787,12 @@
 
     <div class="results-section">
       <div th:if="${error != null}" class="error-message">
-        <strong>⚠️ Error</strong>
+        <strong>âš ï¸ Error</strong>
         <p th:text="${error}">An error occurred</p>
       </div>
       
       <div th:if="${offers == null || #lists.isEmpty(offers)}" class="empty-state" th:unless="${error != null}">
-        <div class="empty-state-icon">✈️</div>
+        <div class="empty-state-icon">âœˆï¸</div>
         <h3>Ready to search?</h3>
         <p>Enter your departure and destination cities above to find the best flight deals.</p>
       </div>
@@ -874,7 +874,7 @@
       <strong>NextTrip</strong>
       <p class="muted">Travel beyond the map.</p>
     </div>
-    <div class="muted">© 2025 NextTrip</div>
+    <div class="muted">Â© 2025 NextTrip</div>
   </div>
 </footer>
 

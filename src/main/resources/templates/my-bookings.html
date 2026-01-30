@@ -259,7 +259,7 @@
 </head>
 <body>
 
-<div th:replace="fragments/navbar :: navbar"></div>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <main class="page">
     <div class="container">
@@ -269,7 +269,7 @@
         </div>
 
         <div th:if="${#lists.isEmpty(upcomingBookings) and #lists.isEmpty(historyBookings)}" class="empty-state">
-            <div class="empty-state__icon">📋</div>
+            <div class="empty-state__icon">ðŸ“‹</div>
             <h2>No bookings yet</h2>
             <p>Your bookings will appear here once you make a reservation</p>
             <a href="/" class="btn btn--primary" style="margin-top: 1rem;">Explore Travel Packages</a>
@@ -375,7 +375,7 @@
             <strong>NextTrip</strong>
             <p class="muted">Travel beyond the map.</p>
         </div>
-        <div class="muted">© 2025 NextTrip</div>
+        <div class="muted">Â© 2025 NextTrip</div>
     </div>
 </footer>
 </body>

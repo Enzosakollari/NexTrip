@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title th:text="${business.companyName + ' • NextTrip'}">Company</title>
+    <title th:text="${business.companyName + ' â€¢ NextTrip'}">Company</title>
     <link rel="stylesheet" href="/css/app.css">
     <div th:replace="~{fragments/navbar :: navbarStyles}"></div>
     <style>
@@ -73,7 +73,7 @@
 </head>
 <body>
 
-<div th:replace="fragments/navbar :: navbar"></div>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <main class="page">
     <section class="section">
@@ -144,7 +144,7 @@
             <strong>NextTrip</strong>
             <p class="muted">Travel beyond the map.</p>
         </div>
-        <div class="muted">© 2025 NextTrip</div>
+        <div class="muted">Â© 2025 NextTrip</div>
     </div>
 </footer>
 </body>

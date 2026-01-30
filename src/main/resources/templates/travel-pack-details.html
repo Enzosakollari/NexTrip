@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title th:text="${pack.title + ' • NextTrip'}">Pack</title>
+  <title th:text="${pack.title + ' â€¢ NextTrip'}">Pack</title>
   <link rel="stylesheet" href="/css/app.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <div th:replace="~{fragments/navbar :: navbarStyles}"></div>
@@ -91,7 +91,7 @@
 </head>
 <body>
 
-<div th:replace="fragments/navbar :: navbar"></div>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
 <main class="page">
   <section class="section">
@@ -145,7 +145,7 @@
         <p th:text="${pack.description}">desc</p>
 
         <div style="display:flex; gap:10px; align-items:center; margin-top:12px;">
-          <div class="price" th:text="${pack.currency + ' ' + pack.price}">€</div>
+          <div class="price" th:text="${pack.currency + ' ' + pack.price}">â‚¬</div>
           <a class="btn" href="/chat">Ask AI</a>
         </div>
       </div>
@@ -237,7 +237,7 @@
             <strong>NextTrip</strong>
             <p class="muted">Travel beyond the map.</p>
         </div>
-        <div class="muted">© 2025 NextTrip</div>
+        <div class="muted">Â© 2025 NextTrip</div>
     </div>
 </footer>
 </body>
