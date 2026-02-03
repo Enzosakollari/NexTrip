@@ -37,6 +37,9 @@ class FlightServiceTest {
     private AmadeusClient amadeusClient;
 
     @Mock
+    private FlightSearchCache flightSearchCache;
+
+    @Mock
     private RestTemplate restTemplate;
 
     @InjectMocks
@@ -48,6 +51,7 @@ class FlightServiceTest {
     void setUp() {
         ReflectionTestUtils.setField(flightService, "baseUrl", "https://test.api.amadeus.com");
         ReflectionTestUtils.setField(flightService, "restTemplate", restTemplate);
+        ReflectionTestUtils.setField(flightService, "storeToDb", true);
     }
 
     @Test

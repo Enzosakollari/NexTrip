@@ -7,6 +7,8 @@ import com.example.demo.Business.TravelPackageRepository;
 import com.example.demo.Flights.FlightInfoUtil;
 import com.example.demo.Flights.FlightOrder;
 import com.example.demo.Flights.FlightOrderRepository;
+import com.example.demo.Kafka.BookingEvent;
+import com.example.demo.Kafka.BookingEventPublisher;
 import com.example.demo.Service.StripeService;
 import com.example.demo.User.AppUser;
 import com.example.demo.User.AppUserRepository;
@@ -16,7 +18,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.Instant;
 import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,6 +31,7 @@ public class BookingController {
     private final StripeService stripeService;
     private final FlightOrderRepository flightOrderRepository;
     private final AppUserRepository appUserRepository;
+    private final BookingEventPublisher bookingEventPublisher;
 
     @GetMapping("/packs/{packId}/book")
     public String bookForm(@PathVariable Long packId, Model model) {
@@ -69,7 +74,7 @@ public class BookingController {
         String username = metadata.get("username");
 
         try {
-            bookingService.createBookingAfterPayment(
+            Booking booking = bookingService.createBookingAfterPayment(
                     packId,
                     fullName,
                     email,
@@ -78,6 +83,19 @@ public class BookingController {
                     username,
                     sessionId
             );
+            if (booking != null) {
+                bookingEventPublisher.publish(new BookingEvent(
+                        UUID.randomUUID().toString(),
+                        "booking.created",
+                        "travel-pack",
+                        booking.getStatus() != null ? booking.getStatus().name() : null,
+                        booking.getId(),
+                        null,
+                        null,
+                        username,
+                        Instant.now().toString()
+                ));
+            }
         } catch (IllegalStateException ex) {
             model.addAttribute("error", ex.getMessage());
             return "booking-cancel";

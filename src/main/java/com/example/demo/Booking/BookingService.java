@@ -80,7 +80,7 @@ public class BookingService {
     }
 
     @Transactional
-    public void createBookingAfterPayment(
+    public Booking createBookingAfterPayment(
             Long packId,
             String fullName,
             String email,
@@ -89,8 +89,11 @@ public class BookingService {
             String username,
             String stripeSessionId
     ) {
-        if (stripeSessionId != null && bookingRepository.existsByStripeSessionId(stripeSessionId)) {
-            return;
+        if (stripeSessionId != null) {
+            var existing = bookingRepository.findByStripeSessionId(stripeSessionId);
+            if (existing.isPresent()) {
+                return existing.get();
+            }
         }
 
         var pack = travelPackageRepository.findById(packId)
@@ -116,6 +119,7 @@ public class BookingService {
 
         Booking saved = bookingRepository.save(booking);
         sendTicketIfPossible(saved);
+        return saved;
     }
 
     @Transactional

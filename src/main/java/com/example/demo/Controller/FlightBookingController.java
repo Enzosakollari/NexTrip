@@ -6,6 +6,8 @@ import com.example.demo.Flights.FlightOrderRepository;
 import com.example.demo.Flights.FlightOrderService;
 import com.example.demo.Flights.FlightRepository;
 import com.example.demo.Flights.FlightSearchCache;
+import com.example.demo.Kafka.BookingEvent;
+import com.example.demo.Kafka.BookingEventPublisher;
 import com.example.demo.Service.StripeService;
 import com.example.demo.User.AppUser;
 import com.example.demo.User.AppUserRepository;
@@ -20,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Instant;
+import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
@@ -31,6 +35,7 @@ public class FlightBookingController {
     private final FlightOrderService flightOrderService;
     private final StripeService stripeService;
     private final AppUserRepository appUserRepository;
+    private final BookingEventPublisher bookingEventPublisher;
 
     @GetMapping("/flights/checkout")
     public String showCheckout(
@@ -261,6 +266,17 @@ public class FlightBookingController {
             order.setPaymentStatus("PAID");
             order.setOrderStatus("CONFIRMED");
             flightOrderRepository.save(order);
+            bookingEventPublisher.publish(new BookingEvent(
+                    UUID.randomUUID().toString(),
+                    "flight.order.created",
+                    "flight",
+                    order.getOrderStatus(),
+                    null,
+                    order.getId(),
+                    order.getBookingReference(),
+                    order.getAppUser() != null ? order.getAppUser().getUsername() : order.getEmail(),
+                    Instant.now().toString()
+            ));
             model.addAttribute("order", order);
             return "flight-booking-success";
         } catch (Exception ex) {

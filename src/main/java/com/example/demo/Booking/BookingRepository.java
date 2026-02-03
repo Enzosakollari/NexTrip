@@ -43,6 +43,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     boolean existsByStripeSessionId(String stripeSessionId);
 
+    Optional<Booking> findByStripeSessionId(String stripeSessionId);
+
     List<Booking> findByAppUser_UsernameOrderByCreatedAtDesc(String username);
 
     List<Booking> findByEmailOrderByCreatedAtDesc(String email);
