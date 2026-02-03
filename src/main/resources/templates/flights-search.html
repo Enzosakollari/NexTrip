@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Flight Search â€¢ NextTrip</title>
+  <title>Flight Search • NextTrip</title>
 
   <link rel="stylesheet" href="/css/app.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -287,6 +287,26 @@
       max-width: 1000px;
       margin-left: auto;
       margin-right: auto;
+    }
+
+    .results-status {
+      margin: 16px 0 24px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(251, 191, 36, 0.25);
+      background: rgba(11, 19, 36, 0.8);
+      color: #f8d88b;
+      font-size: 14px;
+    }
+
+    .results-status.is-hidden {
+      display: none;
+    }
+
+    .results-status.is-error {
+      border-color: rgba(248, 113, 113, 0.5);
+      background: rgba(69, 10, 10, 0.6);
+      color: #fecaca;
     }
 
     .inspiration-grid {
@@ -598,6 +618,12 @@
       box-shadow: 0 18px 34px rgba(251, 191, 36, 0.3);
     }
 
+    .search-button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+    }
+
     .search-tips .tip-card {
       background: rgba(11, 19, 36, 0.8);
       border-color: rgba(251, 191, 36, 0.2);
@@ -786,13 +812,15 @@
     </div>
 
     <div class="results-section">
+      <div id="results-status" class="results-status is-hidden"></div>
+      <div id="results-root">
       <div th:if="${error != null}" class="error-message">
-        <strong>âš ï¸ Error</strong>
+        <strong>⚠️ Error</strong>
         <p th:text="${error}">An error occurred</p>
       </div>
       
       <div th:if="${offers == null || #lists.isEmpty(offers)}" class="empty-state" th:unless="${error != null}">
-        <div class="empty-state-icon">âœˆï¸</div>
+        <div class="empty-state-icon">✈️</div>
         <h3>Ready to search?</h3>
         <p>Enter your departure and destination cities above to find the best flight deals.</p>
       </div>
@@ -864,6 +892,7 @@
           <span class="select-button is-disabled" th:unless="${o.offerId != null}">Unavailable</span>
         </div>
       </div>
+      </div>
     </div>
   </div>
 </main>
@@ -874,7 +903,7 @@
       <strong>NextTrip</strong>
       <p class="muted">Travel beyond the map.</p>
     </div>
-    <div class="muted">Â© 2025 NextTrip</div>
+    <div class="muted">© 2025 NextTrip</div>
   </div>
 </footer>
 
@@ -1013,11 +1042,277 @@
     selectedDestination = temp;
   });
 
+  const resultsRoot = document.getElementById('results-root');
+  const resultsStatus = document.getElementById('results-status');
+  const searchButton = document.querySelector('.search-button');
+
+  let ws;
+  let activeRequestId = null;
+  let offerCount = 0;
+  let resultsCountEl = null;
+  let resultsListEl = null;
+
+  function setStatus(message, variant) {
+    if (!resultsStatus) return;
+    if (!message) {
+      resultsStatus.textContent = '';
+      resultsStatus.classList.add('is-hidden');
+      resultsStatus.classList.remove('is-error');
+      return;
+    }
+    resultsStatus.textContent = message;
+    resultsStatus.classList.remove('is-hidden');
+    resultsStatus.classList.toggle('is-error', variant === 'error');
+  }
+
+  function setSearching(isSearching) {
+    if (!searchButton) return;
+    searchButton.disabled = isSearching;
+    searchButton.textContent = isSearching ? 'Searching...' : 'Search Flights';
+  }
+
+  function formatTime(value) {
+    if (!value) return null;
+    try {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return null;
+      return new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit' }).format(date);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function initResultsShell() {
+    if (!resultsRoot) return;
+    resultsRoot.innerHTML = `
+      <div class="results-header">
+        <div class="results-count">
+          Found <span id="results-count-value">0</span> flights
+        </div>
+      </div>
+      <div id="flight-results-list"></div>
+    `;
+    resultsCountEl = document.getElementById('results-count-value');
+    resultsListEl = document.getElementById('flight-results-list');
+  }
+
+  function renderEmptyState(message) {
+    if (!resultsRoot) return;
+    resultsRoot.innerHTML = '';
+    const container = document.createElement('div');
+    container.className = 'empty-state';
+    const icon = document.createElement('div');
+    icon.className = 'empty-state-icon';
+    icon.textContent = 'No results';
+    const title = document.createElement('h3');
+    title.textContent = 'No flights found';
+    const body = document.createElement('p');
+    body.textContent = message || 'Try adjusting your dates or airports.';
+    container.appendChild(icon);
+    container.appendChild(title);
+    container.appendChild(body);
+    resultsRoot.appendChild(container);
+  }
+
+  function renderError(message) {
+    if (!resultsRoot) return;
+    resultsRoot.innerHTML = '';
+    const container = document.createElement('div');
+    container.className = 'error-message';
+    const title = document.createElement('strong');
+    title.textContent = 'Error';
+    const body = document.createElement('p');
+    body.textContent = message || 'An error occurred while searching for flights.';
+    container.appendChild(title);
+    container.appendChild(body);
+    resultsRoot.appendChild(container);
+  }
+
+  function buildFlightCard(offer) {
+    const depTime = formatTime(offer.departureTime);
+    const arrTime = formatTime(offer.arrivalTime);
+    const returnDepTime = formatTime(offer.returnDepartureTime);
+    const returnArrTime = formatTime(offer.returnArrivalTime);
+
+    const depTimeDisplay = depTime || '--:--';
+    const arrTimeDisplay = arrTime || '--:--';
+    const returnDepDisplay = returnDepTime || '--:--';
+    const returnArrDisplay = returnArrTime || '--:--';
+
+    const originCode = offer.originAirportCode || '--';
+    const destinationCode = offer.destinationAirportCode || '--';
+    const returnOriginCode = offer.returnOriginAirportCode || offer.destinationAirportCode || '--';
+    const returnDestinationCode = offer.returnDestinationAirportCode || offer.originAirportCode || '--';
+
+    const airlineName = offer.airlineName || offer.airline || 'Airline';
+    const flightNumber = offer.flightNumber || '--';
+    const priceText = offer.price != null ? `${offer.currency || 'EUR'} ${offer.price}` : '--';
+
+    const hasReturn = !!(offer.returnDepartureTime || offer.returnArrivalTime);
+    const durationMarkup = depTime && arrTime
+      ? `<div class="flight-duration">Duration: <span>${depTime} - ${arrTime}</span></div>`
+      : '';
+    const returnMarkup = hasReturn
+      ? `
+        <div class="segment-label">Return</div>
+        <div class="flight-times">
+          <div>
+            <div class="time-large">${returnDepDisplay}</div>
+            <div class="airport-code">${returnOriginCode}</div>
+          </div>
+          <div class="flight-arrow">-></div>
+          <div>
+            <div class="time-large">${returnArrDisplay}</div>
+            <div class="airport-code">${returnDestinationCode}</div>
+          </div>
+        </div>
+      `
+      : '';
+
+    const logoMarkup = offer.airline
+      ? `<img class="airline-logo"
+              src="https://images.kiwi.com/airlines/64/${offer.airline}.png"
+              alt="${airlineName}"
+              loading="lazy"
+              onerror="this.style.display='none';const s=this.parentElement.querySelector('.flight-symbol');if(s){s.style.display='grid';}">`
+      : '';
+    const symbolStyle = offer.airline ? 'style="display:none;"' : '';
+
+    const offerId = offer.offerId ? encodeURIComponent(offer.offerId) : null;
+    const selectMarkup = offerId
+      ? `<a class="select-button" href="/flights/checkout?offerId=${offerId}">Select Flight</a>`
+      : `<span class="select-button is-disabled">Unavailable</span>`;
+
+    const card = document.createElement('div');
+    card.className = 'flight-card';
+    card.innerHTML = `
+      <div class="flight-header">
+        <div class="flight-route">
+          <div class="flight-times">
+            <div>
+              <div class="time-large">${depTimeDisplay}</div>
+              <div class="airport-code">${originCode}</div>
+            </div>
+            <div class="flight-arrow">-></div>
+            <div>
+              <div class="time-large">${arrTimeDisplay}</div>
+              <div class="airport-code">${destinationCode}</div>
+            </div>
+          </div>
+          ${durationMarkup}
+          ${returnMarkup}
+        </div>
+        <div class="flight-airline">
+          ${logoMarkup}
+          <div class="flight-symbol" aria-hidden="true" ${symbolStyle}>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 12l-7.5 2.5m7.5-2.5l-1.5 6m1.5-6L21 7m-10.5 5L6 9m4.5 3l4 7m0-7l-1.5-5"></path>
+            </svg>
+          </div>
+          <div>
+            <div class="flight-number">${flightNumber}</div>
+            <div class="flight-number">${airlineName}</div>
+          </div>
+        </div>
+        <div class="flight-price">
+          <div class="price-amount">${priceText}</div>
+          <div class="price-currency">per person</div>
+        </div>
+      </div>
+      ${selectMarkup}
+    `;
+    return card;
+  }
+
+  function ensureWebSocket() {
+    if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return;
+    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    ws = new WebSocket(`${protocol}://${window.location.host}/ws/flights`);
+    ws.addEventListener('message', handleWsMessage);
+    ws.addEventListener('close', () => {
+      if (activeRequestId) {
+        setStatus('Connection closed. Please try again.', 'error');
+        setSearching(false);
+      }
+    });
+    ws.addEventListener('error', () => {
+      if (activeRequestId) {
+        setStatus('WebSocket error. Please try again.', 'error');
+        setSearching(false);
+      }
+    });
+  }
+
+  function handleWsMessage(event) {
+    let payload;
+    try {
+      payload = JSON.parse(event.data);
+    } catch (e) {
+      return;
+    }
+    if (!payload || payload.requestId !== activeRequestId) return;
+
+    if (payload.type === 'status') {
+      setStatus('Searching flights...', 'info');
+      return;
+    }
+
+    if (payload.type === 'offer') {
+      if (!resultsListEl) {
+        initResultsShell();
+      }
+      const card = buildFlightCard(payload.payload);
+      resultsListEl.appendChild(card);
+      offerCount += 1;
+      if (resultsCountEl) {
+        resultsCountEl.textContent = String(offerCount);
+      }
+      return;
+    }
+
+    if (payload.type === 'complete') {
+      if (offerCount === 0) {
+        renderEmptyState('No flights matched your search.');
+      }
+      setStatus('Search complete.', 'info');
+      setSearching(false);
+      activeRequestId = null;
+      return;
+    }
+
+    if (payload.type === 'error') {
+      renderError(payload.message);
+      setStatus(payload.message || 'Search failed.', 'error');
+      setSearching(false);
+      activeRequestId = null;
+    }
+  }
+
+  function startWebSocketSearch(requestPayload, fallbackQuery) {
+    activeRequestId = requestPayload.requestId;
+    offerCount = 0;
+    initResultsShell();
+    setStatus('Searching flights...', 'info');
+    setSearching(true);
+
+    ensureWebSocket();
+    if (!ws) {
+      window.location.href = `/flights/search-view/results?${fallbackQuery}`;
+      return;
+    }
+
+    const payloadText = JSON.stringify(requestPayload);
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.send(payloadText);
+    } else {
+      ws.addEventListener('open', () => ws.send(payloadText), { once: true });
+    }
+  }
+
   // Form submission
   document.getElementById('flight-search-form').addEventListener('submit', (e) => {
     e.preventDefault();
     
-    const form = e.target;
     const formData = new URLSearchParams();
     
     // Use selected airport display name (which contains IATA code in parentheses)
@@ -1049,8 +1344,28 @@
       }
       formData.append('returnDate', returnDateValue);
     }
-    
-    window.location.href = `/flights/search-view/results?${formData.toString()}`;
+
+    if (!('WebSocket' in window)) {
+      window.location.href = `/flights/search-view/results?${formData.toString()}`;
+      return;
+    }
+
+    const requestId = (window.crypto && window.crypto.randomUUID)
+      ? window.crypto.randomUUID()
+      : String(Date.now());
+
+    const payload = {
+      requestId,
+      origin: originValue,
+      destination: destinationValue,
+      date: dateValue,
+      returnDate: tripType === 'roundtrip' ? returnDateInput.value : null,
+      tripType,
+      adults: parseInt(document.getElementById('adults-input').value, 10) || 1,
+      currency: document.getElementById('currency-input').value
+    };
+
+    startWebSocketSearch(payload, formData.toString());
   });
 </script>
 

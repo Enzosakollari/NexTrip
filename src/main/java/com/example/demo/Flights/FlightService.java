@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 @Service
 @RequiredArgsConstructor
@@ -26,12 +27,16 @@ public class FlightService {
 
     private final FlightRepository flightRepository;
     private final AmadeusClient amadeusClient;
+    private final FlightSearchCache flightSearchCache;
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Value("${amadeus.api.base-url}")
     private String baseUrl;
+
+    @Value("${flights.store-to-db:false}")
+    private boolean storeToDb;
 
     /**
      * Search for airports by city name or keyword
@@ -117,6 +122,18 @@ public class FlightService {
             int adults,
             String currency
     ) {
+        return searchOffersStreaming(originIata, destinationIata, departureDateIso, returnDateIso, adults, currency, null);
+    }
+
+    public List<Flight> searchOffersStreaming(
+            String originIata,
+            String destinationIata,
+            String departureDateIso,
+            String returnDateIso,
+            int adults,
+            String currency,
+            Consumer<Flight> onOffer
+    ) {
         try {
             StringBuilder urlBuilder = new StringBuilder(baseUrl)
                     .append("/v2/shopping/flight-offers")
@@ -159,10 +176,20 @@ public class FlightService {
                     f.setProvider("AMADEUS");
                     f.setAdults(adults);
                     flights.add(f);
+                    flightSearchCache.cacheOffer(f);
+                    if (onOffer != null) {
+                        try {
+                            onOffer.accept(f);
+                        } catch (Exception e) {
+                            System.err.println("Failed to stream flight offer: " + e.getMessage());
+                        }
+                    }
                 }
             }
 
-            flightRepository.saveAll(flights);
+            if (storeToDb) {
+                flightRepository.saveAll(flights);
+            }
             return flights;
 
         } catch (Exception e) {

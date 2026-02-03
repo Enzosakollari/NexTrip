@@ -91,6 +91,7 @@ public class SecurityConfig {
                                 "/css/**", "/js/**", "/images/**", "/videos/**", "/uploads/**",
                                 "/companies/**",
                                 "/api/flights/**",
+                                "/ws/**",
                                 "/error"
                         ).permitAll()
                         .anyRequest().authenticated()

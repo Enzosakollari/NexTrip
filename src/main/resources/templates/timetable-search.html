@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Timetable Search â€¢ NextTrip</title>
+  <title>Timetable Search • NextTrip</title>
 
   <link rel="stylesheet" href="/css/app.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -440,7 +440,7 @@
               <div id="from-dropdown" class="autocomplete-dropdown"></div>
             </div>
             <div class="autocomplete-container">
-              <input type="text" id="to-input" class="input" placeholder="To (e.g. ZÃ¼rich)" autocomplete="off">
+              <input type="text" id="to-input" class="input" placeholder="To (e.g. Zürich)" autocomplete="off">
               <div id="to-dropdown" class="autocomplete-dropdown"></div>
             </div>
             <input type="date" id="route-date" class="input">
@@ -499,7 +499,7 @@
       <strong>NextTrip</strong>
       <p class="muted">Travel beyond the map.</p>
     </div>
-    <div class="muted">Â© 2025 NextTrip</div>
+    <div class="muted">© 2025 NextTrip</div>
   </div>
 </footer>
 
@@ -636,7 +636,7 @@
           html += `
             <div class="route-result">
               <div class="route-header">
-                <div class="route-route">${conn.from} â†’ ${conn.to}</div>
+                <div class="route-route">${conn.from} → ${conn.to}</div>
                 <div class="route-duration">${Math.floor(duration / 60)}h ${duration % 60}m</div>
               </div>
               <div>
@@ -648,7 +648,7 @@
                       <span class="leg-type ${legTypeClass}">${leg.line || legType}</span>
                       <div class="leg-info">
                         <div class="leg-line">${leg.name || ''} ${leg.number || ''}</div>
-                        <div class="leg-time">${leg.departure || ''} â†’ ${leg.arrival || ''}</div>
+                        <div class="leg-time">${leg.departure || ''} → ${leg.arrival || ''}</div>
                         ${leg.terminal ? `<div class="leg-stops">To: ${leg.terminal}</div>` : ''}
                       </div>
                     </div>

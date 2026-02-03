@@ -5,6 +5,7 @@ import com.example.demo.Flights.FlightOrder;
 import com.example.demo.Flights.FlightOrderRepository;
 import com.example.demo.Flights.FlightOrderService;
 import com.example.demo.Flights.FlightRepository;
+import com.example.demo.Flights.FlightSearchCache;
 import com.example.demo.Service.StripeService;
 import com.example.demo.User.AppUser;
 import com.example.demo.User.AppUserRepository;
@@ -25,6 +26,7 @@ import java.time.LocalDateTime;
 public class FlightBookingController {
 
     private final FlightRepository flightRepository;
+    private final FlightSearchCache flightSearchCache;
     private final FlightOrderRepository flightOrderRepository;
     private final FlightOrderService flightOrderService;
     private final StripeService stripeService;
@@ -40,7 +42,10 @@ public class FlightBookingController {
             return "redirect:/login";
         }
 
-        Flight flight = flightRepository.findTopByOfferIdOrderByIdDesc(offerId).orElse(null);
+        Flight flight = flightSearchCache.getOffer(offerId);
+        if (flight == null) {
+            flight = flightRepository.findTopByOfferIdOrderByIdDesc(offerId).orElse(null);
+        }
         if (flight == null) {
             model.addAttribute("error", "Selected flight offer could not be found. Please search again.");
             return "flights-search";
@@ -83,7 +88,10 @@ public class FlightBookingController {
             return "redirect:/login";
         }
 
-        Flight flight = flightRepository.findTopByOfferIdOrderByIdDesc(offerId).orElse(null);
+        Flight flight = flightSearchCache.getOffer(offerId);
+        if (flight == null) {
+            flight = flightRepository.findTopByOfferIdOrderByIdDesc(offerId).orElse(null);
+        }
         if (flight == null) {
             model.addAttribute("error", "Selected flight offer could not be found. Please search again.");
             return "flights-search";

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Travel Packs â€¢ NextTrip</title>
+    <title>Travel Packs • NextTrip</title>
     <link rel="stylesheet" href="/css/app.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <div th:replace="~{fragments/navbar :: navbarStyles}"></div>
@@ -100,6 +100,71 @@
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 14px;
             margin-bottom: 32px;
+        }
+
+        .packs-filter {
+            background: rgba(11, 19, 36, 0.85);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            border-radius: 18px;
+            padding: 18px;
+            margin: 18px 0 28px;
+            box-shadow: 0 16px 30px rgba(2, 6, 23, 0.4);
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+            align-items: end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-label {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #a3b1c6;
+        }
+
+        .filter-input {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(251, 191, 36, 0.25);
+            background: rgba(11, 19, 36, 0.8);
+            color: #e6e8ef;
+            font-size: 14px;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-actions .btn {
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+        }
+
+        .filter-summary {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            color: #a3b1c6;
+            font-size: 13px;
+        }
+
+        .filter-error {
+            color: #fca5a5;
+            font-weight: 600;
         }
 
         .info-card {
@@ -241,6 +306,37 @@
                 </div>
             </div>
 
+            <div class="packs-filter">
+                <form class="filter-form" method="get" action="/travel-packs">
+                    <div class="filter-grid">
+                        <div class="filter-group">
+                            <label class="filter-label" for="destination-input">Destination</label>
+                            <input class="filter-input" id="destination-input" name="destination" type="text"
+                                   placeholder="Search by destination or title"
+                                   th:value="${destinationQuery}">
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label" for="min-price-input">Min price</label>
+                            <input class="filter-input" id="min-price-input" name="minPrice" type="number"
+                                   min="0" step="1" placeholder="0" th:value="${minPrice}">
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label" for="max-price-input">Max price</label>
+                            <input class="filter-input" id="max-price-input" name="maxPrice" type="number"
+                                   min="0" step="1" placeholder="1500" th:value="${maxPrice}">
+                        </div>
+                        <div class="filter-actions">
+                            <button class="btn btn--primary" type="submit">Search</button>
+                            <a class="btn btn--ghost" href="/travel-packs">Clear</a>
+                        </div>
+                    </div>
+                </form>
+                <div class="filter-summary">
+                    <span th:text="'Showing ' + ${filteredCount != null ? filteredCount : 0} + ' of ' + ${totalPacks != null ? totalPacks : 0} + ' packs'">Showing 0 of 0 packs</span>
+                    <span class="filter-error" th:if="${filterError != null}" th:text="${filterError}">Price filters must be valid numbers.</span>
+                </div>
+            </div>
+
             <div class="category-grid">
                 <div class="category-card">
                     <img src="https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=900&q=80&auto=format&fit=crop" alt="Adventure">
@@ -292,7 +388,7 @@
                         <div class="muted pack__meta" th:text="${p.durationDays + ' days - ' + p.capacity + ' seats - ' + (p.startDate != null ? p.startDate : 'TBD') + ' to ' + (p.endDate != null ? p.endDate : 'TBD') + ' - ' + p.currency + ' ' + p.price}">meta</div>
 
                         <div class="pack__foot">
-                            <div class="price" th:text="${p.currency + ' ' + p.price}">â‚¬</div>
+                            <div class="price" th:text="${p.currency + ' ' + p.price}">€</div>
                             <span class="btn btn--small">View</span>
                         </div>
                     </div>
@@ -312,7 +408,7 @@
             <strong>NextTrip</strong>
             <p class="muted">Travel beyond the map.</p>
         </div>
-        <div class="muted">Ã‚Â© 2025 NextTrip</div>
+        <div class="muted">© 2025 NextTrip</div>
     </div>
 </footer>
 
